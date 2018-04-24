@@ -1,0 +1,18 @@
+{
+  "type": "mysql",
+  "host": "des-nas",
+  "port": 3306,
+  "username": "prototype",
+  "password": "7Puku9HkXz83W7HU",
+  "database": "prototype",
+  "synchronize": false,
+  "logging": false,
+  "connectTimeout": 60000,
+  "timezone": "local",
+  "entities": [
+    "./src/dao/entities/**/*.ts"
+  ],
+  "cli": {
+    "entitiesDir": "./src/dao/entities"
+  }
+}

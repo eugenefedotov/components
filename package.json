@@ -1,0 +1,23 @@
+{
+  "name": "prototype",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "start": "node ./node_modules/ts-node/dist/bin ./index.ts",
+    "schema:sync": "node ./node_modules/ts-node/dist/bin ./node_modules/typeorm/cli schema:sync"
+  },
+  "author": "",
+  "license": "ISC",
+  "private": true,
+  "dependencies": {
+    "mysql": "^2.15.0",
+    "reflect-metadata": "^0.1.9",
+    "typedi": "^0.7.2",
+    "typeorm": "^0.2.0-alpha.42",
+    "typeorm-typedi-extensions": "^0.2.0"
+  },
+  "devDependencies": {
+    "ts-node": "^6.0.0",
+    "typescript": "^2.8.1"
+  }
+}
