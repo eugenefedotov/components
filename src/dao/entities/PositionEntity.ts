@@ -1,25 +1,20 @@
-import {Column, Entity, ManyToOne, PrimaryGeneratedColumn, Tree, TreeChildren, TreeParent} from 'typeorm';
+import {Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn} from 'typeorm';
 import {AuthorityOfStatePowerEntity} from './AuthorityOfStatePowerEntity';
+import {PositionVersionEntity} from './PositionVersionEntity';
 
 @Entity('position')
-@Tree('closure-table')
 export class PositionEntity {
 
-    @PrimaryGeneratedColumn()
+    @PrimaryGeneratedColumn({unsigned: true})
     id: number;
 
     @ManyToOne(type => AuthorityOfStatePowerEntity)
     authorityOfStatePower: AuthorityOfStatePowerEntity;
 
-    @TreeParent()
-    parent: PositionEntity;
+    @OneToOne(type => PositionVersionEntity)
+    @JoinColumn()
+    currentVersion: PositionVersionEntity;
 
-    @TreeChildren()
-    children: PositionEntity[];
-
-    @Column()
-    dateBegin: Date;
-
-    @Column()
-    dateEnd: Date;
+    @OneToMany(type => PositionVersionEntity, object => object.position)
+    history: PositionVersionEntity[];
 }

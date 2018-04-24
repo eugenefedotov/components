@@ -1,22 +1,16 @@
-import {Column, Entity, ManyToOne, PrimaryGeneratedColumn} from 'typeorm';
-import {PersonEntity} from './PersonEntity';
-import {PositionEntity} from './PositionEntity';
+import {Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn} from 'typeorm';
+import {PersonOnPositionVersionEntity} from './PersonOnPositionVersionEntity';
 
 @Entity('person_on_position')
 export class PersonOnPositionEntity {
 
-    @PrimaryGeneratedColumn()
+    @PrimaryGeneratedColumn({unsigned: true})
     id: number;
 
-    @ManyToOne(type => PersonEntity)
-    person: PersonEntity;
+    @OneToOne(type => PersonOnPositionVersionEntity)
+    @JoinColumn()
+    currentVersion: PersonOnPositionVersionEntity;
 
-    @ManyToOne(type => PositionEntity)
-    position: PositionEntity;
-
-    @Column()
-    dateBegin: Date;
-
-    @Column()
-    dateEnd: Date;
+    @OneToMany(type => PersonOnPositionVersionEntity, object => object.personOnPosition)
+    history: PersonOnPositionVersionEntity[];
 }
