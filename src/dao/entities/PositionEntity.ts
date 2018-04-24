@@ -12,10 +12,10 @@ export class PositionEntity {
     authorityOfStatePower: AuthorityOfStatePowerEntity;
 
     @TreeParent()
-    head: PositionEntity;
+    parent: PositionEntity;
 
     @TreeChildren()
-    subordinates: PositionEntity[];
+    children: PositionEntity[];
 
     @Column()
     dateBegin: Date;
