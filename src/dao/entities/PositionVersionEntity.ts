@@ -1,7 +1,8 @@
-import {Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn} from 'typeorm';
+import {Column, Entity, Index, ManyToOne, OneToMany, PrimaryGeneratedColumn} from 'typeorm';
 import {PositionEntity} from './PositionEntity';
 
 @Entity('position_version')
+@Index('date_interval', ['dateBegin', 'dateEnd'])
 export class PositionVersionEntity {
 
     @PrimaryGeneratedColumn({unsigned: true})
