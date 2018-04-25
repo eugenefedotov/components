@@ -1,15 +1,15 @@
 import {Column, Entity, Index, ManyToOne, PrimaryGeneratedColumn} from 'typeorm';
-import {PositionEntity} from './PositionEntity';
+import {OrganizationEntity} from './OrganizationEntity';
 
-@Entity('position_version')
+@Entity('authority_of_state_power_version')
 @Index('date_interval', ['dateBegin', 'dateEnd'])
-export class PositionVersionEntity {
+export class OrganizationVersionEntity {
 
     @PrimaryGeneratedColumn({unsigned: true})
     id: number;
 
-    @ManyToOne(type => PositionEntity)
-    position: PositionEntity;
+    @ManyToOne(type => OrganizationEntity)
+    organization: OrganizationEntity;
 
     @Column('date')
     dateBegin: Date;

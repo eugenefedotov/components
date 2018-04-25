@@ -1,5 +1,5 @@
 import {Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn} from 'typeorm';
-import {AuthorityOfStatePowerEntity} from './AuthorityOfStatePowerEntity';
+import {OrganizationEntity} from './OrganizationEntity';
 import {PositionVersionEntity} from './PositionVersionEntity';
 
 @Entity('position')
@@ -8,8 +8,8 @@ export class PositionEntity {
     @PrimaryGeneratedColumn({unsigned: true})
     id: number;
 
-    @ManyToOne(type => AuthorityOfStatePowerEntity)
-    authorityOfStatePower: AuthorityOfStatePowerEntity;
+    @ManyToOne(type => OrganizationEntity)
+    organization: OrganizationEntity;
 
     @OneToOne(type => PositionVersionEntity)
     @JoinColumn()
