@@ -1,17 +1,18 @@
 import {Column, Entity, Index, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn} from 'typeorm';
-import {PositionEntity} from './PositionEntity';
-import {ProofEntity} from "./ProofEntity";
-import {EventEntity} from "./EventEntity";
+import {SubmissionEntity} from './SubmissionEntity';
+import {ProofEntity} from '../proof/ProofEntity';
+import {EventEntity} from '../event/EventEntity';
+import {OrganizationEntity} from '../organization/OrganizationEntity';
 
-@Entity('position_version')
+@Entity('submission_version')
 @Index('date_interval', ['dateBegin', 'dateEnd'])
-export class PositionVersionEntity {
+export class SubmissionVersionEntity {
 
     @PrimaryGeneratedColumn({unsigned: true})
     id: number;
 
-    @ManyToOne(type => PositionEntity)
-    position: PositionEntity;
+    @ManyToOne(type => SubmissionEntity)
+    submission: SubmissionEntity;
 
     @Column('date', {nullable: true})
     dateBegin: Date;
@@ -21,6 +22,12 @@ export class PositionVersionEntity {
 
     @Column('timestamp', {default: () => 'CURRENT_TIMESTAMP'})
     dateSave: Date;
+
+    @ManyToOne(type => OrganizationEntity)
+    superior: OrganizationEntity;
+
+    @ManyToOne(type => OrganizationEntity)
+    subordinate: OrganizationEntity;
 
     @ManyToMany(type => EventEntity)
     @JoinTable()

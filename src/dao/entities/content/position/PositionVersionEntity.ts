@@ -1,22 +1,14 @@
-import {Column, Entity, Index, JoinColumn, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn} from 'typeorm';
-import {PersonOnPositionEntity} from './PersonOnPositionEntity';
-import {PersonEntity} from './PersonEntity';
+import {Column, Entity, Index, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn} from 'typeorm';
 import {PositionEntity} from './PositionEntity';
-import {EventEntity} from './EventEntity';
-import {ProofEntity} from './ProofEntity';
+import {ProofEntity} from "../proof/ProofEntity";
+import {EventEntity} from "../event/EventEntity";
 
-@Entity('person_on_position_version')
+@Entity('position_version')
 @Index('date_interval', ['dateBegin', 'dateEnd'])
-export class PersonOnPositionVersionEntity {
+export class PositionVersionEntity {
 
     @PrimaryGeneratedColumn({unsigned: true})
     id: number;
-
-    @ManyToOne(type => PersonOnPositionEntity)
-    personOnPosition: PersonOnPositionEntity;
-
-    @ManyToOne(type => PersonEntity)
-    person: PersonEntity;
 
     @ManyToOne(type => PositionEntity)
     position: PositionEntity;

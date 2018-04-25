@@ -1,21 +1,15 @@
 import {Column, Entity, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn} from 'typeorm';
-import {EventEntity} from './EventEntity';
-import {ProofEntity} from './ProofEntity';
+import {PersonEntity} from './PersonEntity';
+import {ProofEntity} from '../proof/ProofEntity';
 
-@Entity('event_version')
-export class EventVersionEntity {
+@Entity('person_version')
+export class PersonVersionEntity {
 
     @PrimaryGeneratedColumn({unsigned: true})
     id: number;
 
-    @ManyToOne(type => EventEntity)
-    event: EventEntity;
-
-    @Column('date', {nullable: true})
-    dateBegin: Date;
-
-    @Column('date', {nullable: true})
-    dateEnd: Date;
+    @ManyToOne(type => PersonEntity)
+    person: PersonEntity;
 
     @Column('timestamp', {default: () => 'CURRENT_TIMESTAMP'})
     dateSave: Date;

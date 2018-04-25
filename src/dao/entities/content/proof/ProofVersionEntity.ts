@@ -1,6 +1,6 @@
 import {Column, Entity, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn} from 'typeorm';
 import {ProofEntity} from './ProofEntity';
-import {EventEntity} from './EventEntity';
+import {EventEntity} from '../event/EventEntity';
 
 @Entity('proof_version')
 export class ProofVersionEntity {

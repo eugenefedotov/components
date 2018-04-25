@@ -1,7 +1,7 @@
 import {Column, Entity, Index, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn} from 'typeorm';
 import {OrganizationEntity} from './OrganizationEntity';
-import {ProofEntity} from './ProofEntity';
-import {EventEntity} from './EventEntity';
+import {ProofEntity} from '../proof/ProofEntity';
+import {EventEntity} from '../event/EventEntity';
 
 @Entity('authority_of_state_power_version')
 @Index('date_interval', ['dateBegin', 'dateEnd'])
