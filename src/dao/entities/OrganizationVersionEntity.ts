@@ -1,8 +1,7 @@
-import {Column, Entity, Index, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn} from 'typeorm';
+import {Column, Entity, Index, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn} from 'typeorm';
 import {OrganizationEntity} from './OrganizationEntity';
-import {PositionEntity} from "./PositionEntity";
-import {ProofEntity} from "./ProofEntity";
-import {EventEntity} from "./EventEntity";
+import {ProofEntity} from './ProofEntity';
+import {EventEntity} from './EventEntity';
 
 @Entity('authority_of_state_power_version')
 @Index('date_interval', ['dateBegin', 'dateEnd'])
@@ -14,9 +13,6 @@ export class OrganizationVersionEntity {
     @ManyToOne(type => OrganizationEntity)
     organization: OrganizationEntity;
 
-    @OneToMany(type => PositionEntity, object => object.organization)
-    positions: PositionEntity[];
-
     @Column('date', {nullable: true})
     dateBegin: Date;
 
@@ -27,8 +23,10 @@ export class OrganizationVersionEntity {
     dateSave: Date;
 
     @ManyToMany(type => EventEntity)
+    @JoinTable()
     events: EventEntity[];
 
     @ManyToMany(type => ProofEntity)
+    @JoinTable()
     proofs: ProofEntity[];
 }

@@ -1,4 +1,4 @@
-import {Column, Entity, Index, ManyToMany, ManyToOne, PrimaryGeneratedColumn} from 'typeorm';
+import {Column, Entity, Index, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn} from 'typeorm';
 import {PositionEntity} from './PositionEntity';
 import {ProofEntity} from "./ProofEntity";
 import {EventEntity} from "./EventEntity";
@@ -23,8 +23,10 @@ export class PositionVersionEntity {
     dateSave: Date;
 
     @ManyToMany(type => EventEntity)
+    @JoinTable()
     events: EventEntity[];
 
     @ManyToMany(type => ProofEntity)
+    @JoinTable()
     proofs: ProofEntity[];
 }

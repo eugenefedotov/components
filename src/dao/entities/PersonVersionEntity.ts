@@ -1,5 +1,6 @@
-import {Column, Entity, ManyToOne, PrimaryGeneratedColumn} from 'typeorm';
+import {Column, Entity, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn} from 'typeorm';
 import {PersonEntity} from './PersonEntity';
+import {ProofEntity} from './ProofEntity';
 
 @Entity('person_version')
 export class PersonVersionEntity {
@@ -12,4 +13,8 @@ export class PersonVersionEntity {
 
     @Column('timestamp', {default: () => 'CURRENT_TIMESTAMP'})
     dateSave: Date;
+
+    @ManyToMany(type => ProofEntity)
+    @JoinTable()
+    proofs: ProofEntity[];
 }
