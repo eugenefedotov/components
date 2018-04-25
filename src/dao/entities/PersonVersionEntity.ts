@@ -10,6 +10,6 @@ export class PersonVersionEntity {
     @ManyToOne(type => PersonEntity)
     person: PersonEntity;
 
-    @Column('datetime')
+    @Column('timestamp', {default: () => 'CURRENT_TIMESTAMP'})
     dateSave: Date;
 }

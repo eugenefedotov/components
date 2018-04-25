@@ -17,13 +17,13 @@ export class OrganizationVersionEntity {
     @OneToMany(type => PositionEntity, object => object.organization)
     positions: PositionEntity[];
 
-    @Column('date')
+    @Column('date', {nullable: true})
     dateBegin: Date;
 
-    @Column('date')
+    @Column('date', {nullable: true})
     dateEnd: Date;
 
-    @Column('datetime')
+    @Column('timestamp', {default: () => 'CURRENT_TIMESTAMP'})
     dateSave: Date;
 
     @ManyToMany(type => EventEntity)

@@ -11,7 +11,7 @@ export class ProofVersionEntity {
     @ManyToOne(type => ProofEntity)
     proof: ProofEntity;
 
-    @Column('datetime')
+    @Column('timestamp', {default: () => 'CURRENT_TIMESTAMP'})
     dateSave: Date;
 
     @ManyToMany(type => EventEntity)

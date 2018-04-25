@@ -21,13 +21,13 @@ export class PersonOnPositionVersionEntity {
     @ManyToOne(type => PositionEntity)
     position: PositionEntity;
 
-    @Column('date')
+    @Column('date', {nullable: true})
     dateBegin: Date;
 
-    @Column('date')
+    @Column('date', {nullable: true})
     dateEnd: Date;
 
-    @Column('datetime')
+    @Column('timestamp', {default: () => 'CURRENT_TIMESTAMP'})
     dateSave: Date;
 
     @ManyToMany(type => EventEntity)
