@@ -24,4 +24,7 @@ export class PersonOnPositionVersionEntity {
 
     @Column('date')
     dateEnd: Date;
+
+    @Column('datetime')
+    dateSave: Date;
 }

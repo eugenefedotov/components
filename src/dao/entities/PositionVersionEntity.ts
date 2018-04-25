@@ -16,4 +16,7 @@ export class PositionVersionEntity {
 
     @Column('date')
     dateEnd: Date;
+
+    @Column('datetime')
+    dateSave: Date;
 }

@@ -1,4 +1,4 @@
-import {Entity, ManyToOne, PrimaryGeneratedColumn} from 'typeorm';
+import {Column, Entity, ManyToOne, PrimaryGeneratedColumn} from 'typeorm';
 import {PersonEntity} from './PersonEntity';
 
 @Entity('person_version')
@@ -9,4 +9,7 @@ export class PersonVersionEntity {
 
     @ManyToOne(type => PersonEntity)
     person: PersonEntity;
+
+    @Column('datetime')
+    dateSave: Date;
 }

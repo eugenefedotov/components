@@ -20,4 +20,7 @@ export class OrganizationVersionEntity {
 
     @Column('date')
     dateEnd: Date;
+
+    @Column('datetime')
+    dateSave: Date;
 }
