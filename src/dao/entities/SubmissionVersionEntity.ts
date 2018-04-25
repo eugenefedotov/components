@@ -1,7 +1,8 @@
-import {Column, Entity, ManyToOne, PrimaryGeneratedColumn} from "typeorm";
+import {Column, Entity, Index, ManyToOne, PrimaryGeneratedColumn} from "typeorm";
 import {SubmissionEntity} from "./SubmissionEntity";
 
 @Entity('submission_version')
+@Index('date_interval', ['dateBegin', 'dateEnd'])
 export class SubmissionVersionEntity {
 
     @PrimaryGeneratedColumn({unsigned: true})
