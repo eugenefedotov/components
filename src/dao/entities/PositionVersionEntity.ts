@@ -1,5 +1,7 @@
-import {Column, Entity, Index, ManyToOne, PrimaryGeneratedColumn} from 'typeorm';
+import {Column, Entity, Index, ManyToMany, ManyToOne, PrimaryGeneratedColumn} from 'typeorm';
 import {PositionEntity} from './PositionEntity';
+import {ProofEntity} from "./ProofEntity";
+import {EventEntity} from "./EventEntity";
 
 @Entity('position_version')
 @Index('date_interval', ['dateBegin', 'dateEnd'])
@@ -19,4 +21,10 @@ export class PositionVersionEntity {
 
     @Column('datetime')
     dateSave: Date;
+
+    @ManyToMany(type => EventEntity)
+    events: EventEntity[];
+
+    @ManyToMany(type => ProofEntity)
+    proofs: ProofEntity[];
 }

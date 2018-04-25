@@ -1,6 +1,8 @@
-import {Column, Entity, Index, ManyToOne, OneToMany, PrimaryGeneratedColumn} from 'typeorm';
+import {Column, Entity, Index, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn} from 'typeorm';
 import {OrganizationEntity} from './OrganizationEntity';
 import {PositionEntity} from "./PositionEntity";
+import {ProofEntity} from "./ProofEntity";
+import {EventEntity} from "./EventEntity";
 
 @Entity('authority_of_state_power_version')
 @Index('date_interval', ['dateBegin', 'dateEnd'])
@@ -23,4 +25,10 @@ export class OrganizationVersionEntity {
 
     @Column('datetime')
     dateSave: Date;
+
+    @ManyToMany(type => EventEntity)
+    events: EventEntity[];
+
+    @ManyToMany(type => ProofEntity)
+    proofs: ProofEntity[];
 }

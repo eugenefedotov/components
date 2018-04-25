@@ -1,5 +1,6 @@
-import {Column, Entity, ManyToOne, PrimaryGeneratedColumn} from 'typeorm';
+import {Column, Entity, ManyToMany, ManyToOne, PrimaryGeneratedColumn} from 'typeorm';
 import {ProofEntity} from './ProofEntity';
+import {EventEntity} from "./EventEntity";
 
 @Entity('proof_version')
 export class ProofVersionEntity {
@@ -12,4 +13,7 @@ export class ProofVersionEntity {
 
     @Column('datetime')
     dateSave: Date;
+
+    @ManyToMany(type => EventEntity)
+    events: EventEntity[];
 }
