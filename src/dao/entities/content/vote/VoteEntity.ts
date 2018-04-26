@@ -1,7 +1,7 @@
 import {Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn} from "typeorm";
 import {UserEntity} from "../../core/UserEntity";
 
-@Entity('approve')
+@Entity('vote')
 export class VoteEntity {
 
     @PrimaryGeneratedColumn({unsigned: true})
