@@ -1,6 +1,7 @@
 import {Column, Entity, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn} from 'typeorm';
 import {ProofEntity} from './ProofEntity';
 import {EventEntity} from '../event/EventEntity';
+import {VoteEntity} from "../vote/VoteEntity";
 
 @Entity('proof_version')
 export class ProofVersionEntity {
@@ -17,4 +18,8 @@ export class ProofVersionEntity {
     @ManyToMany(type => EventEntity)
     @JoinTable()
     events: EventEntity[];
+
+    @ManyToMany(type => VoteEntity)
+    @JoinTable()
+    votes: VoteEntity[];
 }

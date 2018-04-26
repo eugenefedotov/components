@@ -2,6 +2,7 @@ import {Column, Entity, Index, JoinTable, ManyToMany, ManyToOne, PrimaryGenerate
 import {PositionEntity} from './PositionEntity';
 import {ProofEntity} from "../proof/ProofEntity";
 import {EventEntity} from "../event/EventEntity";
+import {VoteEntity} from "../vote/VoteEntity";
 
 @Entity('position_version')
 @Index('date_interval', ['dateBegin', 'dateEnd'])
@@ -29,4 +30,8 @@ export class PositionVersionEntity {
     @ManyToMany(type => ProofEntity)
     @JoinTable()
     proofs: ProofEntity[];
+
+    @ManyToMany(type => VoteEntity)
+    @JoinTable()
+    votes: VoteEntity[];
 }

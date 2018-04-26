@@ -3,6 +3,7 @@ import {SubmissionEntity} from './SubmissionEntity';
 import {ProofEntity} from '../proof/ProofEntity';
 import {EventEntity} from '../event/EventEntity';
 import {OrganizationEntity} from '../organization/OrganizationEntity';
+import {VoteEntity} from "../vote/VoteEntity";
 
 @Entity('submission_version')
 @Index('date_interval', ['dateBegin', 'dateEnd'])
@@ -36,4 +37,8 @@ export class SubmissionVersionEntity {
     @ManyToMany(type => ProofEntity)
     @JoinTable()
     proofs: ProofEntity[];
+
+    @ManyToMany(type => VoteEntity)
+    @JoinTable()
+    votes: VoteEntity[];
 }
