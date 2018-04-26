@@ -10,9 +10,9 @@
   "connectTimeout": 60000,
   "timezone": "local",
   "entities": [
-    "./src/dao/entities/**/*.ts"
+    "./src/dao/**/*.ts"
   ],
   "cli": {
-    "entitiesDir": "./src/dao/entities"
+    "entitiesDir": "./src/dao"
   }
 }
