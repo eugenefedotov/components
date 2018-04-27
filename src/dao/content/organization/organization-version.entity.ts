@@ -3,6 +3,7 @@ import {OrganizationEntity} from './organization.entity';
 import {ProofEntity} from '../proof/proof.entity';
 import {EventEntity} from '../event/event.entity';
 import {VoteEntity} from "../vote/vote.entity";
+import {OrganizationTypeEntity} from '../organization-type/organization-type.entity';
 
 @Entity('authority_of_state_power_version')
 @Index('date_interval', ['dateBegin', 'dateEnd'])
@@ -13,6 +14,9 @@ export class OrganizationVersionEntity {
 
     @ManyToOne(type => OrganizationEntity)
     organization: OrganizationEntity;
+
+    @ManyToOne(type => OrganizationTypeEntity)
+    organizationType: OrganizationTypeEntity;
 
     @Column('date', {nullable: true})
     dateBegin: Date;
