@@ -14,6 +14,18 @@ export class UserContactEntity {
     @Column({type: 'enum', enum: ['phone', 'email']})
     type: 'phone' | 'email';
 
+    @Column()
+    value: string;
+
     @Column({type: 'boolean', nullable: false, default: false})
     confirmed: boolean;
+
+    @Column()
+    confirmationCode: number;
+
+    @Column('timestamp')
+    confirmationCodeExpired: Date;
+
+    @Column()
+    confirmationCodeAttemptLeft: number;
 }

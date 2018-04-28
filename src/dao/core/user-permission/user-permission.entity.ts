@@ -8,4 +8,7 @@ export class UserPermissionEntity {
 
     @Column({unique: true, nullable: false})
     code: string;
+
+    @Column()
+    name: string;
 }

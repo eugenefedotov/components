@@ -1,5 +1,6 @@
-import {Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn} from 'typeorm';
+import {Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn} from 'typeorm';
 import {UserEntity} from '../user/user.entity';
+import {UserSessionConnectEntity} from "../user-session-connect/user-session-connect.entity";
 
 @Entity('user_session')
 export class UserSessionEntity {
@@ -20,6 +21,6 @@ export class UserSessionEntity {
     @Column('timestamp', {nullable: true})
     dateLastUsage: Date;
 
-    @Column('simple-array')
-    ips: string[];
+    @OneToMany(type => UserSessionConnectEntity, object => object.session)
+    connections: UserSessionConnectEntity[];
 }
