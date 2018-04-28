@@ -13,4 +13,13 @@ export class UserSessionEntity {
 
     @Column('timestamp', {default: () => 'CURRENT_TIMESTAMP'})
     dateSave: Date;
+
+    @Column('timestamp', {nullable: true})
+    dateExpire: Date;
+
+    @Column('timestamp', {nullable: true})
+    dateLastUsage: Date;
+
+    @Column('simple-array')
+    ips: string[];
 }
