@@ -22,4 +22,22 @@ export class PersonVersionEntity {
     @ManyToMany(type => VoteEntity)
     @JoinTable()
     votes: VoteEntity[];
+
+    @Column({type: "enum", enum: ['male', 'female']})
+    gender: 'male' | 'female';
+
+    @Column({comment: 'Имя'})
+    firstName: string;
+
+    @Column({comment: 'Фамилия'})
+    secondName: string;
+
+    @Column({comment: 'Отчество'})
+    patronymic: string;
+
+    @Column('date', {nullable: true, comment: 'Дата рождения'})
+    dateOfBirth: Date;
+
+    @Column('date', {nullable: true, comment: 'Дата смерти'})
+    dateOfDeath: Date;
 }
