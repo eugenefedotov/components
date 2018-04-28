@@ -6,7 +6,7 @@ export class SubmissionEntity {
     @PrimaryGeneratedColumn({unsigned: true})
     id: number;
 
-    @OneToOne(type => SubmissionVersionEntity)
+    @OneToOne(type => SubmissionVersionEntity, {eager: true})
     @JoinColumn()
     currentVersion: SubmissionVersionEntity;
 

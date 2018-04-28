@@ -7,7 +7,7 @@ export class PersonEntity {
     @PrimaryGeneratedColumn({unsigned: true})
     id: number;
 
-    @OneToOne(type => PersonVersionEntity)
+    @OneToOne(type => PersonVersionEntity, {eager: true})
     @JoinColumn()
     currentVersion: PersonVersionEntity;
 

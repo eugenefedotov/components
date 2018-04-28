@@ -7,7 +7,7 @@ export class ProofEntity {
     @PrimaryGeneratedColumn({unsigned: true})
     id: number;
 
-    @OneToOne(type => ProofVersionEntity)
+    @OneToOne(type => ProofVersionEntity, {eager: true})
     @JoinColumn()
     currentVersion: ProofVersionEntity;
 

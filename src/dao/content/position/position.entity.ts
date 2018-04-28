@@ -8,10 +8,10 @@ export class PositionEntity {
     @PrimaryGeneratedColumn({unsigned: true})
     id: number;
 
-    @ManyToOne(type => OrganizationEntity)
+    @ManyToOne(type => OrganizationEntity, {eager: true})
     organization: OrganizationEntity;
 
-    @OneToOne(type => PositionVersionEntity)
+    @OneToOne(type => PositionVersionEntity, {eager: true})
     @JoinColumn()
     currentVersion: PositionVersionEntity;
 

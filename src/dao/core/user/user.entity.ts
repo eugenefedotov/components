@@ -7,7 +7,7 @@ export class UserEntity {
     @PrimaryGeneratedColumn({unsigned: true})
     id: number;
 
-    @ManyToMany(type => UserGroupEntity)
+    @ManyToMany(type => UserGroupEntity, {eager: true})
     @JoinTable()
     groups: UserGroupEntity[];
 

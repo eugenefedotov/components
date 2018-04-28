@@ -1,7 +1,8 @@
-import {Column, Entity, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn} from 'typeorm';
+import {Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToOne, PrimaryGeneratedColumn} from 'typeorm';
 import {PersonEntity} from './person.entity';
 import {ProofEntity} from '../proof/proof.entity';
 import {VoteEntity} from "../vote/vote.entity";
+import {UserEntity} from "../../core/user/user.entity";
 
 @Entity('person_version')
 export class PersonVersionEntity {
@@ -9,7 +10,11 @@ export class PersonVersionEntity {
     @PrimaryGeneratedColumn({unsigned: true})
     id: number;
 
-    @ManyToOne(type => PersonEntity)
+    @OneToOne(type => UserEntity, {eager: true})
+    @JoinColumn()
+    user: UserEntity;
+
+    @ManyToOne(type => PersonEntity, {eager: true})
     person: PersonEntity;
 
     @Column('timestamp', {default: () => 'CURRENT_TIMESTAMP'})

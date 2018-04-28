@@ -7,7 +7,7 @@ export class OrganizationEntity {
     @PrimaryGeneratedColumn({unsigned: true})
     id: number;
 
-    @OneToOne(type => OrganizationVersionEntity)
+    @OneToOne(type => OrganizationVersionEntity, {eager: true})
     @JoinColumn()
     currentVersion: OrganizationVersionEntity;
 

@@ -1,7 +1,8 @@
-import {Column, Entity, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn} from 'typeorm';
+import {Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToOne, PrimaryGeneratedColumn} from 'typeorm';
 import {EventEntity} from './event.entity';
 import {ProofEntity} from '../proof/proof.entity';
 import {VoteEntity} from "../vote/vote.entity";
+import {UserEntity} from "../../core/user/user.entity";
 
 @Entity('event_version')
 export class EventVersionEntity {
@@ -9,7 +10,11 @@ export class EventVersionEntity {
     @PrimaryGeneratedColumn({unsigned: true})
     id: number;
 
-    @ManyToOne(type => EventEntity)
+    @OneToOne(type => UserEntity, {eager: true})
+    @JoinColumn()
+    user: UserEntity;
+
+    @ManyToOne(type => EventEntity, {eager: true})
     event: EventEntity;
 
     @Column('date', {nullable: true})

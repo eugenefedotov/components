@@ -7,7 +7,7 @@ export class VoteEntity {
     @PrimaryGeneratedColumn({unsigned: true})
     id: number;
 
-    @OneToOne(type => UserEntity)
+    @OneToOne(type => UserEntity, {eager: true})
     @JoinColumn()
     user: UserEntity;
 

@@ -7,7 +7,7 @@ export class PersonOnPositionEntity {
     @PrimaryGeneratedColumn({unsigned: true})
     id: number;
 
-    @OneToOne(type => PersonOnPositionVersionEntity)
+    @OneToOne(type => PersonOnPositionVersionEntity, {eager: true})
     @JoinColumn()
     currentVersion: PersonOnPositionVersionEntity;
 

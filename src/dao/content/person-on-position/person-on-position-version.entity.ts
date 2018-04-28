@@ -1,10 +1,21 @@
-import {Column, Entity, Index, JoinColumn, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn} from 'typeorm';
+import {
+    Column,
+    Entity,
+    Index,
+    JoinColumn,
+    JoinTable,
+    ManyToMany,
+    ManyToOne,
+    OneToOne,
+    PrimaryGeneratedColumn
+} from 'typeorm';
 import {PersonOnPositionEntity} from './person-on-position.entity';
 import {PersonEntity} from '../person/person.entity';
 import {PositionEntity} from '../position/position.entity';
 import {EventEntity} from '../event/event.entity';
 import {ProofEntity} from '../proof/proof.entity';
 import {VoteEntity} from "../vote/vote.entity";
+import {UserEntity} from "../../core/user/user.entity";
 
 @Entity('person_on_position_version')
 @Index('date_interval', ['dateBegin', 'dateEnd'])
@@ -13,13 +24,17 @@ export class PersonOnPositionVersionEntity {
     @PrimaryGeneratedColumn({unsigned: true})
     id: number;
 
-    @ManyToOne(type => PersonOnPositionEntity)
+    @OneToOne(type => UserEntity, {eager: true})
+    @JoinColumn()
+    user: UserEntity;
+
+    @ManyToOne(type => PersonOnPositionEntity, {eager: true})
     personOnPosition: PersonOnPositionEntity;
 
-    @ManyToOne(type => PersonEntity)
+    @ManyToOne(type => PersonEntity, {eager: true})
     person: PersonEntity;
 
-    @ManyToOne(type => PositionEntity)
+    @ManyToOne(type => PositionEntity, {eager: true})
     position: PositionEntity;
 
     @Column('date', {nullable: true})

@@ -1,7 +1,8 @@
-import {Column, Entity, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn} from 'typeorm';
+import {Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToOne, PrimaryGeneratedColumn} from 'typeorm';
 import {OrganizationTypeEntity} from './organization-type.entity';
 import {VoteEntity} from '../vote/vote.entity';
 import {ProofEntity} from '../proof/proof.entity';
+import {UserEntity} from "../../core/user/user.entity";
 
 @Entity('organization_type_version')
 export class OrganizationTypeVersionEntity {
@@ -9,7 +10,11 @@ export class OrganizationTypeVersionEntity {
     @PrimaryGeneratedColumn({unsigned: true})
     id: number;
 
-    @ManyToOne(type => OrganizationTypeEntity)
+    @OneToOne(type => UserEntity, {eager: true})
+    @JoinColumn()
+    user: UserEntity;
+
+    @ManyToOne(type => OrganizationTypeEntity, {eager: true})
     organizationType: OrganizationTypeEntity;
 
     @Column('timestamp', {default: () => 'CURRENT_TIMESTAMP'})

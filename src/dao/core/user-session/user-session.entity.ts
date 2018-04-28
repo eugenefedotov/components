@@ -7,7 +7,7 @@ export class UserSessionEntity {
     @PrimaryGeneratedColumn('uuid')
     uuid: string;
 
-    @OneToOne(type => UserEntity)
+    @OneToOne(type => UserEntity, {eager: true})
     @JoinColumn()
     user: UserEntity;
 
