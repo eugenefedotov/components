@@ -6,6 +6,9 @@ export class FileServerEntity {
     id: number;
 
     @Column()
+    isEnabled: boolean;
+
+    @Column()
     url: string;
 
     @Column()
@@ -13,4 +16,7 @@ export class FileServerEntity {
 
     @Column()
     password: string;
+
+    @Column('timestamp')
+    lastCheckDate: Date;
 }

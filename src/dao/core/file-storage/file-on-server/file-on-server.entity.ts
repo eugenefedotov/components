@@ -17,6 +17,12 @@ export class FileOnServerEntity {
     @ManyToOne(type => FileServerEntity)
     server: FileServerEntity;
 
-    @Column({type: "enum", enum: ['uploading', 'available']})
-    status: 'uploading' | 'available';
+    @Column({type: "enum", enum: ['uploading', 'available', 'error']})
+    status: 'uploading' | 'available' | 'error';
+
+    @Column('timestamp')
+    lastCheckDate: Date;
+
+    @Column()
+    error: string;
 }
