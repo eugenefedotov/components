@@ -2,7 +2,7 @@ import {Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToOne, 
 import {OrganizationTypeEntity} from './organization-type.entity';
 import {VoteEntity} from '../vote/vote.entity';
 import {ProofEntity} from '../proof/proof.entity';
-import {UserEntity} from "../../core/user/user.entity";
+import {UserEntity} from "../../core/auth/user/user.entity";
 
 @Entity('organization_type_version')
 export class OrganizationTypeVersionEntity {

@@ -2,7 +2,7 @@ import {Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToOne, 
 import {PersonEntity} from './person.entity';
 import {ProofEntity} from '../proof/proof.entity';
 import {VoteEntity} from "../vote/vote.entity";
-import {UserEntity} from "../../core/user/user.entity";
+import {UserEntity} from "../../core/auth/user/user.entity";
 
 @Entity('person_version')
 export class PersonVersionEntity {
