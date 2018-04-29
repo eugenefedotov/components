@@ -23,21 +23,21 @@ export class PositionVersionEntity {
     @PrimaryGeneratedColumn({unsigned: true})
     id: number;
 
+    @Column('timestamp', {default: () => 'CURRENT_TIMESTAMP'})
+    insertDate: Date;
+
     @OneToOne(type => UserEntity, {eager: true})
     @JoinColumn()
-    user: UserEntity;
+    insertUser: UserEntity;
 
     @ManyToOne(type => PositionEntity, {eager: true})
     position: PositionEntity;
 
     @Column('date', {nullable: true})
-    dateBegin: Date;
+    beginDate: Date;
 
     @Column('date', {nullable: true})
-    dateEnd: Date;
-
-    @Column('timestamp', {default: () => 'CURRENT_TIMESTAMP'})
-    dateSave: Date;
+    endDate: Date;
 
     @ManyToMany(type => EventEntity)
     @JoinTable()

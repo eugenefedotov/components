@@ -16,12 +16,12 @@ export class UserEntity {
     @JoinTable()
     groups: UserGroupEntity[];
 
-    @OneToMany(type => AuthorityEntity, object => object.user)
+    @OneToMany(type => AuthorityEntity, object => object.insertUser)
     authorities: AuthorityEntity[];
 
     @Column('timestamp', {default: () => 'CURRENT_TIMESTAMP'})
-    dateSave: Date;
+    insertDate: Date;
 
-    @OneToMany(type => UserContactEntity, object => object.user)
+    @OneToMany(type => UserContactEntity, object => object.insertUser)
     contacts: UserContactEntity[];
 }

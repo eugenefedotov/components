@@ -12,7 +12,7 @@ export class UserSessionConnectEntity {
     session: UserSessionEntity;
 
     @Column('timestamp', {default: () => 'CURRENT_TIMESTAMP'})
-    dateSave: Date;
+    insertDate: Date;
 
     @Column('timestamp')
     dateLast: Date;

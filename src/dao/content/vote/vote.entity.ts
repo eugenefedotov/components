@@ -7,12 +7,12 @@ export class VoteEntity {
     @PrimaryGeneratedColumn({unsigned: true})
     id: number;
 
+    @Column('timestamp', {default: () => 'CURRENT_TIMESTAMP'})
+    insertDate: Date;
+
     @OneToOne(type => UserEntity, {eager: true})
     @JoinColumn()
-    user: UserEntity;
-
-    @Column('timestamp', {default: () => 'CURRENT_TIMESTAMP'})
-    dateSave: Date;
+    insertUser: UserEntity;
 
     @Column()
     accepted: boolean;

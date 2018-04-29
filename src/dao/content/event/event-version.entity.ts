@@ -11,21 +11,21 @@ export class EventVersionEntity {
     @PrimaryGeneratedColumn({unsigned: true})
     id: number;
 
+    @Column('timestamp', {default: () => 'CURRENT_TIMESTAMP'})
+    insertDate: Date;
+
     @OneToOne(type => UserEntity, {eager: true})
     @JoinColumn()
-    user: UserEntity;
+    insertUser: UserEntity;
 
     @ManyToOne(type => EventEntity, {eager: true})
     event: EventEntity;
 
     @Column('date', {nullable: true})
-    dateBegin: Date;
+    beginDate: Date;
 
     @Column('date', {nullable: true})
-    dateEnd: Date;
-
-    @Column('timestamp', {default: () => 'CURRENT_TIMESTAMP'})
-    dateSave: Date;
+    endDate: Date;
 
     @ManyToMany(type => ProofEntity)
     @JoinTable()

@@ -11,21 +11,21 @@ export class OrganizationTypeVersionEntity {
     @PrimaryGeneratedColumn({unsigned: true})
     id: number;
 
+    @Column('timestamp', {default: () => 'CURRENT_TIMESTAMP'})
+    insertDate: Date;
+
     @OneToOne(type => UserEntity, {eager: true})
     @JoinColumn()
-    user: UserEntity;
+    insertUser: UserEntity;
 
     @ManyToOne(type => OrganizationTypeEntity, {eager: true})
     organizationType: OrganizationTypeEntity;
 
-    @Column('timestamp', {default: () => 'CURRENT_TIMESTAMP'})
-    dateSave: Date;
+    @Column('date', {nullable: true})
+    beginDate: Date;
 
     @Column('date', {nullable: true})
-    dateBegin: Date;
-
-    @Column('date', {nullable: true})
-    dateEnd: Date;
+    endDate: Date;
 
     @ManyToMany(type => ProofEntity)
     @JoinTable()

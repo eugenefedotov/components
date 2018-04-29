@@ -4,6 +4,7 @@ import {EventEntity} from '../event/event.entity';
 import {VoteEntity} from "../vote/vote.entity";
 import {UserEntity} from "../../core/auth/user/user.entity";
 import {AuthorityScopeEntity} from "../authority-scope/authority-scope.entity";
+import {FileMetadataEntity} from "../../core/file-storage/file-metadata/file-metadata.entity";
 
 @Entity('proof_version')
 export class ProofVersionEntity {
@@ -11,15 +12,15 @@ export class ProofVersionEntity {
     @PrimaryGeneratedColumn({unsigned: true})
     id: number;
 
+    @Column('timestamp', {default: () => 'CURRENT_TIMESTAMP'})
+    insertDate: Date;
+
     @OneToOne(type => UserEntity, {eager: true})
     @JoinColumn()
-    user: UserEntity;
+    insertUser: UserEntity;
 
     @ManyToOne(type => ProofEntity, {eager: true})
     proof: ProofEntity;
-
-    @Column('timestamp', {default: () => 'CURRENT_TIMESTAMP'})
-    dateSave: Date;
 
     @ManyToMany(type => EventEntity)
     @JoinTable()
@@ -36,4 +37,8 @@ export class ProofVersionEntity {
     @ManyToMany(type => ProofEntity)
     @JoinTable()
     disproofs: ProofEntity[];
+
+    @ManyToMany(type => FileMetadataEntity)
+    @JoinTable()
+    files: FileMetadataEntity[];
 }
