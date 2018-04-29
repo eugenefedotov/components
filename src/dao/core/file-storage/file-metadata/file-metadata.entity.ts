@@ -1,6 +1,6 @@
-import {Column, Entity, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn} from "typeorm";
+import {Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn} from "typeorm";
 import {UserEntity} from "../../auth/user/user.entity";
-import {FileServerEntity} from "../file-server/file-server.entity";
+import {FileOnServerEntity} from "../file-on-server/file-on-server.entity";
 
 @Entity('file_metadata')
 export class FileMetadataEntity {
@@ -14,6 +14,9 @@ export class FileMetadataEntity {
     @ManyToOne(type => UserEntity)
     insertUser: UserEntity;
 
+    @Column()
+    md5: string;
+
     @Column({nullable: false})
     name: string;
 
@@ -26,7 +29,6 @@ export class FileMetadataEntity {
     @Column()
     size: number;
 
-    @ManyToMany(type => FileServerEntity)
-    @JoinTable()
-    servers: FileServerEntity[];
+    @OneToMany(type => FileOnServerEntity, object => object.file)
+    servers: FileOnServerEntity[];
 }

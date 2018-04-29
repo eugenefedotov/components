@@ -14,7 +14,8 @@
     "reflect-metadata": "^0.1.9",
     "typedi": "^0.7.2",
     "typeorm": "^0.2.0-alpha.42",
-    "typeorm-typedi-extensions": "^0.2.0"
+    "typeorm-typedi-extensions": "^0.2.0",
+    "webdav-client": "^1.4.0"
   },
   "devDependencies": {
     "ts-node": "^6.0.0",
