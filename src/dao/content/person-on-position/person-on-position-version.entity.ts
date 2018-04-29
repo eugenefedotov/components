@@ -16,6 +16,7 @@ import {EventEntity} from '../event/event.entity';
 import {ProofEntity} from '../proof/proof.entity';
 import {VoteEntity} from "../vote/vote.entity";
 import {UserEntity} from "../../core/auth/user/user.entity";
+import {AuthorityScopeEntity} from "../authority-scope/authority-scope.entity";
 
 @Entity('person_on_position_version')
 @Index('date_interval', ['dateBegin', 'dateEnd'])
@@ -57,4 +58,8 @@ export class PersonOnPositionVersionEntity {
     @ManyToMany(type => VoteEntity)
     @JoinTable()
     votes: VoteEntity[];
+
+    @ManyToMany(type => AuthorityScopeEntity)
+    @JoinTable()
+    scopes: AuthorityScopeEntity[];
 }

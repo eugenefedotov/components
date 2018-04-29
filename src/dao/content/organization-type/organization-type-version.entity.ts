@@ -3,6 +3,7 @@ import {OrganizationTypeEntity} from './organization-type.entity';
 import {VoteEntity} from '../vote/vote.entity';
 import {ProofEntity} from '../proof/proof.entity';
 import {UserEntity} from "../../core/auth/user/user.entity";
+import {AuthorityScopeEntity} from "../authority-scope/authority-scope.entity";
 
 @Entity('organization_type_version')
 export class OrganizationTypeVersionEntity {
@@ -33,4 +34,8 @@ export class OrganizationTypeVersionEntity {
     @ManyToMany(type => VoteEntity)
     @JoinTable()
     votes: VoteEntity[];
+
+    @ManyToMany(type => AuthorityScopeEntity)
+    @JoinTable()
+    scopes: AuthorityScopeEntity[];
 }

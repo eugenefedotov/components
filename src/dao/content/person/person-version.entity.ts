@@ -3,6 +3,7 @@ import {PersonEntity} from './person.entity';
 import {ProofEntity} from '../proof/proof.entity';
 import {VoteEntity} from "../vote/vote.entity";
 import {UserEntity} from "../../core/auth/user/user.entity";
+import {AuthorityScopeEntity} from "../authority-scope/authority-scope.entity";
 
 @Entity('person_version')
 export class PersonVersionEntity {
@@ -45,4 +46,8 @@ export class PersonVersionEntity {
 
     @Column('date', {nullable: true, comment: 'Дата смерти'})
     dateOfDeath: Date;
+
+    @ManyToMany(type => AuthorityScopeEntity)
+    @JoinTable()
+    scopes: AuthorityScopeEntity[];
 }

@@ -1,6 +1,7 @@
 import {Column, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn} from 'typeorm';
 import {UserGroupEntity} from '../user-group/user-group.entity';
 import {UserContactEntity} from "../user-contact/user-contact.entity";
+import {AuthorityEntity} from "../../../content/authority/authority.entity";
 
 @Entity('user')
 export class UserEntity {
@@ -14,6 +15,9 @@ export class UserEntity {
     @ManyToMany(type => UserGroupEntity)
     @JoinTable()
     groups: UserGroupEntity[];
+
+    @OneToMany(type => AuthorityEntity, object => object.user)
+    authorities: AuthorityEntity[];
 
     @Column('timestamp', {default: () => 'CURRENT_TIMESTAMP'})
     dateSave: Date;

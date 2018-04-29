@@ -15,6 +15,7 @@ import {EventEntity} from '../event/event.entity';
 import {VoteEntity} from "../vote/vote.entity";
 import {OrganizationTypeEntity} from '../organization-type/organization-type.entity';
 import {UserEntity} from "../../core/auth/user/user.entity";
+import {AuthorityScopeEntity} from "../authority-scope/authority-scope.entity";
 
 @Entity('authority_of_state_power_version')
 @Index('date_interval', ['dateBegin', 'dateEnd'])
@@ -53,4 +54,8 @@ export class OrganizationVersionEntity {
     @ManyToMany(type => VoteEntity)
     @JoinTable()
     votes: VoteEntity[];
+
+    @ManyToMany(type => AuthorityScopeEntity)
+    @JoinTable()
+    scopes: AuthorityScopeEntity[];
 }
