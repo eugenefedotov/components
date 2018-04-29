@@ -18,7 +18,7 @@ import {UserEntity} from "../../core/auth/user/user.entity";
 import {AuthorityScopeEntity} from "../authority-scope/authority-scope.entity";
 
 @Entity('authority_of_state_power_version')
-@Index('date_interval', ['dateBegin', 'dateEnd'])
+@Index('date_interval', ['beginDate', 'endDate'])
 export class OrganizationVersionEntity {
 
     @PrimaryGeneratedColumn({unsigned: true})

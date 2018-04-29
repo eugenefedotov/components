@@ -17,7 +17,7 @@ export class UserContactEntity {
     @Column()
     value: string;
 
-    @Column({type: 'boolean', nullable: false, default: false})
+    @Column({nullable: false, default: false})
     confirmed: boolean;
 
     @Column()
