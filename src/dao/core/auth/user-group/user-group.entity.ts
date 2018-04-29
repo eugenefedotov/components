@@ -14,7 +14,7 @@ export class UserGroupEntity {
     @ManyToMany(type => UserEntity, object => object.groups)
     users: UserEntity[];
 
-    @ManyToMany(type => UserPermissionEntity, {eager: true})
+    @ManyToMany(type => UserPermissionEntity)
     @JoinTable()
     permissions: UserPermissionEntity[];
 }
