@@ -11,7 +11,7 @@ export class FileMetadataEntity {
     @Column('timestamp', {default: () => 'CURRENT_TIMESTAMP'})
     insertDate: Date;
 
-    @ManyToOne(type => UserEntity)
+    @ManyToOne(type => UserEntity, {eager: true})
     insertUser: UserEntity;
 
     @Column()
@@ -28,6 +28,12 @@ export class FileMetadataEntity {
 
     @Column({unsigned: true})
     size: number;
+
+    @Column()
+    isPublic: boolean;
+
+    @Column({type: 'timestamp', nullable: true})
+    expireDate: Date;
 
     @OneToMany(type => FileOnServerEntity, object => object.file)
     servers: FileOnServerEntity[];

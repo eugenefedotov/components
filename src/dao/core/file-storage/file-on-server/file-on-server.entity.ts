@@ -11,10 +11,10 @@ export class FileOnServerEntity {
     @Column('timestamp', {default: () => 'CURRENT_TIMESTAMP'})
     insertDate: Date;
 
-    @ManyToOne(type => FileMetadataEntity)
+    @ManyToOne(type => FileMetadataEntity, {eager: true})
     file: FileMetadataEntity;
 
-    @ManyToOne(type => FileServerEntity)
+    @ManyToOne(type => FileServerEntity, {eager: true})
     server: FileServerEntity;
 
     @Column({type: "enum", enum: ['uploading', 'available', 'error']})
