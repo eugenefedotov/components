@@ -5,8 +5,8 @@ import {FileOnServerEntity} from "../file-on-server/file-on-server.entity";
 @Entity('file_metadata')
 export class FileMetadataEntity {
 
-    @PrimaryGeneratedColumn("uuid")
-    uuid: string;
+    @PrimaryGeneratedColumn({unsigned: true})
+    id: string;
 
     @Column('timestamp', {default: () => 'CURRENT_TIMESTAMP'})
     insertDate: Date;
@@ -26,7 +26,7 @@ export class FileMetadataEntity {
     @Column({nullable: true})
     mimeType: string;
 
-    @Column()
+    @Column({unsigned: true})
     size: number;
 
     @OneToMany(type => FileOnServerEntity, object => object.file)
