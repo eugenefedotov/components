@@ -17,7 +17,7 @@ export class UserSessionConnectEntity {
     @Column('timestamp')
     dateLast: Date;
 
-    @Column()
+    @Column({unsigned: true})
     ipV4Long: number;
 
     @Column()

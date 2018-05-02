@@ -20,12 +20,12 @@ export class UserContactEntity {
     @Column({nullable: false, default: false})
     confirmed: boolean;
 
-    @Column()
+    @Column({unsigned: true})
     confirmationCode: number;
 
     @Column('timestamp')
     confirmationCodeExpired: Date;
 
-    @Column()
+    @Column({unsigned: true})
     confirmationCodeAttemptLeft: number;
 }

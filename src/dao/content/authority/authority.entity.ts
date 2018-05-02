@@ -15,6 +15,6 @@ export class AuthorityEntity {
     @ManyToOne(type => AuthorityScopeEntity)
     scope: AuthorityScopeEntity;
 
-    @Column()
+    @Column({unsigned: true})
     weight: number;
 }
