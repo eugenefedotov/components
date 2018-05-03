@@ -1,25 +1,45 @@
 {
-  "name": "prototype",
-  "version": "1.0.0",
-  "description": "",
-  "scripts": {
-    "start": "node ./node_modules/ts-node/dist/bin ./index.ts",
-    "schema:sync": "node ./node_modules/ts-node/dist/bin ./node_modules/typeorm/cli schema:sync"
-  },
-  "author": "",
-  "license": "ISC",
-  "private": true,
-  "dependencies": {
-    "mysql": "^2.15.0",
-    "reflect-metadata": "^0.1.9",
-    "typedi": "^0.7.2",
-    "typeorm": "^0.2.0-alpha.42",
-    "typeorm-typedi-extensions": "^0.2.0",
-    "webdav-client": "^1.4.0",
-    "json-ignore": "^0.4.0"
-  },
-  "devDependencies": {
-    "ts-node": "^6.0.0",
-    "typescript": "^2.8.1"
-  }
+    "name": "prototype",
+    "version": "1.0.0",
+    "description": "",
+    "scripts": {
+        "ng": "ng",
+        "start": "ng serve",
+        "build": "ng build --prod",
+        "schema:sync": "node ./node_modules/ts-node/dist/bin ./node_modules/typeorm/cli schema:sync"
+    },
+    "author": "",
+    "license": "ISC",
+    "private": true,
+    "dependencies": {
+        "@angular/animations": "^5.2.0",
+        "@angular/common": "^5.2.0",
+        "@angular/compiler": "^5.2.0",
+        "@angular/core": "^5.2.0",
+        "@angular/forms": "^5.2.0",
+        "@angular/http": "^5.2.0",
+        "@angular/platform-browser": "^5.2.0",
+        "@angular/platform-browser-dynamic": "^5.2.0",
+        "@angular/router": "^5.2.0",
+        "core-js": "^2.4.1",
+        "rxjs": "^5.5.6",
+        "zone.js": "^0.8.19",
+        "mysql": "^2.15.0",
+        "reflect-metadata": "^0.1.9",
+        "typedi": "^0.7.2",
+        "typeorm": "^0.2.0-alpha.42",
+        "typeorm-typedi-extensions": "^0.2.0",
+        "webdav-client": "^1.4.0",
+        "json-ignore": "^0.4.0"
+    },
+    "devDependencies": {
+        "@angular/cli": "~1.7.4",
+        "@angular/compiler-cli": "^5.2.0",
+        "@angular/language-service": "^5.2.0",
+        "@types/node": "~6.0.60",
+        "codelyzer": "^4.0.1",
+        "ts-node": "~4.1.0",
+        "tslint": "~5.9.1",
+        "typescript": "~2.8.3"
+    }
 }
