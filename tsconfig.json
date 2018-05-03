@@ -1,18 +1,16 @@
 {
   "compilerOptions": {
     "lib": [
-      "es5",
-      "es6",
-      "es2016.array.include"
+      "es2017"
     ],
+    "types": ["reflect-metadata"],
     "target": "esnext",
-    "module": "commonjs",
+    "module": "none",
     "moduleResolution": "node",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "sourceMap": true
   },
   "exclude": [
-    "node_modules"
   ]
 }

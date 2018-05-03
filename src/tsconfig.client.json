@@ -15,7 +15,9 @@
     "types": []
   },
   "exclude": [
-    "**/*.spec.ts"
+    "node_modules",
+    "**/*.spec.ts",
+    "./server**"
   ],
   "paths": {
     "typeorm": [
