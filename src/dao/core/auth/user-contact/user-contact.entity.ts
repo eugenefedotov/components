@@ -24,7 +24,7 @@ export class UserContactEntity {
     confirmationCode: number;
 
     @Column('timestamp')
-    confirmationCodeExpired: Date;
+    confirmationCodeExpiredDate: Date;
 
     @Column({unsigned: true})
     confirmationCodeAttemptLeft: number;

@@ -42,10 +42,10 @@ export class PersonVersionEntity {
     patronymic: string;
 
     @Column('date', {nullable: true, comment: 'Дата рождения'})
-    dateOfBirth: Date;
+    birthDate: Date;
 
     @Column('date', {nullable: true, comment: 'Дата смерти'})
-    dateOfDeath: Date;
+    deathDate: Date;
 
     @ManyToMany(type => AuthorityScopeEntity)
     @JoinTable()

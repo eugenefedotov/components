@@ -10,16 +10,16 @@ export class UserSessionEntity {
 
     @OneToOne(type => UserEntity, {eager: true})
     @JoinColumn()
-    insertUser: UserEntity;
+    user: UserEntity;
 
     @Column('timestamp', {default: () => 'CURRENT_TIMESTAMP'})
     insertDate: Date;
 
     @Column('timestamp', {nullable: true})
-    dateExpire: Date;
+    expireDate: Date;
 
     @Column('timestamp', {nullable: true})
-    dateLastUsage: Date;
+    lastUsageDate: Date;
 
     @OneToMany(type => UserSessionConnectEntity, object => object.session)
     connections: UserSessionConnectEntity[];
