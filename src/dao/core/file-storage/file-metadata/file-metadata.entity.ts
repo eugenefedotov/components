@@ -12,7 +12,7 @@ export class FileMetadataEntity {
     insertDate: Date;
 
     @ManyToOne(type => UserEntity, {eager: true})
-    insertUser: UserEntity;
+    user: UserEntity;
 
     @Column()
     md5: string;
