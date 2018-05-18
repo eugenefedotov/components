@@ -6,7 +6,7 @@ import {FileOnServerEntity} from "../file-on-server/file-on-server.entity";
 export class FileMetadataEntity {
 
     @PrimaryGeneratedColumn({unsigned: true})
-    id: string;
+    id: number;
 
     @Column('timestamp', {default: () => 'CURRENT_TIMESTAMP'})
     insertDate: Date;

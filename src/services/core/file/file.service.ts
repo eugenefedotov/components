@@ -10,6 +10,7 @@ import * as path from "path";
 import * as mime from "mime-types";
 import {FileContentNotSavedException} from "./exceptions/file-content-not-saved.exception";
 import {md5} from "../../../functions/md5";
+import * as moment from "moment";
 
 @Service()
 export class FileService {
@@ -20,6 +21,25 @@ export class FileService {
         private fileStorageService: FileStorageService
     ) {
 
+    }
+
+    async persist(fileId: number): Promise<void> {
+        await this.getFileMetadataByFileId(fileId); // check file
+        await this.fileMetadataRepository.update(fileId, {
+            expireDate: null
+        });
+    }
+
+    async prolong(fileId: number): Promise<void> {
+        const metadata = await this.getFileMetadataByFileId(fileId); // check file
+
+        if (!metadata.expireDate) {
+            throw new Error(`file already persistence`);
+        }
+
+        await this.fileMetadataRepository.update(fileId, {
+            expireDate: moment().add("hour")
+        });
     }
 
     async saveFile(filename: string, content: any): Promise<FileMetadataEntity> {
