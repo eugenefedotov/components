@@ -9,7 +9,7 @@ export class UserContactEntity {
 
     @OneToOne(type => UserEntity, {eager: true})
     @JoinColumn()
-    insertUser: UserEntity;
+    user: UserEntity;
 
     @Column({type: 'enum', enum: ['phone', 'email']})
     type: 'phone' | 'email';

@@ -7,9 +7,9 @@ import {FileNotFoundException} from "./exceptions/file-not-found.exception";
 import {FileContentNotAvailableException} from "./exceptions/file-content-not-available.exception";
 import {FileServerRepository} from "../../../dao/core/file-storage/file-server/file-server-repository";
 import * as path from "path";
-import * as crypto from "crypto";
 import * as mime from "mime-types";
 import {FileContentNotSavedException} from "./exceptions/file-content-not-saved.exception";
+import {md5} from "../../../functions/md5";
 
 @Service()
 export class FileService {
@@ -93,7 +93,7 @@ export class FileService {
         metadata.ext = path.extname(filename);
         metadata.name = path.basename(filename, metadata.ext);
         metadata.size = Buffer.byteLength(content);
-        metadata.md5 = crypto.createHash('md5').update(content).digest('hex');
+        metadata.md5 = md5(content);
         metadata.mimeType = mime.lookup(filename);
 
         return metadata;

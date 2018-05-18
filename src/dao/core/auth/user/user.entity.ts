@@ -24,9 +24,9 @@ export class UserEntity {
     @JoinTable()
     groups: UserGroupEntity[];
 
-    @OneToMany(type => AuthorityEntity, object => object.insertUser)
+    @OneToMany(type => AuthorityEntity, object => object.user)
     authorities: AuthorityEntity[];
 
-    @OneToMany(type => UserContactEntity, object => object.insertUser)
+    @OneToMany(type => UserContactEntity, object => object.user)
     contacts: UserContactEntity[];
 }

@@ -10,7 +10,7 @@ export class AuthorityEntity {
 
     @OneToOne(type => UserEntity)
     @JoinColumn()
-    insertUser: UserEntity;
+    user: UserEntity;
 
     @ManyToOne(type => AuthorityScopeEntity)
     scope: AuthorityScopeEntity;
