@@ -2,7 +2,7 @@ import {Column, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn
 import {UserGroupEntity} from '../user-group/user-group.entity';
 import {UserContactEntity} from '../user-contact/user-contact.entity';
 import {AuthorityEntity} from '../../../content/authority/authority.entity';
-import {IgnoreProperty} from '@tsed/common';
+import {jsonIgnore} from 'json-ignore';
 
 @Entity('user')
 export class UserEntity {
@@ -17,7 +17,7 @@ export class UserEntity {
     login: string;
 
     @Column()
-    @IgnoreProperty()
+    @jsonIgnore()
     passwordHash: string;
 
     @ManyToMany(type => UserGroupEntity)

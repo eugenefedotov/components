@@ -1,4 +1,4 @@
-import {GlobalAcceptMimesMiddleware, SendResponseMiddleware, ServerLoader, ServerSettings} from '@tsed/common';
+import {GlobalAcceptMimesMiddleware, ServerLoader, ServerSettings} from '@tsed/common';
 
 import * as cookieParser from 'cookie-parser';
 import * as bodyParser from 'body-parser';
@@ -26,7 +26,6 @@ export class Server extends ServerLoader {
     public $onMountingMiddlewares(): void | Promise<any> {
         this
             .use(GlobalAcceptMimesMiddleware)
-            .use(SendResponseMiddleware)
             .use(cookieParser())
             .use(compress({}))
             .use(methodOverride())

@@ -1,5 +1,6 @@
 import {Controller, Get, IgnoreProperty} from '@tsed/common';
 import 'reflect-metadata';
+import {jsonIgnore} from 'json-ignore';
 
 class Test {
 
@@ -7,6 +8,7 @@ class Test {
 
     property = 'property';
 
+    @jsonIgnore()
     @IgnoreProperty()
     ignoredProperty = 'ignoredProperty';
 }
