@@ -1,4 +1,4 @@
-import {Service} from "typedi";
+import {Service} from '@tsed/common';
 
 @Service()
 export class RequestInfoService {

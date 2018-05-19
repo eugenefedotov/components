@@ -1,16 +1,17 @@
-import {Service} from "typedi";
-import {OrmRepository} from "typeorm-typedi-extensions";
-import {UserRepository} from "../../../dao/core/auth/user/user.repository";
-import {UserEntity} from "../../../dao/core/auth/user/user.entity";
-import {UserNotFoundException} from "./exceptions/user-not-found.exception";
-import {UserLoginAlreadyInUseException} from "./exceptions/user-login-already-in-use.exception";
-import {PasswordService} from "../password/password.service";
+import {UserRepository} from '../../../../dao/core/auth/user/user.repository';
+import {UserEntity} from '../../../../dao/core/auth/user/user.entity';
+import {UserNotFoundException} from './exceptions/user-not-found.exception';
+import {UserLoginAlreadyInUseException} from './exceptions/user-login-already-in-use.exception';
+import {PasswordService} from '../password/password.service';
+import {getCustomRepository} from 'typeorm';
+import {Service} from '@tsed/common';
 
 @Service()
 export class UserService {
+    private userRepository = getCustomRepository(UserRepository);
 
-    constructor(@OrmRepository() private userRepository: UserRepository,
-                private passwordService: PasswordService) {
+    constructor(
+        private passwordService: PasswordService) {
 
     }
 
@@ -38,7 +39,7 @@ export class UserService {
 
     async createUser(login: string, password: string): Promise<UserEntity> {
         if (await this.hasUser(login)) {
-            throw new UserLoginAlreadyInUseException()
+            throw new UserLoginAlreadyInUseException();
         }
 
         const user = this.userRepository.create({

@@ -1,21 +1,17 @@
-import {Service} from "typedi";
-import {UserSessionEntity} from "../../../dao/core/auth/user-session/user-session.entity";
-import {UserEntity} from "../../../dao/core/auth/user/user.entity";
-import {OrmRepository} from "typeorm-typedi-extensions";
-import {UserSessionRepository} from "../../../dao/core/auth/user-session/user-session.repository";
-import {UserSessionConnectRepository} from "../../../dao/core/auth/user-session-connect/user-session-connect.repository";
-import {SessionConnectModel} from "./models/session-connect.model";
-import {UserSessionConnectEntity} from "../../../dao/core/auth/user-session-connect/user-session-connect.entity";
-import {SessionNotFoundException} from "./exceptions/session-not-found.exception";
+import {UserSessionEntity} from '../../../../dao/core/auth/user-session/user-session.entity';
+import {UserEntity} from '../../../../dao/core/auth/user/user.entity';
+import {UserSessionRepository} from '../../../../dao/core/auth/user-session/user-session.repository';
+import {UserSessionConnectRepository} from '../../../../dao/core/auth/user-session-connect/user-session-connect.repository';
+import {SessionConnectModel} from './models/session-connect.model';
+import {UserSessionConnectEntity} from '../../../../dao/core/auth/user-session-connect/user-session-connect.entity';
+import {SessionNotFoundException} from './exceptions/session-not-found.exception';
+import {Service} from '@tsed/common';
+import {getCustomRepository} from 'typeorm';
 
 @Service()
 export class SessionService {
-
-    constructor(
-        @OrmRepository() private userSessionRepository: UserSessionRepository,
-        @OrmRepository() private userSessionConnectionRepository: UserSessionConnectRepository
-    ) {
-    }
+    private userSessionRepository = getCustomRepository(UserSessionRepository);
+    private userSessionConnectionRepository = getCustomRepository(UserSessionConnectRepository);
 
     async useSession(sessionId: string, sessionConnect: SessionConnectModel): Promise<UserSessionEntity> {
         const session = await this.userSessionRepository.findOne(sessionId, {relations: ['connections']});

@@ -4,6 +4,7 @@ import * as cookieParser from 'cookie-parser';
 import * as bodyParser from 'body-parser';
 import * as compress from 'compression';
 import * as methodOverride from 'method-override';
+import {createConnection} from 'typeorm';
 
 @ServerSettings({
     rootDir: './src/server',
@@ -17,7 +18,10 @@ import * as methodOverride from 'method-override';
     ],
     acceptMimes: ['application/json']
 })
-export class Server extends ServerLoader {
+class Server extends ServerLoader {
+    async $onInit() {
+        await createConnection();
+    }
 
     /**
      * This method let you configure the middleware required by your application to works.

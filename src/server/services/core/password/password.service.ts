@@ -1,5 +1,5 @@
-import {Service} from "typedi";
-import {md5} from "../../../functions/md5";
+import {md5} from '../../../../functions/md5';
+import {Service} from '@tsed/common';
 
 @Service()
 export class PasswordService {

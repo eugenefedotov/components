@@ -1,23 +1,20 @@
-import {Service} from "typedi";
-import {FileServerEntity} from "../../../dao/core/file-storage/file-server/file-server.entity";
-import {FileMetadataEntity} from "../../../dao/core/file-storage/file-metadata/file-metadata.entity";
-import {Connection, ConnectionOptions} from "webdav-client";
-import {FileOnServerEntity} from "../../../dao/core/file-storage/file-on-server/file-on-server.entity";
-import {OrmRepository} from "typeorm-typedi-extensions";
-import {FileOnServerRepository} from "../../../dao/core/file-storage/file-on-server/file-on-server.repository";
+import {FileServerEntity} from '../../../../dao/core/file-storage/file-server/file-server.entity';
+import {FileMetadataEntity} from '../../../../dao/core/file-storage/file-metadata/file-metadata.entity';
+import {Connection, ConnectionOptions} from 'webdav-client';
+import {FileOnServerEntity} from '../../../../dao/core/file-storage/file-on-server/file-on-server.entity';
+import {FileOnServerRepository} from '../../../../dao/core/file-storage/file-on-server/file-on-server.repository';
+import {Service} from '@tsed/common';
+import {getCustomRepository} from 'typeorm';
 
 @Service()
 export class FileStorageService {
-
-    constructor(@OrmRepository() private fileOnServerRepository: FileOnServerRepository) {
-
-    }
+    private fileOnServerRepository = getCustomRepository(FileOnServerRepository);
 
     async put(server: FileServerEntity, file: FileMetadataEntity, content: any): Promise<FileOnServerEntity> {
         const connection = this.getConnection(server);
 
         await new Promise<void>((resolve, reject) => {
-            connection.put(this.getFilePath(file), content,  (error) => {
+            connection.put(this.getFilePath(file), content, (error) => {
                 if (error) {
                     reject(error);
                 } else {

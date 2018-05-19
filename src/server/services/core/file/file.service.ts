@@ -1,23 +1,23 @@
-import {Service} from "typedi";
-import {FileMetadataEntity} from "../../../dao/core/file-storage/file-metadata/file-metadata.entity";
-import {OrmRepository} from "typeorm-typedi-extensions";
-import {FileMetadataRepository} from "../../../dao/core/file-storage/file-metadata/file-metadata.repository";
-import {FileStorageService} from "./file-storage.service";
-import {FileNotFoundException} from "./exceptions/file-not-found.exception";
-import {FileContentNotAvailableException} from "./exceptions/file-content-not-available.exception";
-import {FileServerRepository} from "../../../dao/core/file-storage/file-server/file-server-repository";
-import * as path from "path";
-import * as mime from "mime-types";
-import {FileContentNotSavedException} from "./exceptions/file-content-not-saved.exception";
-import {md5} from "../../../functions/md5";
-import * as moment from "moment";
+import {FileMetadataEntity} from '../../../../dao/core/file-storage/file-metadata/file-metadata.entity';
+import {FileMetadataRepository} from '../../../../dao/core/file-storage/file-metadata/file-metadata.repository';
+import {FileStorageService} from './file-storage.service';
+import {FileNotFoundException} from './exceptions/file-not-found.exception';
+import {FileContentNotAvailableException} from './exceptions/file-content-not-available.exception';
+import {FileServerRepository} from '../../../../dao/core/file-storage/file-server/file-server-repository';
+import * as path from 'path';
+import * as mime from 'mime-types';
+import {FileContentNotSavedException} from './exceptions/file-content-not-saved.exception';
+import {md5} from '../../../../functions/md5';
+import * as moment from 'moment';
+import {Service} from '@tsed/common';
+import {getCustomRepository} from 'typeorm';
 
 @Service()
 export class FileService {
+    private fileMetadataRepository = getCustomRepository(FileMetadataRepository);
+    private fileServerRepository = getCustomRepository(FileServerRepository);
 
     constructor(
-        @OrmRepository() private fileMetadataRepository: FileMetadataRepository,
-        @OrmRepository() private fileServerRepository: FileServerRepository,
         private fileStorageService: FileStorageService
     ) {
 
@@ -38,7 +38,7 @@ export class FileService {
         }
 
         await this.fileMetadataRepository.update(fileId, {
-            expireDate: moment().add("hour")
+            expireDate: moment().add('hour')
         });
     }
 
@@ -95,7 +95,7 @@ export class FileService {
             throw new FileNotFoundException();
         }
 
-        const available = metadata.servers.filter(fos => fos.status === "available");
+        const available = metadata.servers.filter(fos => fos.status === 'available');
 
         for (let i = 0; i < available.length; i++) {
             try {
