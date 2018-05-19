@@ -12,16 +12,15 @@
       "es2017",
       "dom"
     ],
-    "types": []
+    "types": [],
+    "paths": {
+      "typeorm": ["../node_modules/typeorm/typeorm-model-shim.js"]
+    }
   },
   "exclude": [
     "node_modules",
     "**/*.spec.ts",
-    "./server**"
-  ],
-  "paths": {
-    "typeorm": [
-      "../node_modules/typeorm/typeorm-model-shim"
-    ]
-  }
+    "./server/**",
+    "./services/**"
+  ]
 }
