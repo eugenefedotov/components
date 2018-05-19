@@ -1,8 +1,8 @@
 import {Column, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn} from 'typeorm';
 import {UserGroupEntity} from '../user-group/user-group.entity';
-import {UserContactEntity} from "../user-contact/user-contact.entity";
-import {AuthorityEntity} from "../../../content/authority/authority.entity";
-import {jsonIgnore} from "json-ignore";
+import {UserContactEntity} from '../user-contact/user-contact.entity';
+import {AuthorityEntity} from '../../../content/authority/authority.entity';
+import {IgnoreProperty} from '@tsed/common';
 
 @Entity('user')
 export class UserEntity {
@@ -17,7 +17,7 @@ export class UserEntity {
     login: string;
 
     @Column()
-    @jsonIgnore()
+    @IgnoreProperty()
     passwordHash: string;
 
     @ManyToMany(type => UserGroupEntity)
