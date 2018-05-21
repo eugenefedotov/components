@@ -1,6 +1,6 @@
 import {Column, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn} from 'typeorm';
 import {UserEntity} from '../user/user.entity';
-import {UserPermissionEntity} from '../user-permission/user-permission.entity';
+import {PermissionEntity} from '../permission/permission.entity';
 
 @Entity('user_group')
 export class UserGroupEntity {
@@ -11,10 +11,14 @@ export class UserGroupEntity {
     @Column()
     name: string;
 
+    @ManyToMany(type => UserGroupEntity)
+    @JoinTable()
+    dependencies: UserGroupEntity[];
+
     @ManyToMany(type => UserEntity, object => object.groups)
     users: UserEntity[];
 
-    @ManyToMany(type => UserPermissionEntity)
+    @ManyToMany(type => PermissionEntity)
     @JoinTable()
-    permissions: UserPermissionEntity[];
+    permissions: PermissionEntity[];
 }
