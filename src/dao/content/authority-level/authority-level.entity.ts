@@ -1,14 +1,14 @@
 import {Column, Entity, PrimaryGeneratedColumn} from 'typeorm';
 
-@Entity('user_permission')
-export class UserPermissionEntity {
+@Entity('authority_level')
+export class AuthorityLevelEntity {
 
     @PrimaryGeneratedColumn({unsigned: true})
     id: number;
 
-    @Column({unique: true, nullable: false})
-    code: string;
-
     @Column()
     name: string;
+
+    @Column({unsigned: true})
+    weight: number;
 }
