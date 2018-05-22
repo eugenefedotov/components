@@ -3,6 +3,8 @@ import {SettingsAuthenticationEntity} from './child/settings-authentication.enti
 import {SettingsRegistrationEntity} from './child/settings-registration.entity';
 import {SettingsMainEntity} from './child/settings-main.entity';
 import {SettingsFileStorageEntity} from './child/settings-file-storage.entity';
+import {jsonIgnore} from 'json-ignore';
+import {SettingsPrivateEntity} from './child/settings-private.entity';
 
 @Entity('settings')
 export class SettingsEntity {
@@ -21,4 +23,8 @@ export class SettingsEntity {
 
     @OneToOne(type => SettingsRegistrationEntity, {eager: true, cascade: true})
     registration: SettingsRegistrationEntity;
+
+    @OneToOne(type => SettingsPrivateEntity, {eager: true, cascade: true})
+    @jsonIgnore()
+    private: SettingsPrivateEntity;
 }
