@@ -23,22 +23,22 @@ export class FileService {
 
     }
 
-    async persist(fileId: number): Promise<void> {
-        await this.getFileMetadataByFileId(fileId); // check file
-        await this.fileMetadataRepository.update(fileId, {
+    async persist(uuid: string): Promise<void> {
+        await this.getFileMetadataByFileId(uuid); // check file
+        await this.fileMetadataRepository.update(uuid, {
             expireDate: null
         });
     }
 
-    async prolong(fileId: number): Promise<void> {
-        const metadata = await this.getFileMetadataByFileId(fileId); // check file
+    async prolong(uuid: string): Promise<void> {
+        const metadata = await this.getFileMetadataByFileId(uuid); // check file
 
         if (!metadata.expireDate) {
             throw new Error(`file already persistence`);
         }
 
-        await this.fileMetadataRepository.update(fileId, {
-            expireDate: moment().add("hour")
+        await this.fileMetadataRepository.update(uuid, {
+            expireDate: moment().add('hour')
         });
     }
 
@@ -78,8 +78,8 @@ export class FileService {
         return metadata;
     }
 
-    async getFileMetadataByFileId(id: number): Promise<FileMetadataEntity> {
-        const metadata = this.fileMetadataRepository.findOne(id);
+    async getFileMetadataByFileId(uuid: string): Promise<FileMetadataEntity> {
+        const metadata = this.fileMetadataRepository.findOne(uuid);
 
         if (!metadata) {
             throw new FileNotFoundException();
@@ -88,14 +88,14 @@ export class FileService {
         return metadata;
     }
 
-    async getFileContent(id: number): Promise<any> {
-        const metadata = await this.fileMetadataRepository.findOne(id, {relations: ['servers']});
+    async getFileContent(uuid: string): Promise<any> {
+        const metadata = await this.fileMetadataRepository.findOne(uuid, {relations: ['servers']});
 
         if (!metadata) {
             throw new FileNotFoundException();
         }
 
-        const available = metadata.servers.filter(fos => fos.status === "available");
+        const available = metadata.servers.filter(fos => fos.status === 'available');
 
         for (let i = 0; i < available.length; i++) {
             try {
