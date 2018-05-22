@@ -1,7 +1,7 @@
 import {Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn} from 'typeorm';
 import {OrganizationVersionEntity} from './organization-version.entity';
 
-@Entity('authority_of_state_power')
+@Entity('organization')
 export class OrganizationEntity {
 
     @PrimaryGeneratedColumn({unsigned: true})

@@ -17,7 +17,7 @@ import {OrganizationTypeEntity} from '../organization-type/organization-type.ent
 import {UserEntity} from "../../core/auth/user/user.entity";
 import {AuthorityScopeEntity} from "../authority-scope/authority-scope.entity";
 
-@Entity('authority_of_state_power_version')
+@Entity('organization_version')
 @Index('date_interval', ['beginDate', 'endDate'])
 export class OrganizationVersionEntity {
 
