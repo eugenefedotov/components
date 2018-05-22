@@ -10,13 +10,13 @@ export class RegistrationController {
 
     }
 
-    @Get('settings')
+    @Get('/settings')
     async getSettings() {
         const settings = await this.settingsService.get();
         return settings.registration;
     }
 
-    @Get('has-user/:login')
+    @Get('/has-user/:login')
     async hasUser(@PathParams('login') login: string): Promise<boolean> {
         return this.userService.hasUser(login);
     }

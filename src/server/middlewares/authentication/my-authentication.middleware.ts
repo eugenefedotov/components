@@ -11,8 +11,8 @@ import {
 import * as Express from 'express';
 import {SessionService} from '../../services/core/session/session.service';
 import {AuthenticationInfoModel} from '../../models/authentication-info.model';
-import {Forbidden} from '../../../../node_modules/@tsed/common/src/node_modules/ts-httpexceptions/lib/clientErrors';
 import {RequestInfoService} from '../../services/core/request-info/request-info.service';
+import {Forbidden} from 'ts-httpexceptions';
 
 const SESSION_HEADER_KEY = 'X-Session';
 

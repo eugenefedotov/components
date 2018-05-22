@@ -7,7 +7,7 @@ export class AuthenticationController {
     @Get('')
     @Authenticated({allowGuest: true})
     async getInfo(@Request() request: Express.Request) {
-
+        return request['authInfo'];
     }
 
     @Put('')
