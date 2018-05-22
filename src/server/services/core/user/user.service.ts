@@ -44,7 +44,7 @@ export class UserService {
 
         const user = this.userRepository.create({
             login: login,
-            passwordHash: this.passwordService.getHash(password)
+            passwordHash: await this.passwordService.getHash(password)
         });
 
         return this.userRepository.save(user);
