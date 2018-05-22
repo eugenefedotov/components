@@ -11,8 +11,6 @@ export class ResponseMiddleware extends SendResponseMiddleware {
     }
 
     public use(@ResponseData() data: any, @Response() response: Express.Response) {
-        console.log('data', data);
-
         if (response.headersSent) {
             return;
         }

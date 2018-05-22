@@ -40,7 +40,7 @@ export class SessionService {
     async openSession(user: UserEntity, sessionConnect: SessionConnectModel): Promise<UserSessionEntity> {
         const connection = this.userSessionConnectionRepository.create(sessionConnect);
 
-        const session = await this.userSessionRepository.create({
+        const session = this.userSessionRepository.create({
             connections: [connection],
             user: user,
             lastUsageDate: new Date()
