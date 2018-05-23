@@ -23,6 +23,20 @@ export class FileService {
 
     }
 
+    async delete(uuid: string): Promise<void> {
+        const metadata = await this.getFileMetadataByFileId(uuid);
+
+        for (let server of metadata.servers) {
+            try {
+               await this.fileStorageService.delete(server);
+            }catch (e) {
+
+            }
+        }
+
+        await this.fileMetadataRepository.remove(metadata);
+    }
+
     async persist(uuid: string): Promise<void> {
         await this.getFileMetadataByFileId(uuid); // check file
         await this.fileMetadataRepository.update(uuid, {

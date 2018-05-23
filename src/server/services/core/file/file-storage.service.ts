@@ -46,6 +46,20 @@ export class FileStorageService {
         });
     }
 
+    async delete(fileOnServerEntity: FileOnServerEntity): Promise<void> {
+        const connection = this.getConnection(fileOnServerEntity.server);
+        await new Promise<any>((resolve, reject) => {
+            connection.delete(this.getFilePath(fileOnServerEntity.file), (error) => {
+                if (error) {
+                    reject(error);
+                } else {
+                    resolve();
+                }
+            });
+        });
+        await this.fileOnServerRepository.remove(fileOnServerEntity);
+    }
+
     private getFilePath(file: FileMetadataEntity): string {
         const pathArr: string[] = [];
 
