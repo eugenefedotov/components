@@ -5,7 +5,8 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build --prod",
+    "build": "ng build",
+    "build:prod": "ng build --prod",
     "server": "node ./node_modules/ts-node/dist/bin ./src/server",
     "server:debug": "node %NODE_DEBUG_OPTION% ./node_modules/ts-node/dist/bin ./src/server",
     "schema:sync": "node ./node_modules/ts-node/dist/bin ./node_modules/typeorm/cli schema:sync"

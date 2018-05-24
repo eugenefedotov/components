@@ -84,12 +84,21 @@
     }
   },
   "schematics": {
+    "@schematics/angular:module": {
+      "spec": false
+    },
+    "@schematics/angular:service": {
+      "spec": false,
+      "flat": true
+    },
     "@schematics/angular:component": {
       "prefix": "app",
-      "styleext": "scss"
+      "styleext": "scss",
+      "spec": false
     },
     "@schematics/angular:directive": {
-      "prefix": "app"
+      "prefix": "app",
+      "spec": false
     }
   }
 }
