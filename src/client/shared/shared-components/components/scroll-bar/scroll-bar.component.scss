@@ -1,0 +1,50 @@
+:host {
+  display: block;
+  position: absolute;
+
+  right: .25rem;
+  bottom: .25rem;
+  min-width: 1rem;
+  min-height: 1rem;
+
+  .scroll-bar__slider {
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    background-color: rgba(0, 0, 0, .25);
+
+    &:hover, &_moving {
+      background-color: rgba(0, 0, 0, .33);
+    }
+  }
+
+  &.scroll-bar_horizontal {
+    left: .25rem;
+
+    .scroll-bar__slider {
+      width: 100%;
+      bottom: 0;
+    }
+
+    &.scroll-bar_other-scroll-visible {
+      right: 1.5rem;
+    }
+  }
+
+  &.scroll-bar_vertical {
+    top: .25rem;
+
+    .scroll-bar__slider {
+      height: 100%;
+      right: 0;
+    }
+
+    &.scroll-bar_other-scroll-visible {
+      bottom: 1.5rem;
+    }
+  }
+
+}
+
+

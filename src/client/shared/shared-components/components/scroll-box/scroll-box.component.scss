@@ -1,0 +1,34 @@
+:host {
+  flex: 1 1 auto;
+
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+
+  .scroll-box__container {
+    flex: 1 1 auto;
+
+    display: block;
+    overflow: hidden;
+
+    .scroll-box__content {
+      display: block;
+    }
+
+    &_vertical {
+      .scroll-box__content {
+
+      }
+    }
+
+    &_horizontal {
+      .scroll-box__content {
+        display: inline-block;
+      }
+    }
+  }
+}
+
+
+

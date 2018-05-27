@@ -5,11 +5,15 @@ html, body {
   padding: 0;
 
   height: 100%;
+
+  font-size: 8px;
 }
 
 body {
   display: flex;
   flex-direction: column;
+
+  font-size: 1.5rem;
 }
 
 router-outlet {

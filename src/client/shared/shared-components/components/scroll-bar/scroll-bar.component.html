@@ -1,0 +1,8 @@
+<div class="scroll-bar__slider"
+     [class.scroll-bar__slider_moving]="moving"
+     [style.width.%]="sliderWidth"
+     [style.height.%]="sliderHeight"
+     [style.left.%]="sliderLeft"
+     [style.top.%]="sliderTop"
+     (mousedown)="onMouseDown($event)"
+></div>
