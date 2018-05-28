@@ -1,0 +1,10 @@
+<div class="window__header">
+    <div class="window__header-text">{{headerText}}</div>
+    <div class="window__header-close-button" (click)="onCloseButtonClick($event)"></div>
+</div>
+<app-scroll-box class="window__content">
+    <ng-content></ng-content>
+</app-scroll-box>
+<div class="window__footer" *ngIf="footerTemplate">
+    <ng-container *ngTemplateOutlet="footerTemplate"></ng-container>
+</div>

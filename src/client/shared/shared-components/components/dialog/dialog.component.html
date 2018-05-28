@@ -1,0 +1,14 @@
+<ng-template #footerTemplate>
+    <app-button *ngIf="reject.observers.length"
+                [text]="rejectButtonText"
+                (click)="onRejectButtonClick($event)"></app-button>
+    <app-button [text]="resolveButtonText"
+                (click)="onResolveButtonClick($event)"></app-button>
+</ng-template>
+
+<app-window [headerText]="headerText"
+            [footerTemplate]="footerTemplate"
+            (closeButtonClick)="onCloseButtonClick($event)"
+>
+    <ng-content></ng-content>
+</app-window>
