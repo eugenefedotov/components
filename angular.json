@@ -89,7 +89,7 @@
     },
     "@schematics/angular:service": {
       "spec": false,
-      "flat": true
+      "flat": false
     },
     "@schematics/angular:component": {
       "prefix": "app",
