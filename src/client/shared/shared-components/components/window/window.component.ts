@@ -8,6 +8,7 @@ import {Component, EventEmitter, Input, OnInit, Output, TemplateRef} from '@angu
 export class WindowComponent implements OnInit {
 
     @Input() headerText: string;
+    @Input() contentTemplate: TemplateRef<any>;
     @Input() footerTemplate: TemplateRef<any>;
 
     @Output() closeButtonClick = new EventEmitter<MouseEvent>();

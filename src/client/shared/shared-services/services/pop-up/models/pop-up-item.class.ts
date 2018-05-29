@@ -1,26 +1,35 @@
-import {TemplateRef} from '@angular/core';
-import {PopUpOptionsModel} from './pop-up-options.model';
+import {ComponentRef} from '@angular/core';
 import {PopUpService} from '../pop-up.service';
 
 export class PopUpItem {
-    constructor(private service: PopUpService,
-                readonly id: number,
-                private templateRef: TemplateRef<any>,
-                private options?: PopUpOptionsModel) {
+    get id() {
+        return this._id;
+    }
+
+    get componentRef() {
+        return this._componentRef;
+    }
+
+    constructor(private _service: PopUpService,
+                private _id: number,
+                private _componentRef: ComponentRef<any>) {
 
     }
 
     close() {
-        if (this.service) {
-            this.service.close(this);
+        if (!this._service) {
+            return;
         }
+        this._service.close(this.componentRef);
     }
 
     destroy() {
+        if (!this._service) {
+            return;
+        }
         this.close();
 
-        this.service = null;
-        this.templateRef = null;
-        this.options = null;
+        this._service = null;
+        this._componentRef = null;
     }
 }

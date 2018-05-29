@@ -1,3 +1,3 @@
 <ng-template ngFor let-item [ngForOf]="popUpService.stack$ | async">
-  <ng-container *ngTemplateOutlet="item.templateRef"></ng-container>
+  <ng-container *ngComponentOutlet="item.componentRef"></ng-container>
 </ng-template>

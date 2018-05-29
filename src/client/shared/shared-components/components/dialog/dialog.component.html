@@ -5,10 +5,10 @@
     <app-button [text]="resolveButtonText"
                 (click)="onResolveButtonClick($event)"></app-button>
 </ng-template>
-
 <app-window [headerText]="headerText"
+            [contentTemplate]="contentTemplate"
             [footerTemplate]="footerTemplate"
             (closeButtonClick)="onCloseButtonClick($event)"
 >
-    <ng-content></ng-content>
+
 </app-window>

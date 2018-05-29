@@ -1,6 +1,5 @@
-import {Injectable, TemplateRef} from '@angular/core';
+import {ComponentRef, Injectable} from '@angular/core';
 import {PopUpItem} from './models/pop-up-item.class';
-import {PopUpOptionsModel} from './models/pop-up-options.model';
 import {BehaviorSubject, Observable} from 'rxjs';
 import {share} from 'rxjs/operators';
 
@@ -26,14 +25,18 @@ export class PopUpService {
     constructor() {
     }
 
-    open(templateRef: TemplateRef<any>, options?: PopUpOptionsModel): PopUpItem {
-        const item = new PopUpItem(this, ++this._i, templateRef, options);
+    open(componentRef: ComponentRef<any>): PopUpItem {
+        const item = new PopUpItem(this, ++this._i, componentRef);
         this.stack = [...this.stack, item];
         return item;
     }
 
-    close(item: PopUpItem) {
-        this.stack = this.stack.filter(_item => _item !== item);
-        item.destroy();
+    close(componentRef: ComponentRef<any>) {
+        const item = this.stack.find(it => it.componentRef === componentRef);
+
+        if (item) {
+            this.stack = this.stack.filter(it => it !== item);
+            item.destroy();
+        }
     }
 }

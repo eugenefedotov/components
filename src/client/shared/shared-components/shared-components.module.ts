@@ -35,6 +35,9 @@ import { PopUpRenderPlaceComponent } from './components/pop-up-render-place/pop-
         DialogComponent,
         ButtonComponent,
         PopUpRenderPlaceComponent
+    ],
+    entryComponents: [
+        WindowComponent
     ]
 })
 export class SharedComponentsModule {

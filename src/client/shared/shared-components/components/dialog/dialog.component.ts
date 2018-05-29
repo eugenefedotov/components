@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output, TemplateRef} from '@angular/core';
 
 @Component({
     selector: 'app-dialog',
@@ -7,10 +7,14 @@ import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 })
 export class DialogComponent implements OnInit {
 
+    @Input() isWarning = false;
+
     @Input() headerText: string;
+    @Input() contentTemplate: TemplateRef<any>;
 
     @Input() rejectButtonText = 'Cancel';
     @Input() resolveButtonText = 'OK';
+
 
     @Output() reject = new EventEmitter();
     @Output() resolve = new EventEmitter();
