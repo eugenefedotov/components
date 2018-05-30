@@ -3,4 +3,10 @@
 
   display: flex;
   flex-direction: column;
+
+  .dialog {
+    &__content-text {
+      white-space: pre-line;
+    }
+  }
 }
