@@ -2,17 +2,8 @@ import {ComponentRef} from '@angular/core';
 import {PopUpService} from '../pop-up.service';
 
 export class PopUpItem {
-    get id() {
-        return this._id;
-    }
-
-    get componentRef() {
-        return this._componentRef;
-    }
-
     constructor(private _service: PopUpService,
-                private _id: number,
-                private _componentRef: ComponentRef<any>) {
+                public componentRef: ComponentRef<any>) {
 
     }
 
@@ -30,6 +21,6 @@ export class PopUpItem {
         this.close();
 
         this._service = null;
-        this._componentRef = null;
+        this.componentRef = null;
     }
 }

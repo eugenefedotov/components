@@ -7,7 +7,6 @@ import {share} from 'rxjs/operators';
     providedIn: 'root'
 })
 export class PopUpService {
-    private _i = 0;
     private _stack$: BehaviorSubject<PopUpItem[]> = new BehaviorSubject([]);
 
     get stack$(): Observable<PopUpItem[]> {
@@ -26,7 +25,7 @@ export class PopUpService {
     }
 
     open(componentRef: ComponentRef<any>): PopUpItem {
-        const item = new PopUpItem(this, ++this._i, componentRef);
+        const item = new PopUpItem(this, componentRef);
         this.stack = [...this.stack, item];
         return item;
     }
