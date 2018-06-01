@@ -1,13 +1,25 @@
-:host {
-  flex: 0 0 50px;
+@import '../../../../../variables';
 
+:host {
+  flex: 0 0 auto;
   display: flex;
   flex-direction: column;
-  justify-content: stretch;
 
-  background-color: #ccc;
+  .header {
+    flex: 0 0 auto;
+    display: flex;
+    flex-direction: column;
 
-}
+    &__content {
+      flex: 0 0 3rem;
 
-.header__content {
+      background-color: $color-accent-dark;
+      color: $color-accent-light;
+    }
+
+    &__menu {
+
+    }
+  }
+
 }

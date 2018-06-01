@@ -17,12 +17,12 @@
 }
 
 @mixin pitted-text($withHover) {
-  color: lighten($color2, 33%);
+  color: lighten($color-dark, 33%);
   text-shadow: 0 1px rgba(255, 255, 255, .9);
 
   @if $withHover == true {
     &:hover {
-      color: lighten($color2, 25%);
+      color: lighten($color-dark, 25%);
     }
   }
 }
