@@ -1,41 +1,19 @@
-import {ComponentRef, Injectable} from '@angular/core';
-import {PopUpItem} from './models/pop-up-item.class';
-import {BehaviorSubject, Observable} from 'rxjs';
-import {share} from 'rxjs/operators';
+import {ComponentRef, Injectable, ViewContainerRef} from '@angular/core';
 
 @Injectable({
     providedIn: 'root'
 })
 export class PopUpService {
-    private _stack$: BehaviorSubject<PopUpItem[]> = new BehaviorSubject([]);
-
-    get stack$(): Observable<PopUpItem[]> {
-        return this._stack$.pipe(share());
-    }
-
-    private get stack(): PopUpItem[] {
-        return [...this._stack$.value];
-    }
-
-    private set stack(stack: PopUpItem[]) {
-        this._stack$.next(stack);
-    }
+    private viewContainerRef: ViewContainerRef;
 
     constructor() {
     }
 
-    open(componentRef: ComponentRef<any>): PopUpItem {
-        const item = new PopUpItem(this, componentRef);
-        this.stack = [...this.stack, item];
-        return item;
+    setViewContainerRef(viewContainerRef: ViewContainerRef) {
+        this.viewContainerRef = viewContainerRef;
     }
 
-    close(componentRef: ComponentRef<any>) {
-        const item = this.stack.find(it => it.componentRef === componentRef);
-
-        if (item) {
-            this.stack = this.stack.filter(it => it !== item);
-            item.destroy();
-        }
+    insertComponent(componentRef: ComponentRef<any>) {
+        this.viewContainerRef.insert(componentRef.hostView);
     }
 }

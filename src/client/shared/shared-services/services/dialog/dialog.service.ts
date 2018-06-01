@@ -1,18 +1,18 @@
 import {ComponentFactoryResolver, ComponentRef, Injectable, Injector, Type} from '@angular/core';
 import {PopUpService} from '../pop-up/pop-up.service';
 import {DialogComponent} from '../../../shared-components/components/dialog/dialog.component';
-import {DialogItem} from './models/dialog-item.class';
 import {WindowStyleEnum} from '../../../shared-components/components/window/models/window-style.enum';
+import {first} from 'rxjs/operators';
 
 @Injectable({
     providedIn: 'root'
 })
 export class DialogService {
 
-    defaultInfoTitleText = '';
-    defaultConfirmTitleText = '';
-    defaultSuccessTitleText = '';
-    defaultErrorTitleText = '';
+    defaultInfoTitleText = 'Информация';
+    defaultConfirmTitleText = 'Подтверждение';
+    defaultSuccessTitleText = 'Успешно';
+    defaultErrorTitleText = 'Ошибка';
 
     constructor(private resolver: ComponentFactoryResolver,
                 private injector: Injector,
@@ -21,45 +21,41 @@ export class DialogService {
     }
 
     async openInfo(text: string, title = this.defaultInfoTitleText): Promise<void> {
-        return this.open(title, text).close$.toPromise();
+        return this.open(title, text).instance.closed.pipe(first()).toPromise();
     }
 
     async openSuccess(text: string, title = this.defaultSuccessTitleText): Promise<void> {
-        return this.open(title, text, WindowStyleEnum.Success).close$.toPromise();
+        return this.open(title, text, WindowStyleEnum.Success).instance.closed.pipe(first()).toPromise();
     }
 
     async openError(text: string, title = this.defaultErrorTitleText): Promise<void> {
-        return this.open(title, text, WindowStyleEnum.Warning).close$.toPromise();
+        return this.open(title, text, WindowStyleEnum.Warning).instance.closed.pipe(first()).toPromise();
     }
 
     async openConfirm(text: string, title = this.defaultConfirmTitleText): Promise<boolean> {
         return new Promise<boolean>(resolve => {
             const item = this.open(title, text, WindowStyleEnum.Confirm);
 
-            item.resolve$.subscribe(() => resolve(true));
-            item.reject$.subscribe(() => resolve(false));
+            item.instance.resolved.pipe(first()).subscribe(() => resolve(true));
+            item.instance.rejected.pipe(first()).subscribe(() => resolve(false));
+            item.changeDetectorRef.detectChanges();
         });
     }
 
-    private open(headerText: string, contentText: string, windowStyle = WindowStyleEnum.Neutral): DialogItem {
+    private open(headerText: string, contentText: string, windowStyle = WindowStyleEnum.Neutral) {
         const componentRef = this.createComponent(DialogComponent);
+
         const dialogComponent = componentRef.instance;
         dialogComponent.windowStyle = windowStyle;
         dialogComponent.headerText = headerText;
         dialogComponent.contentText = contentText;
 
-        const item = new DialogItem(this, componentRef);
+        dialogComponent.closed.pipe(first()).subscribe(() => componentRef.destroy());
+        componentRef.changeDetectorRef.detectChanges();
 
-        dialogComponent.closed.subscribe(() => item.close());
+        this.popUpService.insertComponent(componentRef);
 
-        this.popUpService.open(componentRef);
-
-        return item;
-    }
-
-    close(item: DialogItem) {
-        this.popUpService.close(item.componentRef);
-        item.destroy();
+        return componentRef;
     }
 
     private createComponent<T>(comp: Type<T>): ComponentRef<T> {

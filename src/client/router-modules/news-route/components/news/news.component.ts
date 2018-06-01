@@ -11,8 +11,9 @@ export class NewsComponent implements OnInit {
     constructor(private dialogService: DialogService) {
     }
 
-    ngOnInit() {
-        this.dialogService.openInfo('test');
+    async ngOnInit() {
+        const result = await this.dialogService.openConfirm('test');
+        console.log(result);
     }
 
 }

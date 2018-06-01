@@ -1,18 +1,22 @@
-<ng-template #footerTemplate>
-    <app-button *ngIf="reject.observers.length"
-                [text]="rejectButtonText"
-                (click)="onRejectButtonClick($event)"></app-button>
-    <app-button [text]="resolveButtonText"
-                (click)="onResolveButtonClick($event)"></app-button>
-</ng-template>
-
 <ng-template #contentTemplate>
     <div class="dialog__content-text">{{contentText}}</div>
 </ng-template>
+<ng-template #footerTemplate>
+    <div class="dialog__buttons">
+        <app-button *ngIf="rejected.observers.length"
+                    [text]="rejectButtonText"
+                    (click)="onRejectButtonClick($event)"></app-button>
+        <app-button [text]="resolveButtonText"
+                    (click)="onResolveButtonClick($event)"></app-button>
+    </div>
+</ng-template>
 
-<app-window [headerText]="headerText"
+<div class="dialog">
+    <app-window
+            [headerText]="headerText"
             [windowStyle]="windowStyle"
             [contentTemplate]="contentTemplate"
             [footerTemplate]="footerTemplate"
-            (closeButtonClick)="onCloseButtonClick($event)"
-></app-window>
+            (closeClick)="onCloseClick($event)"
+    ></app-window>
+</div>

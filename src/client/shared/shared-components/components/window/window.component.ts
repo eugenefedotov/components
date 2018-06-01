@@ -14,7 +14,7 @@ export class WindowComponent implements OnInit {
     @Input() contentTemplate: TemplateRef<any>;
     @Input() footerTemplate: TemplateRef<any>;
 
-    @Output() closeButtonClick = new EventEmitter<MouseEvent>();
+    @Output() closeClick = new EventEmitter<MouseEvent>();
 
     constructor() {
     }
@@ -23,7 +23,7 @@ export class WindowComponent implements OnInit {
     }
 
     onCloseButtonClick($event: MouseEvent) {
-        this.closeButtonClick.emit($event);
+        this.closeClick.emit($event);
     }
 
 }

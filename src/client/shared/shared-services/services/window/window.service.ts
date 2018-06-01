@@ -1,5 +1,4 @@
 import {ComponentFactoryResolver, ComponentRef, Injectable, Injector, TemplateRef, Type} from '@angular/core';
-import {WindowItem} from './models/window-item.class';
 import {WindowComponent} from '../../../shared-components/components/window/window.component';
 import {PopUpService} from '../pop-up/pop-up.service';
 import {WindowStyleEnum} from '../../../shared-components/components/window/models/window-style.enum';
@@ -14,26 +13,20 @@ export class WindowService {
                 private popUpService: PopUpService) {
     }
 
-    open(headerText: string, contentTemplate: TemplateRef<any>, footerTemplate: TemplateRef<any>, windowStyle = WindowStyleEnum.Neutral): WindowItem {
+    open(headerText: string, contentTemplate: TemplateRef<any>, footerTemplate: TemplateRef<any>, windowStyle = WindowStyleEnum.Neutral) {
         const componentRef = this.createComponent(WindowComponent);
         const window = componentRef.instance;
+
         window.windowStyle = windowStyle;
         window.headerText = headerText;
         window.contentTemplate = contentTemplate;
         window.footerTemplate = footerTemplate;
 
-        const item = new WindowItem(this, componentRef);
+        window.closeClick.subscribe(() => componentRef.destroy());
 
-        window.closeButtonClick.subscribe(() => item.close());
+        this.popUpService.insertComponent(componentRef);
 
-        this.popUpService.open(componentRef);
-
-        return item;
-    }
-
-    close(item: WindowItem) {
-        this.popUpService.close(item.componentRef);
-        item.destroy();
+        return componentRef;
     }
 
     private createComponent<T>(comp: Type<T>): ComponentRef<T> {

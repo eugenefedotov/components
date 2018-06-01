@@ -8,7 +8,6 @@ import {ScrollBarComponent} from './components/scroll-bar/scroll-bar.component';
 import {WindowComponent} from './components/window/window.component';
 import {DialogComponent} from './components/dialog/dialog.component';
 import { ButtonComponent } from './components/button/button.component';
-import { PopUpRenderPlaceComponent } from './components/pop-up-render-place/pop-up-render-place.component';
 
 @NgModule({
     imports: [
@@ -22,8 +21,7 @@ import { PopUpRenderPlaceComponent } from './components/pop-up-render-place/pop-
         ScrollBarComponent,
         WindowComponent,
         DialogComponent,
-        ButtonComponent,
-        PopUpRenderPlaceComponent
+        ButtonComponent
     ],
     exports: [
         AuthenticationComponent,
@@ -33,11 +31,11 @@ import { PopUpRenderPlaceComponent } from './components/pop-up-render-place/pop-
         ScrollBarComponent,
         WindowComponent,
         DialogComponent,
-        ButtonComponent,
-        PopUpRenderPlaceComponent
+        ButtonComponent
     ],
     entryComponents: [
-        WindowComponent
+        WindowComponent,
+        DialogComponent
     ]
 })
 export class SharedComponentsModule {

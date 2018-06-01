@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnDestroy, OnInit, Output, TemplateRef} from '@angular/core';
+import {Component, EventEmitter, Input, OnDestroy, Output} from '@angular/core';
 import {WindowStyleEnum} from '../window/models/window-style.enum';
 
 @Component({
@@ -6,7 +6,7 @@ import {WindowStyleEnum} from '../window/models/window-style.enum';
     templateUrl: './dialog.component.html',
     styleUrls: ['./dialog.component.scss']
 })
-export class DialogComponent implements OnInit, OnDestroy {
+export class DialogComponent implements OnDestroy {
 
     @Input() windowStyle = WindowStyleEnum.Neutral;
 
@@ -16,35 +16,34 @@ export class DialogComponent implements OnInit, OnDestroy {
     @Input() rejectButtonText = 'Cancel';
     @Input() resolveButtonText = 'OK';
 
-    @Output() reject = new EventEmitter<void>();
-    @Output() resolve = new EventEmitter<void>();
+    @Output() rejected = new EventEmitter<void>();
+    @Output() resolved = new EventEmitter<void>();
     @Output() closed = new EventEmitter<void>();
 
     constructor() {
     }
 
-    ngOnInit() {
-    }
-
     close() {
-        if (this.reject.observers.length) {
-            this.reject.emit();
+        if (this.rejected.observers.length) {
+            this.rejected.emit();
         } else {
-            this.resolve.emit();
+            this.resolved.emit();
         }
         this.closed.emit();
     }
 
-    onCloseButtonClick($event: MouseEvent) {
+    onCloseClick($event: MouseEvent) {
         this.close();
     }
 
     onRejectButtonClick($event: MouseEvent) {
-        this.reject.emit();
+        this.rejected.emit();
+        this.closed.emit();
     }
 
     onResolveButtonClick($event: MouseEvent) {
-        this.resolve.emit();
+        this.resolved.emit();
+        this.closed.emit();
     }
 
     ngOnDestroy() {
