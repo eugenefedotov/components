@@ -1,15 +1,18 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
+import {DialogService} from '../../../../shared/shared-services/services/dialog/dialog.service';
 
 @Component({
-  selector: 'app-news',
-  templateUrl: './news.component.html',
-  styleUrls: ['./news.component.scss']
+    selector: 'app-news',
+    templateUrl: './news.component.html',
+    styleUrls: ['./news.component.scss']
 })
 export class NewsComponent implements OnInit {
 
-  constructor() { }
+    constructor(private dialogService: DialogService) {
+    }
 
-  ngOnInit() {
-  }
+    ngOnInit() {
+        this.dialogService.openInfo('test');
+    }
 
 }
