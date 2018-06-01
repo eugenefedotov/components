@@ -13,13 +13,18 @@
   .dialog {
     &__content-text {
       white-space: pre-line;
+      margin: 0 .5rem;
     }
 
     &__buttons {
       flex: 1 0 auto;
       display: flex;
       align-items: center;
-      justify-content: space-between;
+      justify-content: flex-end;
+
+      &-button {
+        margin: 0 .5rem;
+      }
     }
   }
 }

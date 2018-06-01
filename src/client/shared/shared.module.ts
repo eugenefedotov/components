@@ -5,7 +5,7 @@ import {SharedComponentsModule} from './shared-components/shared-components.modu
 @NgModule({
     imports: [
         SharedServicesModule,
-        SharedComponentsModule
+        SharedComponentsModule,
     ],
     declarations: [],
     providers: [],

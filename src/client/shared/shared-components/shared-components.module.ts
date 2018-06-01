@@ -7,11 +7,13 @@ import {ScrollBoxComponent} from './components/scroll-box/scroll-box.component';
 import {ScrollBarComponent} from './components/scroll-bar/scroll-bar.component';
 import {WindowComponent} from './components/window/window.component';
 import {DialogComponent} from './components/dialog/dialog.component';
-import { ButtonComponent } from './components/button/button.component';
+import {ButtonComponent} from './components/button/button.component';
+import {Angular2FontawesomeModule} from 'angular2-fontawesome';
 
 @NgModule({
     imports: [
-        CommonModule
+        CommonModule,
+        Angular2FontawesomeModule
     ],
     declarations: [
         AuthenticationComponent,

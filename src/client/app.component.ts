@@ -6,9 +6,13 @@ import {PopUpService} from './shared/shared-services/services/pop-up/pop-up.serv
     templateUrl: './app.component.html',
     styleUrls: ['./app.component.scss']
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
 
-    constructor(viewContainerRef: ViewContainerRef, popUpService: PopUpService) {
-        popUpService.setViewContainerRef(viewContainerRef);
+    constructor(public viewContainerRef: ViewContainerRef,
+                public popUpService: PopUpService) {
+    }
+
+    ngOnInit(): void {
+        this.popUpService.setViewContainerRef(this.viewContainerRef);
     }
 }

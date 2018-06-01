@@ -53,7 +53,7 @@ export class DialogService {
         dialogComponent.closed.pipe(first()).subscribe(() => componentRef.destroy());
         componentRef.changeDetectorRef.detectChanges();
 
-        this.popUpService.insertComponent(componentRef);
+        this.popUpService.insertComponent(componentRef, true);
 
         return componentRef;
     }
