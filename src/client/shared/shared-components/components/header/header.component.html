@@ -1,7 +1,9 @@
 <div class="header">
     <div class="header__content">
-        <div class="global-width">
-            Header
+        <div class="header__content-width-limit global-width">
+            <div class="header__content-title-text">
+                {{stateService.title$ | async}}
+            </div>
         </div>
     </div>
     <div class="header__menu"></div>

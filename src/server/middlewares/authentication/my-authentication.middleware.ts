@@ -46,6 +46,8 @@ export class MyAuthenticationMiddleware implements IMiddleware {
             }
         }
 
+        console.log(options, authInfo);
+
         if (!options.allowGuest && !authInfo.sessionId) {
             throw new Forbidden('authentication required');
         }

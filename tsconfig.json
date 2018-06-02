@@ -4,7 +4,9 @@
       "es2017",
       "dom"
     ],
-    "types": ["reflect-metadata"],
+    "types": [
+      "reflect-metadata"
+    ],
     "target": "esnext",
     "module": "none",
     "moduleResolution": "node",

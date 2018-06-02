@@ -3,7 +3,8 @@ import {NgModule} from '@angular/core';
 @NgModule({
     imports: [],
     declarations: [],
-    providers: []
+    providers: [
+    ]
 })
 export class SharedServicesModule {
 }
