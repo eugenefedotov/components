@@ -9,6 +9,6 @@ export class MenuController {
 
     @Get('')
     getMenu() {
-        return this.menuRepository.findRoots();
+        return this.menuRepository.findTrees();
     }
 }

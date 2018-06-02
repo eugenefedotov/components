@@ -1,0 +1,21 @@
+<ul class="header-menu global-width">
+    <li class="header-menu__item" *ngFor="let item of menuItems">
+        <ng-container *ngTemplateOutlet="menuItem; context: {item: item}"></ng-container>
+    </li>
+</ul>
+
+<ng-template #menuItem let-item="item">
+    <a class="header-menu__item-name header-menu__item-name_link"
+       *ngIf="item.url; else elseBlock"
+       [routerLink]="item.url"
+       [routerLinkActive]="'header-menu__item-name_link-active'"
+    >{{item.name}}</a>
+    <ng-template #elseBlock>
+        <span class="header-menu__item-name">{{item.name}}</span>
+    </ng-template>
+    <ul class="header-menu__children" *ngIf="item.children?.length">
+        <li class="header-menu__item" *ngFor="let child of item.children">
+            <ng-container *ngTemplateOutlet="menuItem; context: {item: child}"></ng-container>
+        </li>
+    </ul>
+</ng-template>

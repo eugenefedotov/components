@@ -1,5 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {AppStateService} from '../../../shared-services/services/app-state/app-state.service';
+import {RestMenuService} from '../../../shared-rest-services/rest-services/rest-menu/rest-menu.service';
+import {MenuEntity} from '../../../../../dao/core/menu/menu.entity';
 
 @Component({
     selector: 'app-header',
@@ -8,10 +10,15 @@ import {AppStateService} from '../../../shared-services/services/app-state/app-s
 })
 export class HeaderComponent implements OnInit {
 
-    constructor(public stateService: AppStateService) {
+    menu: MenuEntity[];
+
+    constructor(public stateService: AppStateService,
+                private restMenuService: RestMenuService) {
     }
 
     ngOnInit() {
+        this.restMenuService.getMenu().subscribe(value => this.menu = value);
+
     }
 
 }
