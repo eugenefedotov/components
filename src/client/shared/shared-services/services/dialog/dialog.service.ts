@@ -1,7 +1,7 @@
 import {ComponentFactoryResolver, ComponentRef, Injectable, Injector, Type} from '@angular/core';
 import {PopUpService} from '../pop-up/pop-up.service';
-import {DialogComponent} from '../../../shared-components/components/dialog/dialog.component';
-import {WindowStyleEnum} from '../../../shared-components/components/window/models/window-style.enum';
+import {DialogComponent} from '../../../shared-components/components/base/dialog/dialog.component';
+import {WindowStyleEnum} from '../../../shared-components/components/base/window/models/window-style.enum';
 import {first} from 'rxjs/operators';
 
 @Injectable({

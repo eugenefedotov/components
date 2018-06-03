@@ -1,5 +1,5 @@
 import {RouterModule} from '@angular/router';
-import {HeaderComponent} from './shared/shared-components/components/header/header.component';
+import {HeaderComponent} from './shared/shared-components/components/blocks/header/header.component';
 
 export const APP_ROUTER_MODULE = RouterModule.forRoot([
     {

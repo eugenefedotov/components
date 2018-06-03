@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {MenuEntity} from '../../../../../dao/core/menu/menu.entity';
+import {MenuEntity} from '../../../../../../dao/core/menu/menu.entity';
 
 @Component({
     selector: 'app-header-menu',

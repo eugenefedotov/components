@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
-import {AppStateService} from '../../../shared-services/services/app-state/app-state.service';
-import {RestMenuService} from '../../../shared-rest-services/rest-services/rest-menu/rest-menu.service';
-import {MenuEntity} from '../../../../../dao/core/menu/menu.entity';
+import {MenuEntity} from '../../../../../../dao/core/menu/menu.entity';
+import {AppStateService} from '../../../../shared-services/services/app-state/app-state.service';
+import {RestMenuService} from '../../../../shared-rest-services/rest-services/rest-menu/rest-menu.service';
 
 @Component({
     selector: 'app-header',
