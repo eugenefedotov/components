@@ -10,10 +10,8 @@ import {ButtonComponent} from './components/base/button/button.component';
 import {Angular2FontawesomeModule} from 'angular2-fontawesome';
 import {HeaderMenuComponent} from './components/blocks/header-menu/header-menu.component';
 import {RouterModule} from '@angular/router';
-import { OrganizationComponent } from './components/entity-views/organization/organization.component';
-import { PersonOnPositionComponent } from './components/entity-views/person-on-position/person-on-position.component';
-import { PositionComponent } from './components/entity-views/position/position.component';
-import { PersonComponent } from './components/entity-views/person/person.component';
+import {OrganizationComponent} from './components/entity-views/organization/organization.component';
+import {PersonComponent} from './components/entity-views/person/person.component';
 
 @NgModule({
     imports: [
@@ -31,8 +29,6 @@ import { PersonComponent } from './components/entity-views/person/person.compone
         ButtonComponent,
         HeaderMenuComponent,
         OrganizationComponent,
-        PersonOnPositionComponent,
-        PositionComponent,
         PersonComponent
     ],
     exports: [
