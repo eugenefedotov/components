@@ -11,7 +11,7 @@ export class InMemoryRestDataSource<T> implements RestDataSource<T> {
 
     }
 
-    getResult(request: RestDataRequestModel<T>): RestDataResponseModel<T> {
+    async getResult(request: RestDataRequestModel<T>): Promise<RestDataResponseModel<T>> {
         const response: RestDataResponseModel<T> = {items: null, count: null};
         let items = this.items;
 
