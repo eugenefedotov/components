@@ -51,11 +51,11 @@ export class InMemoryRestDataSource<T> implements RestDataSource<T> {
         return items;
     }
 
-    private filterItemsByField<P = keyof T>(items: T[], field: keyof T, type: RestDataRequestFilterTypeEnum, values: P[] | P): T[] {
+    private filterItemsByField<P = keyof T>(items: T[], field: keyof T, type: RestDataRequestFilterTypeEnum, values: T[P][] | T[P]): T[] {
         return items.filter(item => this.filterItemByField(item, field, type, values));
     }
 
-    private filterItemByField<P = keyof T>(item: T, field: P, type: RestDataRequestFilterTypeEnum, values: P[] | P): boolean {
+    private filterItemByField<P = keyof T>(item: T, field: P, type: RestDataRequestFilterTypeEnum, values: T[P][] | T[P]): boolean {
         if (!(field in item)) {
             return false;
         }

@@ -1,8 +1,5 @@
-import {RestDataRequestFilterTypeEnum} from './rest-data-request-filter-type.enum';
+import {RestDataRequestFilterItemModel} from './rest-data-request-filter-item.model';
 
 export type RestDataRequestFilterModel<T> = {
-    [P in keyof T]?: {
-        type: RestDataRequestFilterTypeEnum,
-        values: T[P] | T[P][]
-    } | T[P] | T[P][];
+    [P in keyof T]?: RestDataRequestFilterItemModel<T[P]>;
 }
