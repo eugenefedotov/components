@@ -32,35 +32,37 @@ export class RepositoryRestDataSource<T> implements RestDataSource<T> {
 
         let [items, count] = await qb.getManyAndCount();
 
+        let partialItems: Partial<T>[] = items;
+
         if (request.fields) {
-            items = this.filterFields(items, request.fields);
+            partialItems = this.filterFields(partialItems, request.fields);
         }
 
         return <RestDataResponseModel<T>>{
             count: count,
-            items: items
+            items: partialItems
         };
     }
 
     private addFilter(qb: SelectQueryBuilder<T>, filter: RestDataRequestFilterModel<T>) {
         Object.keys(filter).forEach(field => {
             qb.andWhere(new Brackets(qb1 => {
-                this.addFilterByField(qb1, field, filter[field]);
+                this.addFilterByField(qb1, field as keyof T, filter[field]);
             }));
         });
     }
 
-    private addFilterByField<P = keyof T>(qb: WhereExpression, field: P, filterElement: RestDataRequestFilterItemModel<T[P]>) {
-        const values = 'values' in filterElement ? filterElement.values : filterElement;
+    private addFilterByField<P extends keyof T>(qb: WhereExpression, field: P, filterElement: RestDataRequestFilterItemModel<T[P]>) {
+        const values = ('values' in (<any>filterElement)) ? filterElement['values'] : filterElement;
         const filterValues: T[P][] = Array.isArray(values) ? values : [values];
-        const filterType: RestDataRequestFilterTypeEnum = 'type' in filterElement && filterElement.type || RestDataRequestFilterTypeEnum.Equal;
+        const filterType: RestDataRequestFilterTypeEnum = ('type' in (<any>filterElement)) && filterElement['type'] || RestDataRequestFilterTypeEnum.Equal;
 
         filterValues.forEach((filterValue, index) => {
             this.addFilterByFieldValue(qb, field, filterType, filterValue, index);
         });
     }
 
-    private addFilterByFieldValue<P = keyof T>(qb: WhereExpression, field: P, type: RestDataRequestFilterTypeEnum, value: T[P], index: number) {
+    private addFilterByFieldValue<P extends keyof T>(qb: WhereExpression, field: P, type: RestDataRequestFilterTypeEnum, value: T[P], index: number) {
 
         const propName = this.getPropertyName(field);
         const paramName = `${field}_${index}`;
@@ -111,7 +113,7 @@ export class RepositoryRestDataSource<T> implements RestDataSource<T> {
         }
     }
 
-    private filterFields(items: T[], fields: (keyof T)[]): T[] {
+    private filterFields(items: Partial<T>[], fields: (keyof T)[]): Partial<T>[] {
         if (!fields || !fields.length) {
             return items;
         }
@@ -120,7 +122,7 @@ export class RepositoryRestDataSource<T> implements RestDataSource<T> {
             const filteredItem = {};
 
             fields.forEach(field => {
-                filteredItem[field] = item[field];
+                filteredItem[field as string] = item[field];
             });
 
             return filteredItem;

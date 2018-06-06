@@ -26,11 +26,13 @@ export class InMemoryRestDataSource<T> implements RestDataSource<T> {
         }
 
         if (request.fields) {
-            items = this.filterFields(items, request.fields);
+            response.items = this.filterFields(items, request.fields);
+        } else {
+            response.items = items;
         }
 
         if (request.offset || request.limit) {
-            items = this.sliceItems(items, request.offset, request.limit);
+            response.items = this.sliceItems(response.items, request.offset, request.limit);
         }
 
         response.items = items;
@@ -51,17 +53,17 @@ export class InMemoryRestDataSource<T> implements RestDataSource<T> {
         return items;
     }
 
-    private filterItemsByField<P = keyof T>(items: T[], field: keyof T, type: RestDataRequestFilterTypeEnum, values: T[P][] | T[P]): T[] {
+    private filterItemsByField<P extends keyof T>(items: T[], field: keyof T, type: RestDataRequestFilterTypeEnum, values: T[P][] | T[P]): T[] {
         return items.filter(item => this.filterItemByField(item, field, type, values));
     }
 
-    private filterItemByField<P = keyof T>(item: T, field: P, type: RestDataRequestFilterTypeEnum, values: T[P][] | T[P]): boolean {
+    private filterItemByField<P extends keyof T>(item: T, field: P, type: RestDataRequestFilterTypeEnum, values: T[P][] | T[P]): boolean {
         if (!(field in item)) {
             return false;
         }
 
         const itemValue = item[field];
-        const filterValues: P[] = Array.isArray(values) ? values : [values];
+        const filterValues: T[P][] = Array.isArray(values) ? values : [values];
 
         return filterValues.some(filterValue => this.filterItemByValue(itemValue, type, filterValue));
     }
@@ -71,11 +73,11 @@ export class InMemoryRestDataSource<T> implements RestDataSource<T> {
             case RestDataRequestFilterTypeEnum.Equal:
                 return itemValue === filterValue;
             case RestDataRequestFilterTypeEnum.Contains:
-                return String(itemValue).includes(filterValue);
+                return String(itemValue).includes(String(filterValue));
             case RestDataRequestFilterTypeEnum.StartWith:
-                return String(itemValue).startsWith(filterValue);
+                return String(itemValue).startsWith(String(filterValue));
             case RestDataRequestFilterTypeEnum.EndWith:
-                return String(itemValue).endsWith(filterValue);
+                return String(itemValue).endsWith(String(filterValue));
             case RestDataRequestFilterTypeEnum.LessThan:
                 return itemValue < filterValue;
             case RestDataRequestFilterTypeEnum.LessThanOrEquals:
@@ -99,8 +101,8 @@ export class InMemoryRestDataSource<T> implements RestDataSource<T> {
 
     private sortItemsStep(items: T[], sortItem: RestDataRequestSortModel<T>): T[] {
         return items.sort((item1, item2) => {
-            let value1 = item1[sortItem.field];
-            let value2 = item2[sortItem.field];
+            let value1: any = item1[sortItem.field];
+            let value2: any = item2[sortItem.field];
 
             if (typeof value1 === 'string' && typeof value2 === 'string') {
                 value1 = value1.toLowerCase();
@@ -127,7 +129,7 @@ export class InMemoryRestDataSource<T> implements RestDataSource<T> {
         });
     }
 
-    private filterFields(items: T[], fields: (keyof T)[]): T[] {
+    private filterFields(items: T[], fields: (keyof T)[]): Partial<T>[] {
         if (!fields || !fields.length) {
             return items;
         }
@@ -136,14 +138,14 @@ export class InMemoryRestDataSource<T> implements RestDataSource<T> {
             const filteredItem = {};
 
             fields.forEach(field => {
-                filteredItem[field] = item[field];
+                filteredItem[field as string] = item[field];
             });
 
             return filteredItem;
         });
     }
 
-    private sliceItems(items: T[], offset: number, limit: number): T[] {
+    private sliceItems(items: Partial<T>[], offset: number, limit: number): Partial<T>[] {
         return items.slice(offset, offset + limit);
     }
 }
