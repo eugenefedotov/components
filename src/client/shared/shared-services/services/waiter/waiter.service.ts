@@ -50,8 +50,8 @@ enum WaiterStateEnum {
 }
 
 class _WaiterService {
-    private static stack = new Map<string, boolean>();
     static readonly state$ = new Subject<WaiterStateEnum>();
+    private static stack = new Map<string, boolean>();
 
     static show(key: string, lock = false) {
         this.stack.set(key, lock);
@@ -89,7 +89,16 @@ export class WaiterService {
     }
 
     private setState(state: WaiterStateEnum) {
-        state ? this.showWaiter(state) : this.destroyWaiter();
+        switch (state) {
+            case WaiterStateEnum.Visible:
+            case WaiterStateEnum.VisibleAndLock:
+                this.showWaiter(state);
+                break;
+            case WaiterStateEnum.None:
+            default:
+                this.destroyWaiter();
+                break;
+        }
     }
 
     private showWaiter(state: WaiterStateEnum) {
