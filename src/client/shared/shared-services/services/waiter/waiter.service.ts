@@ -20,18 +20,12 @@ export function Waiter(lock = false): MethodDecorator {
                 const originalResult = originalMethod.apply(this, args);
 
                 if (originalResult instanceof Promise) {
-                    (originalResult as Promise<any>).then(_ => {
-                        terminate();
-                    }).catch(e => {
-                        terminate();
-                    });
+                    (originalResult as Promise<any>).then(terminate, terminate);
 
                     return (originalResult as Promise<any>);
 
                 } else if (originalResult instanceof Observable) {
-                    (originalResult as Observable<any>).subscribe(null, null, () => {
-                        terminate();
-                    });
+                    (originalResult as Observable<any>).subscribe(null, terminate, terminate);
 
                     return (originalResult as Observable<any>);
                 } else {
