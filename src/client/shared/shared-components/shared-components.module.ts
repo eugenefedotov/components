@@ -12,6 +12,7 @@ import {HeaderMenuComponent} from './components/blocks/header-menu/header-menu.c
 import {RouterModule} from '@angular/router';
 import {OrganizationComponent} from './components/entity-views/organization/organization.component';
 import {PersonComponent} from './components/entity-views/person/person.component';
+import { WaiterComponent } from './components/base/waiter/waiter.component';
 
 @NgModule({
     imports: [
@@ -29,7 +30,8 @@ import {PersonComponent} from './components/entity-views/person/person.component
         ButtonComponent,
         HeaderMenuComponent,
         OrganizationComponent,
-        PersonComponent
+        PersonComponent,
+        WaiterComponent
     ],
     exports: [
         AuthenticationComponent,
@@ -42,7 +44,8 @@ import {PersonComponent} from './components/entity-views/person/person.component
     ],
     entryComponents: [
         WindowComponent,
-        DialogComponent
+        DialogComponent,
+        WaiterComponent
     ]
 })
 export class SharedComponentsModule {
