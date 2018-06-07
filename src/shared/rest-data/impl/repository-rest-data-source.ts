@@ -1,12 +1,12 @@
 import {RestDataSource} from '../rest-data-source';
-import {RestDataRequestModel} from '../rest-data-request.model';
-import {RestDataResponseModel} from '../rest-data-response.model';
+import {RestDataRequestModel} from '../models/rest-data-request.model';
+import {RestDataResponseModel} from '../models/rest-data-response.model';
 import {Brackets, Repository, SelectQueryBuilder, WhereExpression} from 'typeorm';
-import {RestDataRequestFilterTypeEnum} from '../rest-data-request-filter-type.enum';
-import {RestDataRequestSortModel} from '../rest-data-request-sort.model';
-import {RestDataRequestSortOrderEnum} from '../rest-data-request-sort-order.enum';
-import {RestDataRequestFilterItemModel} from '../rest-data-request-filter-item.model';
-import {RestDataRequestFilterModel} from '../rest-data-request-filter.model';
+import {RestDataRequestFilterTypeEnum} from '../models/rest-data-request-filter-type.enum';
+import {RestDataRequestSortModel} from '../models/rest-data-request-sort.model';
+import {RestDataRequestSortOrderEnum} from '../models/rest-data-request-sort-order.enum';
+import {RestDataRequestFilterItemModel} from '../models/rest-data-request-filter-item.model';
+import {RestDataRequestFilterModel} from '../models/rest-data-request-filter.model';
 
 export class RepositoryRestDataSource<T> implements RestDataSource<T> {
     private fields: string[];
@@ -52,7 +52,7 @@ export class RepositoryRestDataSource<T> implements RestDataSource<T> {
         });
     }
 
-    private addFilterByField<P extends keyof T>(qb: WhereExpression, field: P, filterElement: RestDataRequestFilterItemModel<T[P]>) {
+    private addFilterByField<P extends keyof T>(qb: WhereExpression, field: keyof T, filterElement: RestDataRequestFilterItemModel<T[P]>) {
         const values = ('values' in (<any>filterElement)) ? filterElement['values'] : filterElement;
         const filterValues: T[P][] = Array.isArray(values) ? values : [values];
         const filterType: RestDataRequestFilterTypeEnum = ('type' in (<any>filterElement)) && filterElement['type'] || RestDataRequestFilterTypeEnum.Equal;
@@ -62,7 +62,7 @@ export class RepositoryRestDataSource<T> implements RestDataSource<T> {
         });
     }
 
-    private addFilterByFieldValue<P extends keyof T>(qb: WhereExpression, field: P, type: RestDataRequestFilterTypeEnum, value: T[P], index: number) {
+    private addFilterByFieldValue<P extends keyof T>(qb: WhereExpression, field: keyof T, type: RestDataRequestFilterTypeEnum, value: T[P], index: number) {
 
         const propName = this.getPropertyName(field);
         const paramName = `${field}_${index}`;
@@ -129,8 +129,8 @@ export class RepositoryRestDataSource<T> implements RestDataSource<T> {
         });
     }
 
-    private getPropertyName(field: string) {
-        if (!this.fields.includes(field)) {
+    private getPropertyName(field: keyof T) {
+        if (!this.fields.includes(field as string)) {
             throw new Error(`field ${field} non exists`);
         }
 

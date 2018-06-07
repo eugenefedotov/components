@@ -1,10 +1,10 @@
-import {RestDataRequestModel} from '../rest-data-request.model';
-import {RestDataResponseModel} from '../rest-data-response.model';
-import {RestDataRequestFilterModel} from '../rest-data-request-filter.model';
-import {RestDataRequestSortModel} from '../rest-data-request-sort.model';
+import {RestDataRequestModel} from '../models/rest-data-request.model';
+import {RestDataResponseModel} from '../models/rest-data-response.model';
+import {RestDataRequestFilterModel} from '../models/rest-data-request-filter.model';
+import {RestDataRequestSortModel} from '../models/rest-data-request-sort.model';
 import {RestDataSource} from '../rest-data-source';
-import {RestDataRequestFilterTypeEnum} from '../rest-data-request-filter-type.enum';
-import {RestDataRequestSortOrderEnum} from '../rest-data-request-sort-order.enum';
+import {RestDataRequestFilterTypeEnum} from '../models/rest-data-request-filter-type.enum';
+import {RestDataRequestSortOrderEnum} from '../models/rest-data-request-sort-order.enum';
 
 export class InMemoryRestDataSource<T> implements RestDataSource<T> {
     constructor(private items: T[]) {
@@ -63,7 +63,7 @@ export class InMemoryRestDataSource<T> implements RestDataSource<T> {
         }
 
         const itemValue = item[field];
-        const filterValues: T[P][] = Array.isArray(values) ? values : [values];
+        const filterValues = Array.isArray(values) ? values as T[P][] : [values] as T[P][];
 
         return filterValues.some(filterValue => this.filterItemByValue(itemValue, type, filterValue));
     }
