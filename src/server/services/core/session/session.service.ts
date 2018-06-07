@@ -1,52 +1,41 @@
-import {UserSessionEntity} from '../../../../dao/core/auth/user-session/user-session.entity';
 import {UserEntity} from '../../../../dao/core/auth/user/user.entity';
-import {UserSessionRepository} from '../../../../dao/core/auth/user-session/user-session.repository';
-import {UserSessionConnectRepository} from '../../../../dao/core/auth/user-session-connect/user-session-connect.repository';
 import {SessionConnectModel} from './models/session-connect.model';
-import {UserSessionConnectEntity} from '../../../../dao/core/auth/user-session-connect/user-session-connect.entity';
-import {SessionNotFoundException} from './exceptions/session-not-found.exception';
 import {Service} from '@tsed/common';
-import {getCustomRepository} from 'typeorm';
+import {Session} from './models/session';
+import * as uuidv4 from 'uuid/v4';
+import {SessionNotFoundException} from './exceptions/session-not-found.exception';
+import {first} from 'rxjs/operators';
 
 @Service()
 export class SessionService {
-    private userSessionRepository = getCustomRepository(UserSessionRepository);
-    private userSessionConnectionRepository = getCustomRepository(UserSessionConnectRepository);
+    private sessions = new Map<string, Session>();
 
-    async useSession(sessionId: string, sessionConnect: SessionConnectModel): Promise<UserSessionEntity> {
-        const session = await this.userSessionRepository.findOne(sessionId, {relations: ['connections']});
+    async openSession(user: UserEntity, sessionConnect: SessionConnectModel): Promise<Session> {
+        const sessionId = uuidv4();
+        const session = new Session(sessionId, user.id);
 
-        if (!session) {
+        session.destroy$.pipe(first()).subscribe(() => this.destroySession(sessionId));
+
+        this.sessions.set(sessionId, session);
+        return this.useSession(sessionId, sessionConnect);
+    }
+
+    async useSession(sessionId: string, sessionConnect: SessionConnectModel): Promise<Session> {
+        const session = this.getSession(sessionId);
+
+        return session;
+    }
+
+    async getSession(sessionId: string): Promise<Session> {
+        if (!this.sessions.has(sessionId)) {
             throw new SessionNotFoundException();
         }
-
-        let connection: UserSessionConnectEntity = session.connections.find(con => con.ipV4Long === sessionConnect.ipV4Long && con.userAgent === sessionConnect.userAgent);
-
-        if (!connection) {
-            connection = this.userSessionConnectionRepository.create(sessionConnect);
-        }
-
-        connection.lastDate = new Date();
-        connection.session = session;
-
-        await this.userSessionConnectionRepository.save(connection);
-
-        session.lastUsageDate = new Date();
-        delete session.connections;
-
-        return this.userSessionRepository.save(session);
+        return this.sessions.get(sessionId);
     }
 
-    async openSession(user: UserEntity, sessionConnect: SessionConnectModel): Promise<UserSessionEntity> {
-        const connection = this.userSessionConnectionRepository.create(sessionConnect);
-
-        const session = this.userSessionRepository.create({
-            connections: [connection],
-            user: user,
-            lastUsageDate: new Date()
-        });
-
-        return this.userSessionRepository.save(session);
+    async destroySession(sessionId: string) {
+        const session = await this.getSession(sessionId); // check
+        session.destroy();
+        this.sessions.delete(sessionId);
     }
-
 }

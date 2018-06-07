@@ -44,7 +44,8 @@
     "ts-httpexceptions": "^3.0.2",
     "typeorm": "^0.2.0-alpha.42",
     "webdav-client": "^1.4.0",
-    "zone.js": "^0.8.26"
+    "zone.js": "^0.8.26",
+    "uuid": "^3.2.1"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~0.6.1",
