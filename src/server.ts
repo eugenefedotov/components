@@ -46,7 +46,7 @@ class Server extends ServerLoader {
     }
 
     public $onServerInitError(err) {
-        console.error(err);
+        console.errorValue(err);
     }
 }
 

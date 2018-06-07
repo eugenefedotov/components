@@ -29,6 +29,11 @@ body {
   color: $color-dark;
 }
 
+input, input[type=text], input[type=password], input[type=number] {
+  height: 2rem;
+  padding: 0 1em;
+}
+
 router-outlet {
   display: none;
 }

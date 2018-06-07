@@ -13,6 +13,7 @@ import {RouterModule} from '@angular/router';
 import {OrganizationComponent} from './components/entity-views/organization/organization.component';
 import {PersonComponent} from './components/entity-views/person/person.component';
 import { WaiterComponent } from './components/base/waiter/waiter.component';
+import { InputWrapperComponent } from './components/base/input-wrapper/input-wrapper.component';
 
 @NgModule({
     imports: [
@@ -31,7 +32,8 @@ import { WaiterComponent } from './components/base/waiter/waiter.component';
         HeaderMenuComponent,
         OrganizationComponent,
         PersonComponent,
-        WaiterComponent
+        WaiterComponent,
+        InputWrapperComponent
     ],
     exports: [
         AuthenticationComponent,
@@ -40,7 +42,8 @@ import { WaiterComponent } from './components/base/waiter/waiter.component';
         ScrollBarComponent,
         WindowComponent,
         DialogComponent,
-        ButtonComponent
+        ButtonComponent,
+        InputWrapperComponent
     ],
     entryComponents: [
         WindowComponent,
