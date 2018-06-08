@@ -51,6 +51,10 @@ export class VirtualListComponent implements OnInit, OnChanges, AfterViewChecked
     ngOnInit() {
     }
 
+    getPageByOffset(offset: number) {
+        return Math.floor(offset / this.pageSize);
+    }
+
     clearCache() {
         this.itemsPageCache.clear();
         this.heightsCache.clear();
@@ -60,6 +64,22 @@ export class VirtualListComponent implements OnInit, OnChanges, AfterViewChecked
 
     }
 
+    toCacheItems(offset: number, items: any[]) {
+        // дополнительный сдвиг, для выравнивания по страницам
+        const addOffset = Math.ceil(offset / this.pageSize) * this.pageSize - offset;
+        let currentOffset = offset;
+
+        while (currentOffset + addOffset + this.pageSize <= items.length + offset) {
+            const page = this.getPageByOffset(offset + addOffset);
+
+            if (!this.itemsPageCache.has(page)){
+
+            }
+
+            currentOffset += this.pageSize;
+        }
+    }
+
     async getItems(offset: number, limit: number): Promise<ListSourceResponseModel<any>> {
         if (!this.source) {
             return {count: 0, items: []};
@@ -67,6 +87,35 @@ export class VirtualListComponent implements OnInit, OnChanges, AfterViewChecked
 
         const end = offset + limit;
 
+        const itemsStart = [];
+        const itemsEnd = [];
+        let offsetToLoad = offset;
+        let endToLoad = end;
+
+        while (offsetToLoad < endToLoad && this.itemsPageCache.has(this.getPageByOffset(offsetToLoad))) {
+            itemsStart.push(...this.itemsPageCache.get(this.getPageByOffset(offsetToLoad)));
+            offsetToLoad += this.pageSize;
+        }
+
+        while (offsetToLoad < endToLoad && this.itemsPageCache.has(this.getPageByOffset(endToLoad))) {
+            itemsEnd.splice(0, 0, ...this.itemsPageCache.get(this.getPageByOffset(endToLoad)));
+            endToLoad -= this.pageSize;
+        }
+
+        if (endToLoad - offsetToLoad > 0) {
+            const {items, count} = await this.source.getItems(offsetToLoad, endToLoad - offsetToLoad);
+            this.toCacheItems(offsetToLoad, items);
+
+            return {
+                items: [...itemsStart, ...items, ...itemsEnd],
+                count: this.sourceSize = count
+            };
+        } else {
+            return {
+                items: [...itemsStart, ...itemsEnd],
+                count: this.sourceSize
+            };
+        }
     }
 
     async updateItems() {
