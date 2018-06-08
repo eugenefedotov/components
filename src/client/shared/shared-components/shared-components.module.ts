@@ -16,6 +16,7 @@ import { WaiterComponent } from './components/base/waiter/waiter.component';
 import { InputWrapperComponent } from './components/base/input-wrapper/input-wrapper.component';
 import { SelectComponent } from './components/base/select/select.component';
 import { VirtualListComponent } from './components/base/virtual-list/virtual-list.component';
+import { SpinnerComponent } from './components/base/spinner/spinner.component';
 
 @NgModule({
     imports: [
@@ -37,7 +38,8 @@ import { VirtualListComponent } from './components/base/virtual-list/virtual-lis
         WaiterComponent,
         InputWrapperComponent,
         SelectComponent,
-        VirtualListComponent
+        VirtualListComponent,
+        SpinnerComponent
     ],
     exports: [
         AuthenticationComponent,
