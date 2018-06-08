@@ -48,9 +48,9 @@ export class RepositoryRestDataSource<T> implements RestDataSource<T> {
     }
 
     private addFilterByField<P extends keyof T>(qb: WhereExpression, field: keyof T, filterElement: RestDataRequestFilterItemModel<T[P]>) {
-        const values = ('values' in (<any>filterElement)) ? filterElement['values'] : filterElement;
+        const values = filterElement.values;
         const filterValues: T[P][] = Array.isArray(values) ? values : [values];
-        const filterType: RestDataRequestFilterTypeEnum = ('type' in (<any>filterElement)) && filterElement['type'] || RestDataRequestFilterTypeEnum.Equal;
+        const filterType: RestDataRequestFilterTypeEnum = filterElement.type || RestDataRequestFilterTypeEnum.Equal;
 
         filterValues.forEach((filterValue, index) => {
             this.addFilterByFieldValue(qb, field, filterType, filterValue, index);
