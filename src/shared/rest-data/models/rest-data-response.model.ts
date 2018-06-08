@@ -1,4 +1,4 @@
 export interface RestDataResponseModel<T> {
-    items: Partial<T>[];
+    items: T[];
     count: number;
 }

@@ -32,16 +32,11 @@ export class RepositoryRestDataSource<T> implements RestDataSource<T> {
 
         let [items, count] = await qb.getManyAndCount();
 
-        let partialItems: Partial<T>[] = items;
-
         if (request.fields) {
-            partialItems = this.filterFields(partialItems, request.fields);
+            items = this.filterFields(items, request.fields);
         }
 
-        return <RestDataResponseModel<T>>{
-            count: count,
-            items: partialItems
-        };
+        return <RestDataResponseModel<T>>{count, items};
     }
 
     private addFilter(qb: SelectQueryBuilder<T>, filter: RestDataRequestFilterModel<T>) {
@@ -113,7 +108,7 @@ export class RepositoryRestDataSource<T> implements RestDataSource<T> {
         }
     }
 
-    private filterFields(items: Partial<T>[], fields: (keyof T)[]): Partial<T>[] {
+    private filterFields(items: T[], fields: (keyof T)[]): T[] {
         if (!fields || !fields.length) {
             return items;
         }
@@ -125,7 +120,7 @@ export class RepositoryRestDataSource<T> implements RestDataSource<T> {
                 filteredItem[field as string] = item[field];
             });
 
-            return filteredItem;
+            return filteredItem as T;
         });
     }
 

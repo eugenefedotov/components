@@ -129,7 +129,7 @@ export class InMemoryRestDataSource<T> implements RestDataSource<T> {
         });
     }
 
-    private filterFields(items: T[], fields: (keyof T)[]): Partial<T>[] {
+    private filterFields(items: T[], fields: (keyof T)[]): T[] {
         if (!fields || !fields.length) {
             return items;
         }
@@ -141,11 +141,11 @@ export class InMemoryRestDataSource<T> implements RestDataSource<T> {
                 filteredItem[field as string] = item[field];
             });
 
-            return filteredItem;
+            return filteredItem as T;
         });
     }
 
-    private sliceItems(items: Partial<T>[], offset: number, limit: number): Partial<T>[] {
+    private sliceItems(items: T[], offset: number, limit: number): T[] {
         return items.slice(offset, offset + limit);
     }
 }
