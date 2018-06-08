@@ -14,6 +14,8 @@ import {OrganizationComponent} from './components/entity-views/organization/orga
 import {PersonComponent} from './components/entity-views/person/person.component';
 import { WaiterComponent } from './components/base/waiter/waiter.component';
 import { InputWrapperComponent } from './components/base/input-wrapper/input-wrapper.component';
+import { SelectComponent } from './components/base/select/select.component';
+import { VirtualListComponent } from './components/base/virtual-list/virtual-list.component';
 
 @NgModule({
     imports: [
@@ -33,7 +35,9 @@ import { InputWrapperComponent } from './components/base/input-wrapper/input-wra
         OrganizationComponent,
         PersonComponent,
         WaiterComponent,
-        InputWrapperComponent
+        InputWrapperComponent,
+        SelectComponent,
+        VirtualListComponent
     ],
     exports: [
         AuthenticationComponent,

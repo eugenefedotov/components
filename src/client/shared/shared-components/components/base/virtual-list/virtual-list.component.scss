@@ -1,0 +1,25 @@
+:host {
+  flex: 1 1 auto;
+
+  display: flex;
+  flex-direction: column;
+
+  .virtual-list {
+    flex: 1 1 auto;
+    display: block;
+
+    &__top {
+
+    }
+
+    &__view {
+      &-item {
+
+      }
+    }
+
+    &__bottom {
+
+    }
+  }
+}

@@ -1,0 +1,9 @@
+<app-scroll-box class="virtual-list">
+    <div class="virtual-list__top" #top></div>
+    <div class="virtual-list__view" #view>
+        <div class="virtual-list__view-item" #viewItem *ngFor="let item of viewItems;trackBy:identify">
+            <ng-container *ngTemplateOutlet="itemTemplate; context: {item: item}"></ng-container>
+        </div>
+    </div>
+    <div class="virtual-list__bottom" #bottom></div>
+</app-scroll-box>
