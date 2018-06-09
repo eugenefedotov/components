@@ -17,6 +17,7 @@ import { InputWrapperComponent } from './components/base/input-wrapper/input-wra
 import { SelectComponent } from './components/base/select/select.component';
 import { VirtualListComponent } from './components/base/virtual-list/virtual-list.component';
 import { SpinnerComponent } from './components/base/spinner/spinner.component';
+import { TabSwitcherComponent } from './components/base/tab-switcher/tab-switcher.component';
 
 @NgModule({
     imports: [
@@ -39,7 +40,8 @@ import { SpinnerComponent } from './components/base/spinner/spinner.component';
         InputWrapperComponent,
         SelectComponent,
         VirtualListComponent,
-        SpinnerComponent
+        SpinnerComponent,
+        TabSwitcherComponent
     ],
     exports: [
         AuthenticationComponent,
