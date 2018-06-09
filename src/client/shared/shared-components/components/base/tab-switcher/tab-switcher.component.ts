@@ -9,6 +9,8 @@ import {TabSwitcherTabModel} from './models/tab-switcher-tab.model';
 export class TabSwitcherComponent implements OnInit {
 
     @Input() tabs: TabSwitcherTabModel[];
+    @Input() selectedTab: TabSwitcherTabModel;
+    @Input() selectedTabIndex: number;
 
     @Input() canAdding = false;
     @Input() canDelete = false;
@@ -17,6 +19,9 @@ export class TabSwitcherComponent implements OnInit {
     @Output() addClick = new EventEmitter<MouseEvent>();
     @Output() deleteClick = new EventEmitter<MouseEvent>();
     @Output() afterSort = new EventEmitter<TabSwitcherTabModel[]>();
+
+    @Output() selectedTabChange = new EventEmitter<TabSwitcherTabModel>();
+    @Output() selectedTabIndexChange = new EventEmitter<TabSwitcherTabModel>();
 
     constructor() {
     }

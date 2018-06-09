@@ -18,6 +18,8 @@ import { SelectComponent } from './components/base/select/select.component';
 import { VirtualListComponent } from './components/base/virtual-list/virtual-list.component';
 import { SpinnerComponent } from './components/base/spinner/spinner.component';
 import { TabSwitcherComponent } from './components/base/tab-switcher/tab-switcher.component';
+import { TabSetComponent } from './components/base/tab-set/tab-set.component';
+import { TabSetTabComponent } from './components/base/tab-set-tab/tab-set-tab.component';
 
 @NgModule({
     imports: [
@@ -41,7 +43,9 @@ import { TabSwitcherComponent } from './components/base/tab-switcher/tab-switche
         SelectComponent,
         VirtualListComponent,
         SpinnerComponent,
-        TabSwitcherComponent
+        TabSwitcherComponent,
+        TabSetComponent,
+        TabSetTabComponent
     ],
     exports: [
         AuthenticationComponent,

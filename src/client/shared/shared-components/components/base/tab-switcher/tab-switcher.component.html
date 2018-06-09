@@ -1,5 +1,8 @@
 <div class="tab-switcher">
-    <div class="tab-switcher__tab" *ngFor="let tab of tabs">
+    <div *ngFor="let tab of tabs"
+         class="tab-switcher__tab"
+         [class.tab-switcher__tab_selected]="tab === selectedTab"
+    >
         <div class="tab-switcher__tab-title">{{tab.title}}</div>
     </div>
 </div>

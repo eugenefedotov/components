@@ -1,0 +1,10 @@
+<div class="tab-set">
+    <app-tab-switcher class="tab-set__header"
+                      [tabs]="tabSwitcherTabs"
+                      [(selectedTabIndex)]="tabSwitcherSelectedTabIndex"
+    ></app-tab-switcher>
+    <div class="tab-set__content">
+        <ng-content select="app-tab-set-tab"></ng-content>
+    </div>
+</div>
+
