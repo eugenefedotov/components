@@ -1,3 +1,6 @@
-<p>
-  spinner works!
-</p>
+<div class="spinner">
+    <div *ngFor="let item of [0, 1, 2, 3, 4]"
+         class="spinner__ball"
+         [ngClass]="'spinner__ball-i'+item"
+    ><div class="spinner__ball-inner"></div></div>
+</div>
