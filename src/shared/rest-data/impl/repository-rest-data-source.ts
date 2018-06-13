@@ -6,7 +6,6 @@ import {RestDataRequestFilterTypeEnum} from '../models/rest-data-request-filter-
 import {RestDataRequestSortModel} from '../models/rest-data-request-sort.model';
 import {RestDataRequestSortOrderEnum} from '../models/rest-data-request-sort-order.enum';
 import {RestDataRequestFilterItemModel} from '../models/rest-data-request-filter-item.model';
-import {RestDataRequestFilterModel} from '../models/rest-data-request-filter.model';
 
 export class RepositoryRestDataSource<T> implements RestDataSource<T> {
     private fields: string[];
@@ -39,17 +38,17 @@ export class RepositoryRestDataSource<T> implements RestDataSource<T> {
         return <RestDataResponseModel<T>>{count, items};
     }
 
-    private addFilter(qb: SelectQueryBuilder<T>, filter: RestDataRequestFilterModel<T>) {
-        Object.keys(filter).forEach(field => {
+    private addFilter(qb: SelectQueryBuilder<T>, filters: RestDataRequestFilterItemModel<T>[]) {
+        filters.forEach(filter => {
             qb.andWhere(new Brackets(qb1 => {
-                this.addFilterByField(qb1, field as keyof T, filter[field]);
+                this.addFilterByField(qb1, filter);
             }));
         });
     }
 
-    private addFilterByField<P extends keyof T>(qb: WhereExpression, field: keyof T, filterElement: RestDataRequestFilterItemModel<T[P]>) {
-        const values = filterElement.values;
-        const filterValues: T[P][] = Array.isArray(values) ? values : [values];
+    private addFilterByField<P extends keyof T>(qb: WhereExpression, filterElement: RestDataRequestFilterItemModel<T, P>) {
+        const field = filterElement.field;
+        const filterValues: T[P][] = filterElement.values;
         const filterType: RestDataRequestFilterTypeEnum = filterElement.type || RestDataRequestFilterTypeEnum.Equal;
 
         filterValues.forEach((filterValue, index) => {

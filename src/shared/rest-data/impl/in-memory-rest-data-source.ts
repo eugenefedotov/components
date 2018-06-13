@@ -1,10 +1,10 @@
 import {RestDataRequestModel} from '../models/rest-data-request.model';
 import {RestDataResponseModel} from '../models/rest-data-response.model';
-import {RestDataRequestFilterModel} from '../models/rest-data-request-filter.model';
 import {RestDataRequestSortModel} from '../models/rest-data-request-sort.model';
 import {RestDataSource} from '../rest-data-source';
 import {RestDataRequestFilterTypeEnum} from '../models/rest-data-request-filter-type.enum';
 import {RestDataRequestSortOrderEnum} from '../models/rest-data-request-sort-order.enum';
+import {RestDataRequestFilterItemModel} from '../models/rest-data-request-filter-item.model';
 
 export class InMemoryRestDataSource<T> implements RestDataSource<T> {
     constructor(private items: T[]) {
@@ -40,14 +40,10 @@ export class InMemoryRestDataSource<T> implements RestDataSource<T> {
         return response;
     }
 
-    private filterItems(items: T[], filter: RestDataRequestFilterModel<T>): T[] {
+    private filterItems<P extends keyof T>(items: T[], filters: RestDataRequestFilterItemModel<T, P>[]): T[] {
 
-        Object.keys(filter).forEach((field) => {
-            const fieldFilter = filter[field];
-            const fieldFilterType: RestDataRequestFilterTypeEnum = 'type' in fieldFilter ? fieldFilter.type : RestDataRequestFilterTypeEnum.Equal;
-            const values: any[] | any = 'values' in fieldFilter ? fieldFilter.values : fieldFilter;
-
-            items = this.filterItemsByField(items, field as keyof T, fieldFilterType, values);
+        filters.forEach(filter => {
+            items = this.filterItemsByField(items, filter.field, filter.type, filter.values);
         });
 
         return items;

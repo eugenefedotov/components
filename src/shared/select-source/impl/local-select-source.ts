@@ -9,6 +9,10 @@ export class LocalSelectSource<T extends SelectItemModel = SelectItemModel> impl
 
     }
 
+    async getById(id: T['id']): Promise<T> {
+        return this.items.find(item => item.id === id);
+    }
+
     async getSlice(request: SelectSourceRequestModel): Promise<SelectSourceResponseModel<T>> {
         let items = [...this.items];
 

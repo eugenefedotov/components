@@ -12,14 +12,15 @@ import {HeaderMenuComponent} from './components/blocks/header-menu/header-menu.c
 import {RouterModule} from '@angular/router';
 import {OrganizationComponent} from './components/entity-views/organization/organization.component';
 import {PersonComponent} from './components/entity-views/person/person.component';
-import { WaiterComponent } from './components/base/waiter/waiter.component';
-import { InputWrapperComponent } from './components/base/input-wrapper/input-wrapper.component';
-import { SelectComponent } from './components/base/select/select.component';
-import { VirtualListComponent } from './components/base/virtual-list/virtual-list.component';
-import { SpinnerComponent } from './components/base/spinner/spinner.component';
-import { TabSwitcherComponent } from './components/base/tab-switcher/tab-switcher.component';
-import { TabSetComponent } from './components/base/tab-set/tab-set.component';
-import { TabSetTabComponent } from './components/base/tab-set-tab/tab-set-tab.component';
+import {WaiterComponent} from './components/base/waiter/waiter.component';
+import {InputWrapperComponent} from './components/base/input-wrapper/input-wrapper.component';
+import {SelectComponent} from './components/base/select/select.component';
+import {VirtualListComponent} from './components/base/virtual-list/virtual-list.component';
+import {SpinnerComponent} from './components/base/spinner/spinner.component';
+import {TabSwitcherComponent} from './components/base/tab-switcher/tab-switcher.component';
+import {TabSetComponent} from './components/base/tab-set/tab-set.component';
+import {TabSetTabComponent} from './components/base/tab-set-tab/tab-set-tab.component';
+import {RadioComponent} from './components/base/radio/radio.component';
 
 @NgModule({
     imports: [
@@ -45,7 +46,8 @@ import { TabSetTabComponent } from './components/base/tab-set-tab/tab-set-tab.co
         SpinnerComponent,
         TabSwitcherComponent,
         TabSetComponent,
-        TabSetTabComponent
+        TabSetTabComponent,
+        RadioComponent
     ],
     exports: [
         AuthenticationComponent,
