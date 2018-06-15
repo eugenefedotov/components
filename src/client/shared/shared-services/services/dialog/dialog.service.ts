@@ -1,4 +1,4 @@
-import {ComponentFactoryResolver, ComponentRef, Injectable, Injector, Type} from '@angular/core';
+import {Injectable} from '@angular/core';
 import {PopUpService} from '../pop-up/pop-up.service';
 import {DialogComponent} from '../../../shared-components/components/base/dialog/dialog.component';
 import {WindowStyleEnum} from '../../../shared-components/components/base/window/models/window-style.enum';
@@ -14,9 +14,7 @@ export class DialogService {
     defaultSuccessTitleText = 'Успешно';
     defaultErrorTitleText = 'Ошибка';
 
-    constructor(private resolver: ComponentFactoryResolver,
-                private injector: Injector,
-                private popUpService: PopUpService) {
+    constructor(private popUpService: PopUpService) {
 
     }
 
@@ -43,7 +41,7 @@ export class DialogService {
     }
 
     private open(headerText: string, contentText: string, windowStyle = WindowStyleEnum.Neutral) {
-        const componentRef = this.createComponent(DialogComponent);
+        const componentRef = this.popUpService.createComponent(DialogComponent);
 
         const dialogComponent = componentRef.instance;
         dialogComponent.windowStyle = windowStyle;
@@ -56,10 +54,5 @@ export class DialogService {
         this.popUpService.insertComponent(componentRef, true);
 
         return componentRef;
-    }
-
-    private createComponent<T>(comp: Type<T>): ComponentRef<T> {
-        const factory = this.resolver.resolveComponentFactory(comp);
-        return factory.create(this.injector);
     }
 }

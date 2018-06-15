@@ -21,6 +21,7 @@ import {TabSwitcherComponent} from './components/base/tab-switcher/tab-switcher.
 import {TabSetComponent} from './components/base/tab-set/tab-set.component';
 import {TabSetTabComponent} from './components/base/tab-set-tab/tab-set-tab.component';
 import {RadioComponent} from './components/base/radio/radio.component';
+import { PopUpContainerComponent } from './components/base/pop-up-container/pop-up-container.component';
 
 @NgModule({
     imports: [
@@ -47,7 +48,8 @@ import {RadioComponent} from './components/base/radio/radio.component';
         TabSwitcherComponent,
         TabSetComponent,
         TabSetTabComponent,
-        RadioComponent
+        RadioComponent,
+        PopUpContainerComponent
     ],
     exports: [
         AuthenticationComponent,
@@ -62,7 +64,8 @@ import {RadioComponent} from './components/base/radio/radio.component';
     entryComponents: [
         WindowComponent,
         DialogComponent,
-        WaiterComponent
+        WaiterComponent,
+        PopUpContainerComponent
     ]
 })
 export class SharedComponentsModule {

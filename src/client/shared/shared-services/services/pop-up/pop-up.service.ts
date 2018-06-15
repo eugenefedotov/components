@@ -1,4 +1,4 @@
-import {ComponentRef, Injectable, ViewContainerRef} from '@angular/core';
+import {ComponentFactoryResolver, ComponentRef, Injectable, Injector, Type, ViewContainerRef} from '@angular/core';
 import {Observable} from 'rxjs/internal/Observable';
 import {BehaviorSubject} from 'rxjs/internal/BehaviorSubject';
 import {distinct, map, share} from 'rxjs/operators';
@@ -10,7 +10,8 @@ export class PopUpService {
     private viewContainerRef: ViewContainerRef;
     private lockComponents$ = new BehaviorSubject<ComponentRef<any>[]>([]);
 
-    constructor() {
+    constructor(private resolver: ComponentFactoryResolver,
+                private injector: Injector) {
     }
 
     get lock$(): Observable<boolean> {
@@ -34,5 +35,10 @@ export class PopUpService {
         }
 
         this.viewContainerRef.insert(componentRef.hostView);
+    }
+
+    createComponent<T>(comp: Type<T>): ComponentRef<T> {
+        const factory = this.resolver.resolveComponentFactory(comp);
+        return factory.create(this.injector);
     }
 }
