@@ -41,7 +41,7 @@ export enum PopUpAlign {
 })
 export class PopUpDirective implements OnInit, OnChanges, OnDestroy {
 
-    @Input('appPopUp') popUpRelativeElementRef: ElementRef<HTMLElement>;
+    @Input('appPopUp') popUpRelativeHtmlElement: HTMLElement;
 
     @Input() viewportBound: PopUpBound;
 
@@ -67,7 +67,7 @@ export class PopUpDirective implements OnInit, OnChanges, OnDestroy {
         cont.templateRef = this.templateRef;
         cont.viewportBound = this.viewportBound;
 
-        cont.popUpRelativeElementRef = this.popUpRelativeElementRef;
+        cont.popUpRelativeHtmlElement = this.popUpRelativeHtmlElement;
         cont.popUpRelativePosition = this.popUpRelativePosition;
         cont.popUpRelativeAlign = this.popUpRelativeAlign;
 
@@ -78,12 +78,12 @@ export class PopUpDirective implements OnInit, OnChanges, OnDestroy {
     }
 
     ngOnInit(): void {
-        if (!(this.popUpRelativeElementRef instanceof ElementRef)) {
-            console.error('required popUpRelativeElementRef instanceof ElementRef');
+        if (!(this.popUpRelativeHtmlElement instanceof HTMLElement)) {
+            console.error('required popUpRelativeHtmlElement instanceof HTMLElement');
             return;
         }
 
-        console.log('popUpRelativeElementRef', this.popUpRelativeElementRef);
+        console.log('popUpRelativeHtmlElement', this.popUpRelativeHtmlElement);
 
         this.viewContainer.clear();
         this.popUpService.insertComponent(this.container);

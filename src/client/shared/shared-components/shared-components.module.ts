@@ -22,11 +22,14 @@ import {TabSetComponent} from './base/tab-set/tab-set.component';
 import {TabSetTabComponent} from './base/tab-set-tab/tab-set-tab.component';
 import {RadioComponent} from './base/radio/radio.component';
 import {PopUpContainerComponent} from './base/pop-up-container/pop-up-container.component';
+import { TooltipComponent } from './tooltip/tooltip.component';
+import {SharedDirectivesModule} from '../shared-directives/shared-directives.module';
 
 @NgModule({
     imports: [
         CommonModule,
         RouterModule,
+        SharedDirectivesModule,
         Angular2FontawesomeModule
     ],
     declarations: [
@@ -49,7 +52,8 @@ import {PopUpContainerComponent} from './base/pop-up-container/pop-up-container.
         TabSetComponent,
         TabSetTabComponent,
         RadioComponent,
-        PopUpContainerComponent
+        PopUpContainerComponent,
+        TooltipComponent,
     ],
     exports: [
         AuthenticationComponent,
@@ -59,13 +63,14 @@ import {PopUpContainerComponent} from './base/pop-up-container/pop-up-container.
         WindowComponent,
         DialogComponent,
         ButtonComponent,
-        InputWrapperComponent
+        InputWrapperComponent,
     ],
     entryComponents: [
         WindowComponent,
         DialogComponent,
         WaiterComponent,
-        PopUpContainerComponent
+        PopUpContainerComponent,
+        TooltipComponent,
     ]
 })
 export class SharedComponentsModule {

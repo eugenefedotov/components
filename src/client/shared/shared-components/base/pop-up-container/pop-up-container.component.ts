@@ -4,7 +4,7 @@ import {PopUpAlign, PopUpBound, PopUpPosition} from '../../../shared-directives/
 
 interface PopUpSize {
     x: number;
-    y: number
+    y: number;
 }
 
 @Component({
@@ -16,7 +16,7 @@ export class PopUpContainerComponent implements OnInit {
 
     @Input() templateRef: TemplateRef<any>;
 
-    @Input() popUpRelativeElementRef: ElementRef<HTMLElement>;
+    @Input() popUpRelativeHtmlElement: HTMLElement;
 
     @Input() popUpRelativePosition: PopUpPosition;
     @Input() popUpRelativeAlign: PopUpAlign;
