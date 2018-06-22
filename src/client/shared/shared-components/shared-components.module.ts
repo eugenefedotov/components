@@ -1,27 +1,27 @@
 import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
-import {AuthenticationComponent} from './components/blocks/authentication/authentication.component';
-import {HeaderComponent} from './components/blocks/header/header.component';
-import {ScrollBoxComponent} from './components/base/scroll-box/scroll-box.component';
-import {ScrollBarComponent} from './components/base/scroll-bar/scroll-bar.component';
-import {WindowComponent} from './components/base/window/window.component';
-import {DialogComponent} from './components/base/dialog/dialog.component';
-import {ButtonComponent} from './components/base/button/button.component';
+import {AuthenticationComponent} from './blocks/authentication/authentication.component';
+import {HeaderComponent} from './blocks/header/header.component';
+import {ScrollBoxComponent} from './base/scroll-box/scroll-box.component';
+import {ScrollBarComponent} from './base/scroll-bar/scroll-bar.component';
+import {WindowComponent} from './base/window/window.component';
+import {DialogComponent} from './base/dialog/dialog.component';
+import {ButtonComponent} from './base/button/button.component';
 import {Angular2FontawesomeModule} from 'angular2-fontawesome';
-import {HeaderMenuComponent} from './components/blocks/header-menu/header-menu.component';
+import {HeaderMenuComponent} from './blocks/header-menu/header-menu.component';
 import {RouterModule} from '@angular/router';
-import {OrganizationComponent} from './components/entity-views/organization/organization.component';
-import {PersonComponent} from './components/entity-views/person/person.component';
-import {WaiterComponent} from './components/base/waiter/waiter.component';
-import {InputWrapperComponent} from './components/base/input-wrapper/input-wrapper.component';
-import {SelectComponent} from './components/base/select/select.component';
-import {VirtualListComponent} from './components/base/virtual-list/virtual-list.component';
-import {SpinnerComponent} from './components/base/spinner/spinner.component';
-import {TabSwitcherComponent} from './components/base/tab-switcher/tab-switcher.component';
-import {TabSetComponent} from './components/base/tab-set/tab-set.component';
-import {TabSetTabComponent} from './components/base/tab-set-tab/tab-set-tab.component';
-import {RadioComponent} from './components/base/radio/radio.component';
-import { PopUpContainerComponent } from './components/base/pop-up-container/pop-up-container.component';
+import {OrganizationComponent} from './entity-views/organization/organization.component';
+import {PersonComponent} from './entity-views/person/person.component';
+import {WaiterComponent} from './base/waiter/waiter.component';
+import {InputWrapperComponent} from './base/input-wrapper/input-wrapper.component';
+import {SelectComponent} from './base/select/select.component';
+import {VirtualListComponent} from './base/virtual-list/virtual-list.component';
+import {SpinnerComponent} from './base/spinner/spinner.component';
+import {TabSwitcherComponent} from './base/tab-switcher/tab-switcher.component';
+import {TabSetComponent} from './base/tab-set/tab-set.component';
+import {TabSetTabComponent} from './base/tab-set-tab/tab-set-tab.component';
+import {RadioComponent} from './base/radio/radio.component';
+import {PopUpContainerComponent} from './base/pop-up-container/pop-up-container.component';
 
 @NgModule({
     imports: [

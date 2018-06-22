@@ -24,6 +24,9 @@
             "styles": [
               "src/styles.scss"
             ],
+            "stylePreprocessorOptions": {
+              "includePaths": ["src"]
+            },
             "scripts": []
           },
           "configurations": {
@@ -101,7 +104,8 @@
     },
     "@schematics/angular:directive": {
       "prefix": "app",
-      "spec": false
+      "spec": false,
+      "flat": false
     }
   }
 }

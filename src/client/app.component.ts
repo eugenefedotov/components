@@ -1,7 +1,7 @@
 import {Component, OnInit, ViewContainerRef} from '@angular/core';
-import {PopUpService} from './shared/shared-services/services/pop-up/pop-up.service';
-import {AppStateService} from './shared/shared-services/services/app-state/app-state.service';
-import {RestMenuService} from './shared/shared-rest-services/rest-services/rest-menu/rest-menu.service';
+import {PopUpService} from './shared/shared-services/pop-up/pop-up.service';
+import {AppStateService} from './shared/shared-services/app-state/app-state.service';
+import {RestMenuService} from './shared/shared-rest-services/rest-menu/rest-menu.service';
 
 @Component({
     selector: 'app-root',

@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {DialogService} from '../../../../shared/shared-services/services/dialog/dialog.service';
+import {DialogService} from '../../../../shared/shared-services/dialog/dialog.service';
 
 @Component({
     selector: 'app-news',

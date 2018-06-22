@@ -1,6 +1,6 @@
 import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
-import {PopUpDirective} from './directives/pop-up.directive';
+import {PopUpDirective} from './pop-up/pop-up.directive';
 
 @NgModule({
     imports: [

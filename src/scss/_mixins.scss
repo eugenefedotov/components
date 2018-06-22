@@ -1,0 +1,28 @@
+@import "~scss/variables";
+
+@mixin convex($withHover) {
+  border: 1px solid rgba(0, 0, 0, .05);
+  border-top: 1px solid rgba(0, 0, 0, .025);
+  border-bottom: 1px solid rgba(0, 0, 0, .10);
+  box-shadow: inset 0 1px rgba(255, 255, 255, .5);
+
+  @if $withHover == true {
+    &:hover {
+      border: 1px solid rgba(0, 0, 0, .1);
+      border-top: 1px solid rgba(0, 0, 0, .05);
+      border-bottom: 1px solid rgba(0, 0, 0, .15);
+      box-shadow: inset 0 1px rgba(255, 255, 255, .9);
+    }
+  }
+}
+
+@mixin pitted-text($withHover) {
+  color: lighten($color-dark, 33%);
+  text-shadow: 0 1px rgba(255, 255, 255, .9);
+
+  @if $withHover == true {
+    &:hover {
+      color: lighten($color-dark, 25%);
+    }
+  }
+}
