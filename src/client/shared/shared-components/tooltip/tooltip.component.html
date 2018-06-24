@@ -1,3 +1,5 @@
-<div class="tooltip" *appPopUp="relativeHtmlElement">
-    {{text}}
+<div class="tooltip" *appPopUp="relativeHtmlElement"
+     (mouseover)="mouseover.emit($event)"
+     (mouseout)="mouseout.emit($event)">{{text}}
 </div>
+

@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 
 @Component({
     selector: 'app-tooltip',
@@ -9,6 +9,9 @@ export class TooltipComponent implements OnInit {
 
     @Input() relativeHtmlElement: HTMLElement;
     @Input() text: string;
+
+    @Output() mouseover = new EventEmitter<MouseEvent>();
+    @Output() mouseout = new EventEmitter<MouseEvent>();
 
     constructor() {
     }

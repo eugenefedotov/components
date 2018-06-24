@@ -14,16 +14,13 @@ import {PopUpService} from '../../shared-services/pop-up/pop-up.service';
 import {PopUpContainerComponent} from '../../shared-components/base/pop-up-container/pop-up-container.component';
 
 export interface PopUpBound {
-    x1: number;
-    y1: number;
-    x2: number;
-    y2: number;
+    left: number;
+    top: number;
+    right: number;
+    bottom: number;
 }
 
 export enum PopUpPosition {
-    LeftRight = 'left-right',
-    TopBottom = 'top-bottom',
-
     Left = 'left',
     Top = 'top',
     Right = 'right',
@@ -45,10 +42,7 @@ export class PopUpDirective implements OnInit, OnChanges, OnDestroy {
 
     @Input() viewportBound: PopUpBound;
 
-    @Input() popUpRelativePosition: PopUpPosition = PopUpPosition.TopBottom;
-    @Input() popUpRelativeAlign: PopUpAlign = PopUpAlign.Center;
-
-    @Input() popUpContentPosition: PopUpPosition = PopUpPosition.TopBottom;
+    @Input() popUpContentPosition: PopUpPosition = PopUpPosition.Top;
     @Input() popUpContentAlign: PopUpAlign = PopUpAlign.Center;
 
     private readonly container: ComponentRef<PopUpContainerComponent>;
@@ -68,8 +62,6 @@ export class PopUpDirective implements OnInit, OnChanges, OnDestroy {
         cont.viewportBound = this.viewportBound;
 
         cont.popUpRelativeHtmlElement = this.popUpRelativeHtmlElement;
-        cont.popUpRelativePosition = this.popUpRelativePosition;
-        cont.popUpRelativeAlign = this.popUpRelativeAlign;
 
         cont.popUpContentPosition = this.popUpContentPosition;
         cont.popUpContentAlign = this.popUpContentAlign;
