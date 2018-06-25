@@ -1,7 +1,51 @@
+@import "~scss/variables";
+
+$tooltip-bg-color: $color-light;
+$tooltip-text-color: $color-dark;
+$tooltip-border-color: $color-dark;
+
 :host {
   display: none;
 }
 
-.tooltip {
+.tooltip-triangle {
+  border: .5rem transparent solid;
+  color: $tooltip-text-color;
+}
 
+::ng-deep .pop-up-container_position-top {
+  .tooltip-triangle {
+    border-top-color: $tooltip-bg-color;
+    border-bottom: none;
+  }
+}
+
+::ng-deep .pop-up-container_position-bottom {
+  .tooltip-triangle {
+    border-top: none;
+    border-bottom-color: $tooltip-bg-color;
+  }
+}
+
+.tooltip-text {
+  background-color: $tooltip-bg-color;
+  position: absolute;
+
+  padding: .25rem;
+  white-space: pre;
+  border-radius: 2px;
+
+  transform: translateX(-50%);
+}
+
+::ng-deep .pop-up-container_position-top {
+  .tooltip-text {
+    bottom: 100%;
+  }
+}
+
+::ng-deep .pop-up-container_position-bottom {
+  .tooltip-text {
+    top: 100%;
+  }
 }
