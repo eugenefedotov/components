@@ -143,6 +143,7 @@ export class PopUpContainerComponent implements OnInit, OnChanges, DoCheck, Afte
 
         let isPositionHorizontal: boolean;
         const allAnchors = [PopUpPosition.Left, PopUpPosition.Right, PopUpPosition.Top, PopUpPosition.Bottom];
+        const allAligns = [PopUpAlign.Start, PopUpAlign.Center, PopUpAlign.End];
 
         let positionAnchor: PopUpPosition;
         let alignAnchor: PopUpPosition;
@@ -196,6 +197,12 @@ export class PopUpContainerComponent implements OnInit, OnChanges, DoCheck, Afte
         });
 
         this.renderer.addClass(this.elementRef.nativeElement, `pop-up-container_position-${this._popUpContentPosition}`);
+
+        allAligns.forEach(align => {
+            this.renderer.removeClass(this.elementRef.nativeElement, `pop-up-container_align-${align}`);
+        });
+
+        this.renderer.addClass(this.elementRef.nativeElement, `pop-up-container_align-${this._popUpContentAlign}`);
     }
 
     ngOnDestroy(): void {

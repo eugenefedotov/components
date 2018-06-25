@@ -8,44 +8,108 @@ $tooltip-border-color: $color-dark;
   display: none;
 }
 
-.tooltip-triangle {
-  border: .5rem transparent solid;
-  color: $tooltip-text-color;
-}
+.tooltip {
+  position: relative;
 
-::ng-deep .pop-up-container_position-top {
-  .tooltip-triangle {
-    border-top-color: $tooltip-bg-color;
-    border-bottom: none;
-  }
-}
-
-::ng-deep .pop-up-container_position-bottom {
-  .tooltip-triangle {
-    border-top: none;
-    border-bottom-color: $tooltip-bg-color;
-  }
-}
-
-.tooltip-text {
   background-color: $tooltip-bg-color;
-  position: absolute;
-
-  padding: .25rem;
-  white-space: pre;
+  border: 1px solid transparentize($tooltip-border-color, .5);
   border-radius: 2px;
 
-  transform: translateX(-50%);
+  &__text {
+    color: $tooltip-text-color;
+    white-space: pre;
+
+    padding: .25rem;
+  }
+
+  &__triangle {
+    &:before, &:after {
+      position: absolute;
+      display: block;
+      content: '';
+
+      border: .5rem transparent solid;
+    }
+  }
+
 }
 
 ::ng-deep .pop-up-container_position-top {
-  .tooltip-text {
-    bottom: 100%;
+  .tooltip {
+    margin-bottom: .5rem;
+
+    &__triangle {
+      &:before, &:after {
+        top: 100%;
+
+        border-top-color: $tooltip-bg-color;
+        border-bottom: none;
+      }
+
+      &:before {
+        border-top-color: $tooltip-border-color;
+      }
+
+      &:after {
+        margin-top: -1px;
+      }
+    }
   }
 }
 
 ::ng-deep .pop-up-container_position-bottom {
-  .tooltip-text {
-    top: 100%;
+  .tooltip {
+    margin-top: .5rem;
+
+    &__triangle {
+      &:before, &:after {
+        bottom: 100%;
+
+        border-top: none;
+        border-bottom-color: $tooltip-bg-color;
+      }
+
+      &:before {
+        border-bottom-color: $tooltip-border-color;
+      }
+
+      &:after {
+        margin-bottom: -1px;
+      }
+    }
+  }
+}
+
+::ng-deep .pop-up-container_align-start {
+  .tooltip {
+
+    &__triangle {
+      &:before, &:after {
+        left: 1rem;
+      }
+    }
+  }
+}
+
+::ng-deep .pop-up-container_align-center {
+  .tooltip {
+
+    &__triangle {
+      &:before, &:after {
+        left: 50%;
+        margin-left: -.5rem;
+      }
+    }
+  }
+}
+
+::ng-deep .pop-up-container_align-end {
+  .tooltip {
+
+    &__triangle {
+      &:before, &:after {
+        right: 1rem;
+      }
+    }
   }
 }

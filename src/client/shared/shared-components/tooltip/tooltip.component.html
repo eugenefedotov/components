@@ -1,6 +1,6 @@
-<div class="tooltip-triangle" *appPopUp="relativeHtmlElement"
+<div class="tooltip" *appPopUp="relativeHtmlElement"
      (mouseover)="mouseover.emit($event)"
      (mouseout)="mouseout.emit($event)">
-    <div class="tooltip-text">{{text}}</div>
+    <div class="tooltip__text">{{text}}</div>
+    <div class="tooltip__triangle"></div>
 </div>
-
