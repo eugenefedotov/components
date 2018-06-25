@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {DialogService} from '../../../../shared/shared-services/dialog/dialog.service';
+import {WaiterService} from '../../../../shared/shared-services/waiter/waiter.service';
 
 @Component({
     selector: 'app-news',
@@ -8,10 +8,11 @@ import {DialogService} from '../../../../shared/shared-services/dialog/dialog.se
 })
 export class NewsComponent implements OnInit {
 
-    constructor(private dialogService: DialogService) {
+    constructor(private waiterService: WaiterService) {
     }
 
     ngOnInit() {
+        this.waiterService.show('test');
     }
 
 }

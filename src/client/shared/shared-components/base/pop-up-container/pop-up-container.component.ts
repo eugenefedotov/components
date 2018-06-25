@@ -130,12 +130,10 @@ export class PopUpContainerComponent implements OnInit, OnChanges, DoCheck, Afte
 
     updateRealContentAlign() {
         this._popUpContentAlign = this.popUpContentAlign;
-
     }
 
     updateRealContentPosition() {
         this._popUpContentPosition = this.popUpContentPosition;
-
     }
 
     updateContentStyle() {

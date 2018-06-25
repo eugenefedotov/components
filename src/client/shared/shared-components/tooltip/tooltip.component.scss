@@ -17,9 +17,11 @@ $tooltip-border-color: $color-dark;
 
   &__text {
     color: $tooltip-text-color;
-    white-space: pre;
 
     padding: .25rem;
+
+    max-width: 300px;
+    text-align: justify;
   }
 
   &__triangle {

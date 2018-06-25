@@ -88,6 +88,14 @@ export class WaiterService {
             .subscribe(value => this.setState(value));
     }
 
+    show(key: string, lock = false) {
+        WaiterServicePrivate.show(key, lock);
+    }
+
+    hide(key: string) {
+        WaiterServicePrivate.hide(key);
+    }
+
     private setState(state: WaiterStateEnum) {
         switch (state) {
             case WaiterStateEnum.Visible:
