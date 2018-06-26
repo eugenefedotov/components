@@ -1,0 +1,6 @@
+<div class="showcase-components">
+  <div class="showcase-components__item" [routerLink]="['sandbox', item.name]" *ngFor="let item of components">
+      <app-sandbox class="showcase-components__item-preview" [componentType]="item.type"></app-sandbox>
+      <div class="showcase-components__item-name">{{item.name}}</div>
+  </div>
+</div>

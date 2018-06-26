@@ -1,5 +1,6 @@
 import {Component, OnInit} from '@angular/core';
-import {DialogComponent} from '../../shared/shared-components/dialog/dialog.component';
+import {ActivatedRoute} from '@angular/router';
+import {DemoComponentInfo} from '../demo.components';
 
 @Component({
     selector: 'app-demo-sandbox',
@@ -8,12 +9,15 @@ import {DialogComponent} from '../../shared/shared-components/dialog/dialog.comp
 })
 export class SandboxComponent implements OnInit {
 
-    componentType = DialogComponent;
+    componentInfo: DemoComponentInfo;
 
-    constructor() {
+    constructor(private route: ActivatedRoute) {
     }
 
     ngOnInit() {
+        this.route.data.subscribe((data: { componentInfo: DemoComponentInfo }) => {
+            this.componentInfo = data.componentInfo;
+        });
     }
 
 }

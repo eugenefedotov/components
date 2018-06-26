@@ -1,0 +1,37 @@
+@import "scss/variables";
+
+:host {
+  .showcase-components {
+    display: flex;
+
+    &__item {
+      border: 1px solid $color-dark;
+
+      &:hover {
+        cursor: pointer;
+        border-color: $color-accent-dark;
+      }
+
+      margin: 1rem;
+      padding: 1rem;
+
+      flex: 1;
+
+      min-width: 11rem;
+      max-width: 12rem;
+
+      &-preview {
+        display: block;
+
+
+        height: 10rem;
+        position: relative;
+        transform: scale(.5, .5);
+      }
+
+      &-name {
+        text-align: center;
+      }
+    }
+  }
+}
