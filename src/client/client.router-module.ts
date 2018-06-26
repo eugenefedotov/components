@@ -4,7 +4,7 @@ export const CLIENT_ROUTER_MODULE = RouterModule.forRoot([
     {
         path: '',
         pathMatch: 'full',
-        redirectTo: 'app'
+        redirectTo: 'demo'
     },
     {
         path: 'app',
