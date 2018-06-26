@@ -14,7 +14,7 @@ import {VirtualListComponent} from './virtual-list/virtual-list.component';
 import {SpinnerComponent} from './spinner/spinner.component';
 import {TabSwitcherComponent} from './tab-switcher/tab-switcher.component';
 import {TabSetComponent} from './tab-set/tab-set.component';
-import {TabSetTabComponent} from './tab-set-tab/tab-set-tab.component';
+import {TabComponent} from './tab/tab.component';
 import {RadioComponent} from './radio/radio.component';
 import {PopUpContainerComponent} from './pop-up-container/pop-up-container.component';
 import {TooltipComponent} from './tooltip/tooltip.component';
@@ -41,7 +41,7 @@ import {HeaderMenuComponent} from './header-menu/header-menu.component';
         SpinnerComponent,
         TabSwitcherComponent,
         TabSetComponent,
-        TabSetTabComponent,
+        TabComponent,
         RadioComponent,
         PopUpContainerComponent,
         TooltipComponent,

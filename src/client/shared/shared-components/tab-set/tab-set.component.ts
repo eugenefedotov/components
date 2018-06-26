@@ -1,5 +1,5 @@
 import {AfterContentInit, Component, ContentChildren, EventEmitter, Input, OnInit, Output, QueryList} from '@angular/core';
-import {TabSetTabComponent} from '../tab-set-tab/tab-set-tab.component';
+import {TabComponent} from '../tab/tab.component';
 import {TabSwitcherTabModel} from '../tab-switcher/models/tab-switcher-tab.model';
 
 @Component({
@@ -9,10 +9,10 @@ import {TabSwitcherTabModel} from '../tab-switcher/models/tab-switcher-tab.model
 })
 export class TabSetComponent implements OnInit, AfterContentInit {
 
-    @ContentChildren(TabSetTabComponent) tabs: QueryList<TabSetTabComponent>;
+    @ContentChildren(TabComponent) tabs: QueryList<TabComponent>;
 
-    @Input() selectedTab: TabSetTabComponent;
-    @Output() selectedTabChange = new EventEmitter<TabSetTabComponent>();
+    @Input() selectedTab: TabComponent;
+    @Output() selectedTabChange = new EventEmitter<TabComponent>();
 
     tabSwitcherTabs: TabSwitcherTabModel[];
     tabSwitcherSelectedTabIndex: number;
