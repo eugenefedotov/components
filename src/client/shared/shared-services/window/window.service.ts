@@ -1,7 +1,7 @@
 import {Injectable, TemplateRef} from '@angular/core';
 import {PopUpService} from '../pop-up/pop-up.service';
-import {WindowStyleEnum} from '../../shared-components/base/window/models/window-style.enum';
-import {WindowComponent} from '../../shared-components/base/window/window.component';
+import {WindowStyleEnum} from '../../shared-components/window/models/window-style.enum';
+import {WindowComponent} from '../../shared-components/window/window.component';
 
 @Injectable({
     providedIn: 'root'

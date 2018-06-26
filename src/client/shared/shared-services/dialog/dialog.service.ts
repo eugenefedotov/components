@@ -1,8 +1,8 @@
 import {Injectable} from '@angular/core';
 import {PopUpService} from '../pop-up/pop-up.service';
 import {first} from 'rxjs/operators';
-import {WindowStyleEnum} from '../../shared-components/base/window/models/window-style.enum';
-import {DialogComponent} from '../../shared-components/base/dialog/dialog.component';
+import {WindowStyleEnum} from '../../shared-components/window/models/window-style.enum';
+import {DialogComponent} from '../../shared-components/dialog/dialog.component';
 
 @Injectable({
     providedIn: 'root'

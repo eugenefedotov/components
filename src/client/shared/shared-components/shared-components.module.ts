@@ -1,29 +1,25 @@
 import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
-import {AuthenticationComponent} from './blocks/authentication/authentication.component';
-import {HeaderComponent} from './blocks/header/header.component';
-import {ScrollBoxComponent} from './base/scroll-box/scroll-box.component';
-import {ScrollBarComponent} from './base/scroll-bar/scroll-bar.component';
-import {WindowComponent} from './base/window/window.component';
-import {DialogComponent} from './base/dialog/dialog.component';
-import {ButtonComponent} from './base/button/button.component';
+import {ScrollBoxComponent} from './scroll-box/scroll-box.component';
+import {ScrollBarComponent} from './scroll-bar/scroll-bar.component';
+import {WindowComponent} from './window/window.component';
+import {DialogComponent} from './dialog/dialog.component';
+import {ButtonComponent} from './button/button.component';
 import {Angular2FontawesomeModule} from 'angular2-fontawesome';
-import {HeaderMenuComponent} from './blocks/header-menu/header-menu.component';
 import {RouterModule} from '@angular/router';
-import {OrganizationComponent} from './entity-views/organization/organization.component';
-import {PersonComponent} from './entity-views/person/person.component';
-import {WaiterComponent} from './base/waiter/waiter.component';
-import {InputWrapperComponent} from './base/input-wrapper/input-wrapper.component';
-import {SelectComponent} from './base/select/select.component';
-import {VirtualListComponent} from './base/virtual-list/virtual-list.component';
-import {SpinnerComponent} from './base/spinner/spinner.component';
-import {TabSwitcherComponent} from './base/tab-switcher/tab-switcher.component';
-import {TabSetComponent} from './base/tab-set/tab-set.component';
-import {TabSetTabComponent} from './base/tab-set-tab/tab-set-tab.component';
-import {RadioComponent} from './base/radio/radio.component';
-import {PopUpContainerComponent} from './base/pop-up-container/pop-up-container.component';
-import { TooltipComponent } from './tooltip/tooltip.component';
+import {WaiterComponent} from './waiter/waiter.component';
+import {InputWrapperComponent} from './input-wrapper/input-wrapper.component';
+import {SelectComponent} from './select/select.component';
+import {VirtualListComponent} from './virtual-list/virtual-list.component';
+import {SpinnerComponent} from './spinner/spinner.component';
+import {TabSwitcherComponent} from './tab-switcher/tab-switcher.component';
+import {TabSetComponent} from './tab-set/tab-set.component';
+import {TabSetTabComponent} from './tab-set-tab/tab-set-tab.component';
+import {RadioComponent} from './radio/radio.component';
+import {PopUpContainerComponent} from './pop-up-container/pop-up-container.component';
+import {TooltipComponent} from './tooltip/tooltip.component';
 import {SharedDirectivesModule} from '../shared-directives/shared-directives.module';
+import {HeaderMenuComponent} from './header-menu/header-menu.component';
 
 @NgModule({
     imports: [
@@ -33,16 +29,11 @@ import {SharedDirectivesModule} from '../shared-directives/shared-directives.mod
         Angular2FontawesomeModule
     ],
     declarations: [
-        AuthenticationComponent,
-        HeaderComponent,
         ScrollBoxComponent,
         ScrollBarComponent,
         WindowComponent,
         DialogComponent,
         ButtonComponent,
-        HeaderMenuComponent,
-        OrganizationComponent,
-        PersonComponent,
         WaiterComponent,
         InputWrapperComponent,
         SelectComponent,
@@ -54,16 +45,16 @@ import {SharedDirectivesModule} from '../shared-directives/shared-directives.mod
         RadioComponent,
         PopUpContainerComponent,
         TooltipComponent,
+        HeaderMenuComponent,
     ],
     exports: [
-        AuthenticationComponent,
-        HeaderComponent,
         ScrollBoxComponent,
         ScrollBarComponent,
         WindowComponent,
         DialogComponent,
         ButtonComponent,
         InputWrapperComponent,
+        HeaderMenuComponent,
     ],
     entryComponents: [
         WindowComponent,

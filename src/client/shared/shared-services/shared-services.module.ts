@@ -1,10 +1,12 @@
 import {NgModule} from '@angular/core';
+import {HttpClientModule} from '@angular/common/http';
 
 @NgModule({
-    imports: [],
+    imports: [
+        HttpClientModule
+    ],
     declarations: [],
-    providers: [
-    ]
+    providers: []
 })
 export class SharedServicesModule {
 }

@@ -3,13 +3,15 @@ import {SharedServicesModule} from './shared-services/shared-services.module';
 import {SharedComponentsModule} from './shared-components/shared-components.module';
 import {SharedRestServicesModule} from './shared-rest-services/shared-rest-services.module';
 import {SharedDirectivesModule} from './shared-directives/shared-directives.module';
+import {SharedRichComponentsModule} from './shared-rich-components/shared-rich-components.module';
 
 @NgModule({
     imports: [
         SharedServicesModule,
         SharedComponentsModule,
         SharedRestServicesModule,
-        SharedDirectivesModule
+        SharedDirectivesModule,
+        SharedRichComponentsModule
     ],
     declarations: [],
     providers: [],
@@ -17,7 +19,8 @@ import {SharedDirectivesModule} from './shared-directives/shared-directives.modu
         SharedServicesModule,
         SharedComponentsModule,
         SharedRestServicesModule,
-        SharedDirectivesModule
+        SharedDirectivesModule,
+        SharedRichComponentsModule
     ]
 })
 export class SharedModule {

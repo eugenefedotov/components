@@ -11,7 +11,7 @@ import {
     ViewContainerRef
 } from '@angular/core';
 import {PopUpService} from '../../shared-services/pop-up/pop-up.service';
-import {PopUpContainerComponent} from '../../shared-components/base/pop-up-container/pop-up-container.component';
+import {PopUpContainerComponent} from '../../shared-components/pop-up-container/pop-up-container.component';
 
 export interface PopUpBound {
     left: number;

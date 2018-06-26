@@ -2,7 +2,7 @@ import {ComponentFactoryResolver, ComponentRef, Injectable, Injector, Type} from
 import {PopUpService} from '../pop-up/pop-up.service';
 import {Observable, Subject} from 'rxjs';
 import {distinct} from 'rxjs/operators';
-import {WaiterComponent} from '../../shared-components/base/waiter/waiter.component';
+import {WaiterComponent} from '../../shared-components/waiter/waiter.component';
 
 let counter = 0;
 
