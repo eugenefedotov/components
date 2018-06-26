@@ -1,8 +1,8 @@
 import {ComponentRef, Directive, ElementRef, HostListener, Input, OnDestroy, OnInit, ViewContainerRef} from '@angular/core';
 import {TooltipComponent} from '../../shared-components/tooltip/tooltip.component';
-import {PopUpService} from '../../shared-services/pop-up/pop-up.service';
 import {BehaviorSubject, Subscription} from 'rxjs';
 import {debounceTime} from 'rxjs/operators';
+import {ComponentFactoryService} from '../../shared-services/component-factory/component-factory.service';
 
 @Directive({
     selector: '[appTooltip]'
@@ -16,7 +16,7 @@ export class TooltipDirective implements OnInit, OnDestroy {
     private subscription: Subscription;
 
     constructor(private elementRef: ElementRef<HTMLElement>,
-                private popUpService: PopUpService,
+                private componentFactoryService: ComponentFactoryService,
                 private viewContainerRef: ViewContainerRef) {
 
     }
@@ -48,7 +48,7 @@ export class TooltipDirective implements OnInit, OnDestroy {
             return;
         }
 
-        this.component = this.popUpService.createComponent(TooltipComponent);
+        this.component = this.componentFactoryService.createComponent(TooltipComponent);
 
         this.component.instance.text = this.tooltipText;
         this.component.instance.relativeHtmlElement = this.elementRef.nativeElement;

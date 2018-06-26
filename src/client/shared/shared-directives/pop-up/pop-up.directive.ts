@@ -12,6 +12,7 @@ import {
 } from '@angular/core';
 import {PopUpService} from '../../shared-services/pop-up/pop-up.service';
 import {PopUpContainerComponent} from '../../shared-components/pop-up-container/pop-up-container.component';
+import {ComponentFactoryService} from '../../shared-services/component-factory/component-factory.service';
 
 export interface PopUpBound {
     left: number;
@@ -49,8 +50,9 @@ export class PopUpDirective implements OnInit, OnChanges, OnDestroy {
 
     constructor(private templateRef: TemplateRef<any>,
                 private viewContainer: ViewContainerRef,
+                private componentFactoryService: ComponentFactoryService,
                 private popUpService: PopUpService) {
-        this.container = this.popUpService.createComponent(PopUpContainerComponent);
+        this.container = this.componentFactoryService.createComponent(PopUpContainerComponent);
 
         console.log('appPopUp create');
     }

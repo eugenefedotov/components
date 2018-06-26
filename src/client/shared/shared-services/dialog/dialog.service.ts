@@ -3,6 +3,7 @@ import {PopUpService} from '../pop-up/pop-up.service';
 import {first} from 'rxjs/operators';
 import {WindowStyleEnum} from '../../shared-components/window/models/window-style.enum';
 import {DialogComponent} from '../../shared-components/dialog/dialog.component';
+import {ComponentFactoryService} from '../component-factory/component-factory.service';
 
 @Injectable({
     providedIn: 'root'
@@ -14,7 +15,8 @@ export class DialogService {
     defaultSuccessTitleText = 'Успешно';
     defaultErrorTitleText = 'Ошибка';
 
-    constructor(private popUpService: PopUpService) {
+    constructor(private popUpService: PopUpService,
+                private componentFactoryService: ComponentFactoryService) {
 
     }
 
@@ -41,7 +43,7 @@ export class DialogService {
     }
 
     private open(headerText: string, contentText: string, windowStyle = WindowStyleEnum.Neutral) {
-        const componentRef = this.popUpService.createComponent(DialogComponent);
+        const componentRef = this.componentFactoryService.createComponent(DialogComponent);
 
         const dialogComponent = componentRef.instance;
         dialogComponent.windowStyle = windowStyle;

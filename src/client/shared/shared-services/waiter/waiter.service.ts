@@ -3,6 +3,7 @@ import {PopUpService} from '../pop-up/pop-up.service';
 import {Observable, Subject} from 'rxjs';
 import {distinct} from 'rxjs/operators';
 import {WaiterComponent} from '../../shared-components/waiter/waiter.component';
+import {ComponentFactoryService} from '../component-factory/component-factory.service';
 
 let counter = 0;
 
@@ -78,8 +79,7 @@ class WaiterServicePrivate {
 export class WaiterService {
     private waiterComponentRef: ComponentRef<WaiterComponent>;
 
-    constructor(private resolver: ComponentFactoryResolver,
-                private injector: Injector,
+    constructor(private componentFactoryService: ComponentFactoryService,
                 private popUpService: PopUpService) {
 
         WaiterServicePrivate
@@ -112,7 +112,7 @@ export class WaiterService {
     private showWaiter(state: WaiterStateEnum) {
         this.destroyWaiter();
 
-        this.waiterComponentRef = this.createComponent(WaiterComponent);
+        this.waiterComponentRef = this.componentFactoryService.createComponent(WaiterComponent);
         this.popUpService.insertComponent(this.waiterComponentRef, state === WaiterStateEnum.VisibleAndLock);
     }
 
@@ -123,10 +123,5 @@ export class WaiterService {
 
         this.waiterComponentRef.destroy();
         this.waiterComponentRef = null;
-    }
-
-    private createComponent<T>(comp: Type<T>): ComponentRef<T> {
-        const factory = this.resolver.resolveComponentFactory(comp);
-        return factory.create(this.injector);
     }
 }

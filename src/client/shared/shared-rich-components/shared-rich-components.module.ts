@@ -7,6 +7,7 @@ import {HeaderComponent} from './header/header.component';
 import {SharedComponentsModule} from '../shared-components/shared-components.module';
 import {SharedServicesModule} from '../shared-services/shared-services.module';
 import {SharedDirectivesModule} from '../shared-directives/shared-directives.module';
+import {SandboxComponent} from './sandbox/sandbox.component';
 
 @NgModule({
     imports: [
@@ -19,13 +20,15 @@ import {SharedDirectivesModule} from '../shared-directives/shared-directives.mod
         AuthenticationComponent,
         OrganizationComponent,
         PersonComponent,
-        HeaderComponent
+        HeaderComponent,
+        SandboxComponent
     ],
     exports: [
         AuthenticationComponent,
         OrganizationComponent,
         PersonComponent,
-        HeaderComponent
+        HeaderComponent,
+        SandboxComponent
     ]
 })
 export class SharedRichComponentsModule {
