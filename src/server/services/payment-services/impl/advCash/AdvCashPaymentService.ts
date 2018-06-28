@@ -1,7 +1,7 @@
 import * as soap from 'soap';
 import {Service} from 'typedi';
 import * as moment from 'moment';
-import {IPaymentServiceService} from '../../IPaymentServiceService';
+import {PaymentService} from '../../payment-service';
 import {PaymentServiceAccountModel} from '../../models/payment-service-account.model';
 import {PaymentServiceBalanceModel} from '../../models/payment-service-balance.model';
 import {PaymentServiceTransferResultModel} from '../../models/payment-service-transfer-result.model';
@@ -13,7 +13,7 @@ import {AdvCashTransactionModel} from './models/AdvCashTransactionModel';
 import {CurrencyService} from '../../../../../../../exchanger/core/services/CurrencyService';
 
 @Service('payment-service.ADVC')
-export class AdvCashPaymentService implements IPaymentServiceService {
+export class AdvCashPaymentService implements PaymentService {
   API_URL: string = 'https://wallet.advcash.com/wsm/merchantWebService?wsdl';
   soapClient: soap.Client;
 

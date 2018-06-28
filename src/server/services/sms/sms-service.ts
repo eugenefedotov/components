@@ -1,6 +1,6 @@
-import {SmsMessageModel} from './models/SmsMessageModel';
+import {SmsMessageModel} from './models/sms-message.model';
 
-export interface ISmsService {
+export interface SmsService {
 
   getLatestId(): Promise<number>;
 

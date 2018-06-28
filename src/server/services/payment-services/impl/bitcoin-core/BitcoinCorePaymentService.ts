@@ -1,4 +1,4 @@
-import {IPaymentServiceService} from '../../IPaymentServiceService';
+import {PaymentService} from '../../payment-service';
 import {PaymentServiceTransferRequestModel} from '../../models/payment-service-transfer-request.model';
 import {PaymentServiceTransferResultModel} from '../../models/payment-service-transfer-result.model';
 import {PaymentServiceAccountModel} from '../../models/payment-service-account.model';
@@ -12,7 +12,7 @@ import {PaymentServiceCurrencyEntity} from '../../../../../../../exchanger/core/
 import {PaymentServiceCurrencyRepository} from '../../../../../../../exchanger/core/dao/repositories/PaymentServiceCurrencyRepository';
 
 @Service('payment-service.BTC')
-export class BitcoinCorePaymentService implements IPaymentServiceService {
+export class BitcoinCorePaymentService implements PaymentService {
   protected host = 'des-pc';
   protected port = 8332;
   protected currencyCode = 'BTC';

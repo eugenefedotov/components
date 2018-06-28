@@ -1,5 +1,5 @@
 import * as requestPromise from 'request-promise';
-import {IPaymentServiceService} from '../../IPaymentServiceService';
+import {PaymentService} from '../../payment-service';
 import {QiwiAccountModel} from './models/QiwiAccountModel';
 import {QiwiTransferRequestModel} from './models/QiwiTransferRequestModel';
 import {QiwiTransferResultModel} from './models/QiwiTransferResultModel';
@@ -22,7 +22,7 @@ import {delay} from '../../../../../../../exchanger/core/functions/delay';
 const API_URL = 'https://edge.qiwi.com';
 
 @Service('payment-service.QW')
-export class QiwiPaymentService implements IPaymentServiceService {
+export class QiwiPaymentService implements PaymentService {
 
   constructor(private currencyService: CurrencyService) {
   }

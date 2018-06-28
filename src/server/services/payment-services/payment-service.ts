@@ -6,7 +6,7 @@ import {PaymentServiceBalanceModel} from './models/payment-service-balance.model
 /**
  * Интерфейс взаимодействия с платежным сервисом
  */
-export interface IPaymentServiceService {
+export interface PaymentService {
 
   /**
    * Получение платежного реквизита, с которого отправляются средства

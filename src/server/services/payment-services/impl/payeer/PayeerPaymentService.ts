@@ -1,4 +1,4 @@
-import {IPaymentServiceService} from '../../IPaymentServiceService';
+import {PaymentService} from '../../payment-service';
 import {PaymentServiceTransferRequestModel} from '../../models/payment-service-transfer-request.model';
 import {PaymentServiceTransferResultModel} from '../../models/payment-service-transfer-result.model';
 import {PaymentServiceAccountModel} from '../../models/payment-service-account.model';
@@ -19,7 +19,7 @@ const PAYEER_API_URL = 'https://payeer.com/ajax/api/api.php';
  * https://payeerru.docs.apiary.io/#reference/0
  */
 @Service('payment-service.PR')
-export class PayeerPaymentService implements IPaymentServiceService {
+export class PayeerPaymentService implements PaymentService {
   async doTransfer(request: PaymentServiceTransferRequestModel): Promise<PaymentServiceTransferResultModel> {
 
     const payeerRequest: PayeerTransferRequestParamsModel = {

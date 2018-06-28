@@ -1,5 +1,5 @@
 import * as requestPromise from 'request-promise';
-import {IPaymentServiceService} from '../../IPaymentServiceService';
+import {PaymentService} from '../../payment-service';
 import {PaymentServiceAccountModel} from '../../models/payment-service-account.model';
 import {PaymentServiceBalanceModel} from '../../models/payment-service-balance.model';
 import {PaymentServiceTransferResultModel} from '../../models/payment-service-transfer-result.model';
@@ -11,7 +11,7 @@ export interface NixMoneyResponseModel {
 }
 
 @Service('payment-service.NIX')
-export class NixMoneyPaymentService implements IPaymentServiceService {
+export class NixMoneyPaymentService implements PaymentService {
   API_URL: string = 'http://dev.nixmoney.com/'; //https://www.nixmoney.com/
 
   constructor(private currencyService: CurrencyService) {

@@ -1,5 +1,5 @@
 import * as requestPromise from 'request-promise';
-import {IPaymentServiceService} from '../../IPaymentServiceService';
+import {PaymentService} from '../../payment-service';
 import {PaymentServiceAccountModel} from '../../models/payment-service-account.model';
 import {PaymentServiceBalanceModel} from '../../models/payment-service-balance.model';
 import {PaymentServiceTransferResultModel} from '../../models/payment-service-transfer-result.model';
@@ -11,7 +11,7 @@ export interface PerfectMoneyResponseModel {
 }
 
 @Service('payment-service.PM')
-export class PerfectMoneyPaymentService implements IPaymentServiceService {
+export class PerfectMoneyPaymentService implements PaymentService {
   API_URL: string = 'https://perfectmoney.is/acct';
 
   constructor(private currencyService: CurrencyService) {

@@ -2,13 +2,13 @@ import {Service} from 'typedi';
 import {SmsGatewayBaseRequestModel} from './models/SmsGatewayBaseRequestModel';
 import {SmsGatewaySmsResponseModel} from './models/SmsGatewaySmsResponseModel';
 import * as requestPromise from 'request-promise';
-import {ISmsService} from '../../ISmsService';
-import {SmsMessageModel} from '../../models/SmsMessageModel';
+import {SmsService} from '../../sms-service';
+import {SmsMessageModel} from '../../models/sms-message.model';
 
 const API_URL = `http://10.100.100.30:8080/v1/`;
 
 @Service('sms-service.+79523268568')
-export class SmsGatewayService implements ISmsService {
+export class SmsGatewayService implements SmsService {
 
   async getMessages(request: SmsGatewayBaseRequestModel): Promise<SmsGatewaySmsResponseModel> {
     return requestPromise.get(`${API_URL}sms/`, {
