@@ -4,14 +4,10 @@ export const CLIENT_ROUTER_MODULE = RouterModule.forRoot([
     {
         path: '',
         pathMatch: 'full',
-        redirectTo: 'demo'
+        redirectTo: 'exchanger'
     },
     {
-        path: 'app',
-        loadChildren: 'client/app/app.module#AppModule'
-    },
-    {
-        path: 'demo',
-        loadChildren: 'client/demo/demo.module#DemoModule'
+        path: 'exchanger',
+        loadChildren: 'client/exchanger/exchanger.module#ExchangerModule'
     }
 ]);

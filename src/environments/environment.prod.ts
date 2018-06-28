@@ -1,3 +1,6 @@
+import {environment as env_dev} from './environment';
+
 export const environment = {
-  production: true
+    ...env_dev,
+    production: true
 };

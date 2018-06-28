@@ -13,7 +13,7 @@ $tooltip-border-color: $color-dark;
 
   background-color: $tooltip-bg-color;
   border: 1px solid transparentize($tooltip-border-color, .5);
-  border-radius: 2px;
+  border-radius: $radius-base;
 
   &__text {
     color: $tooltip-text-color;
