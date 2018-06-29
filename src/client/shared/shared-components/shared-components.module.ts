@@ -55,6 +55,8 @@ import {HeaderMenuComponent} from './header-menu/header-menu.component';
         ButtonComponent,
         InputWrapperComponent,
         HeaderMenuComponent,
+        VirtualListComponent,
+        SelectComponent,
     ],
     entryComponents: [
         WindowComponent,

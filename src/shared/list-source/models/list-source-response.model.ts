@@ -1,4 +1,4 @@
 export interface ListSourceResponseModel<T> {
-    items: T[],
+    items: T[];
     count: number;
 }
