@@ -5,6 +5,7 @@ import {SharedComponentsModule} from '../shared-components/shared-components.mod
 import {SharedServicesModule} from '../shared-services/shared-services.module';
 import {SharedDirectivesModule} from '../shared-directives/shared-directives.module';
 import {PaymentServiceCurrencyListComponent} from './payment-service-currency-list/payment-service-currency-list.component';
+import { PaymentServiceCurrencyComponent } from './payment-service-currency/payment-service-currency.component';
 
 @NgModule({
     imports: [
@@ -15,7 +16,8 @@ import {PaymentServiceCurrencyListComponent} from './payment-service-currency-li
     ],
     declarations: [
         HeaderComponent,
-        PaymentServiceCurrencyListComponent
+        PaymentServiceCurrencyListComponent,
+        PaymentServiceCurrencyComponent
     ],
     exports: [
         HeaderComponent,
