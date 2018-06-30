@@ -1,18 +1,18 @@
-import {RestDataRequestModel} from '../models/rest-data-request.model';
-import {RestDataResponseModel} from '../models/rest-data-response.model';
-import {RestDataRequestSortModel} from '../models/rest-data-request-sort.model';
-import {RestDataSource} from '../rest-data-source';
-import {RestDataRequestFilterTypeEnum} from '../models/rest-data-request-filter-type.enum';
-import {RestDataRequestSortOrderEnum} from '../models/rest-data-request-sort-order.enum';
-import {RestDataRequestFilterItemModel} from '../models/rest-data-request-filter-item.model';
+import {DataSourceRequestModel} from '../models/data-source-request.model';
+import {DataSourceResponseModel} from '../models/data-source-response.model';
+import {DataSourceRequestSortModel} from '../models/data-source-request-sort.model';
+import {DataSource} from '../data-source';
+import {DataSourceRequestFilterTypeEnum} from '../models/data-source-request-filter-type.enum';
+import {DataSourceRequestSortOrderEnum} from '../models/data-source-request-sort-order.enum';
+import {DataSourceRequestFilterItemModel} from '../models/data-source-request-filter-item.model';
 
-export class InMemoryRestDataSource<T> implements RestDataSource<T> {
+export class InMemoryDataSource<T> implements DataSource<T> {
     constructor(private items: T[]) {
 
     }
 
-    async getResult(request: RestDataRequestModel<T>): Promise<RestDataResponseModel<T>> {
-        const response: RestDataResponseModel<T> = {items: null, count: null};
+    async getData(request: DataSourceRequestModel<T>): Promise<DataSourceResponseModel<T>> {
+        const response: DataSourceResponseModel<T> = {items: null, count: null};
         let items = this.items;
 
         if (request.filter) {
@@ -40,7 +40,7 @@ export class InMemoryRestDataSource<T> implements RestDataSource<T> {
         return response;
     }
 
-    private filterItems<P extends keyof T>(items: T[], filters: RestDataRequestFilterItemModel<T, P>[]): T[] {
+    private filterItems<P extends keyof T>(items: T[], filters: DataSourceRequestFilterItemModel<T, P>[]): T[] {
 
         filters.forEach(filter => {
             items = this.filterItemsByField(items, filter.field, filter.type, filter.values);
@@ -49,11 +49,11 @@ export class InMemoryRestDataSource<T> implements RestDataSource<T> {
         return items;
     }
 
-    private filterItemsByField<P extends keyof T>(items: T[], field: keyof T, type: RestDataRequestFilterTypeEnum, values: T[P][] | T[P]): T[] {
+    private filterItemsByField<P extends keyof T>(items: T[], field: keyof T, type: DataSourceRequestFilterTypeEnum, values: T[P][] | T[P]): T[] {
         return items.filter(item => this.filterItemByField(item, field, type, values));
     }
 
-    private filterItemByField<P extends keyof T>(item: T, field: P, type: RestDataRequestFilterTypeEnum, values: T[P][] | T[P]): boolean {
+    private filterItemByField<P extends keyof T>(item: T, field: P, type: DataSourceRequestFilterTypeEnum, values: T[P][] | T[P]): boolean {
         if (!(field in item)) {
             return false;
         }
@@ -64,30 +64,30 @@ export class InMemoryRestDataSource<T> implements RestDataSource<T> {
         return filterValues.some(filterValue => this.filterItemByValue(itemValue, type, filterValue));
     }
 
-    private filterItemByValue<P>(itemValue: P, type: RestDataRequestFilterTypeEnum, filterValue: P): boolean {
+    private filterItemByValue<P>(itemValue: P, type: DataSourceRequestFilterTypeEnum, filterValue: P): boolean {
         switch (type) {
-            case RestDataRequestFilterTypeEnum.Equal:
+            case DataSourceRequestFilterTypeEnum.Equal:
                 return itemValue === filterValue;
-            case RestDataRequestFilterTypeEnum.Contains:
+            case DataSourceRequestFilterTypeEnum.Contains:
                 return String(itemValue).includes(String(filterValue));
-            case RestDataRequestFilterTypeEnum.StartWith:
+            case DataSourceRequestFilterTypeEnum.StartWith:
                 return String(itemValue).startsWith(String(filterValue));
-            case RestDataRequestFilterTypeEnum.EndWith:
+            case DataSourceRequestFilterTypeEnum.EndWith:
                 return String(itemValue).endsWith(String(filterValue));
-            case RestDataRequestFilterTypeEnum.LessThan:
+            case DataSourceRequestFilterTypeEnum.LessThan:
                 return itemValue < filterValue;
-            case RestDataRequestFilterTypeEnum.LessThanOrEquals:
+            case DataSourceRequestFilterTypeEnum.LessThanOrEquals:
                 return itemValue <= filterValue;
-            case RestDataRequestFilterTypeEnum.MoreThan:
+            case DataSourceRequestFilterTypeEnum.MoreThan:
                 return itemValue > filterValue;
-            case RestDataRequestFilterTypeEnum.MoreThanOrEquals:
+            case DataSourceRequestFilterTypeEnum.MoreThanOrEquals:
                 return itemValue >= filterValue;
             default:
-                throw new Error(`unknown filter type: ${type} (${RestDataRequestFilterTypeEnum[type]})`);
+                throw new Error(`unknown filter type: ${type} (${DataSourceRequestFilterTypeEnum[type]})`);
         }
     }
 
-    private sortItems(items: T[], sort: RestDataRequestSortModel<T>[]): T[] {
+    private sortItems(items: T[], sort: DataSourceRequestSortModel<T>[]): T[] {
         sort.forEach(sortItem => {
             items = this.sortItemsStep(items, sortItem);
         });
@@ -95,7 +95,7 @@ export class InMemoryRestDataSource<T> implements RestDataSource<T> {
         return items;
     }
 
-    private sortItemsStep(items: T[], sortItem: RestDataRequestSortModel<T>): T[] {
+    private sortItemsStep(items: T[], sortItem: DataSourceRequestSortModel<T>): T[] {
         return items.sort((item1, item2) => {
             let value1: any = item1[sortItem.field];
             let value2: any = item2[sortItem.field];
@@ -105,19 +105,19 @@ export class InMemoryRestDataSource<T> implements RestDataSource<T> {
                 value2 = value2.toLowerCase();
 
                 if (value1 < value2) {
-                    return sortItem.order === RestDataRequestSortOrderEnum.Desc ? 1 : -1;
+                    return sortItem.order === DataSourceRequestSortOrderEnum.Desc ? 1 : -1;
                 }
                 if (value1 > value2) {
-                    return sortItem.order === RestDataRequestSortOrderEnum.Desc ? -1 : 1;
+                    return sortItem.order === DataSourceRequestSortOrderEnum.Desc ? -1 : 1;
                 }
 
                 return 0;
             }
 
             switch (sortItem.order) {
-                case RestDataRequestSortOrderEnum.Asc:
+                case DataSourceRequestSortOrderEnum.Asc:
                     return value1 - value2;
-                case RestDataRequestSortOrderEnum.Desc:
+                case DataSourceRequestSortOrderEnum.Desc:
                     return value2 - value1;
                 default:
                     return 0;

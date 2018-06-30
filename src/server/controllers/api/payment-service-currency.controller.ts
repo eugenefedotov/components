@@ -1,23 +1,23 @@
 import {PaymentServiceCurrencyRepository} from '../../../dao/payment-service-currency/payment-service-currency.repository';
-import {RestDataResponseModel} from '../../../shared/rest-data/models/rest-data-response.model';
-import {RepositoryRestDataSource} from '../../../shared/rest-data/impl/repository-rest-data-source';
+import {DataSourceResponseModel} from '../../../shared/data-source/models/data-source-response.model';
+import {RepositoryDataSource} from '../../../shared/data-source/impl/repository-data-source';
 import {getCustomRepository} from 'typeorm';
 import {BodyParams, Controller, Post} from '@tsed/common';
-import {RestDataRequestModel} from '../../../shared/rest-data/models/rest-data-request.model';
+import {DataSourceRequestModel} from '../../../shared/data-source/models/data-source-request.model';
 import {PaymentServiceCurrencyEntity} from '../../../dao/payment-service-currency/payment-service-currency.entity';
-import {RestDataSource} from '../../../shared/rest-data/rest-data-source';
+import {DataSource} from '../../../shared/data-source/data-source';
 
 @Controller('/payment-service-currency')
 export class PaymentServiceCurrencyController {
 
-    private restDataSource: RestDataSource<PaymentServiceCurrencyEntity>;
+    private restDataSource: DataSource<PaymentServiceCurrencyEntity>;
 
     constructor() {
-        this.restDataSource = new RepositoryRestDataSource(getCustomRepository(PaymentServiceCurrencyRepository));
+        this.restDataSource = new RepositoryDataSource(getCustomRepository(PaymentServiceCurrencyRepository));
     }
 
     @Post('/get')
-    getItems(@BodyParams() request: RestDataRequestModel<PaymentServiceCurrencyEntity>): Promise<RestDataResponseModel<PaymentServiceCurrencyEntity>> {
-        return this.restDataSource.getResult(request);
+    getItems(@BodyParams() request: DataSourceRequestModel<PaymentServiceCurrencyEntity>): Promise<DataSourceResponseModel<PaymentServiceCurrencyEntity>> {
+        return this.restDataSource.getData(request);
     }
 }

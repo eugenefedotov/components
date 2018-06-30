@@ -1,24 +1,24 @@
 import {BodyParams, Controller, Post} from '@tsed/common';
 import {getCustomRepository} from 'typeorm';
 import {CurrencyRepository} from '../../../dao/currency/currency.repository';
-import {RestDataRequestModel} from '../../../shared/rest-data/models/rest-data-request.model';
+import {DataSourceRequestModel} from '../../../shared/data-source/models/data-source-request.model';
 import {CurrencyEntity} from '../../../dao/currency/currency.entity';
-import {RestDataResponseModel} from '../../../shared/rest-data/models/rest-data-response.model';
-import {RestDataSource} from '../../../shared/rest-data/rest-data-source';
-import {RepositoryRestDataSource} from '../../../shared/rest-data/impl/repository-rest-data-source';
+import {DataSourceResponseModel} from '../../../shared/data-source/models/data-source-response.model';
+import {DataSource} from '../../../shared/data-source/data-source';
+import {RepositoryDataSource} from '../../../shared/data-source/impl/repository-data-source';
 
 @Controller('/currency')
 export class CurrencyController {
 
-    private restDataSource: RestDataSource<CurrencyEntity>;
+    private restDataSource: DataSource<CurrencyEntity>;
 
     constructor() {
-        this.restDataSource = new RepositoryRestDataSource(getCustomRepository(CurrencyRepository));
+        this.restDataSource = new RepositoryDataSource(getCustomRepository(CurrencyRepository));
     }
 
     @Post('/get')
-    getItems(@BodyParams() request: RestDataRequestModel<CurrencyEntity>): Promise<RestDataResponseModel<CurrencyEntity>> {
-        return this.restDataSource.getResult(request);
+    getItems(@BodyParams() request: DataSourceRequestModel<CurrencyEntity>): Promise<DataSourceResponseModel<CurrencyEntity>> {
+        return this.restDataSource.getData(request);
     }
 
 }

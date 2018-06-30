@@ -1,4 +1,4 @@
-export enum RestDataRequestFilterTypeEnum {
+export enum DataSourceRequestFilterTypeEnum {
     Equal,
     StartWith,
     EndWith,
