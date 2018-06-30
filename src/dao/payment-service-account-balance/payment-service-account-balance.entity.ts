@@ -5,7 +5,7 @@ import {CurrencyEntity} from '../currency/currency.entity';
 @Entity('payment_service_account_balance')
 export class PaymentServiceAccountBalanceEntity {
 
-    @PrimaryGeneratedColumn()
+    @PrimaryGeneratedColumn({unsigned: true})
     id: number;
 
     @ManyToOne(type => PaymentServiceAccountEntity, {eager: true, nullable: false, onDelete: 'CASCADE'})

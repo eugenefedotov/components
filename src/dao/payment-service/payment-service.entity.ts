@@ -2,7 +2,7 @@ import {Column, Entity, Index, PrimaryGeneratedColumn} from 'typeorm';
 
 @Entity('payment_service')
 export class PaymentServiceEntity {
-    @PrimaryGeneratedColumn()
+    @PrimaryGeneratedColumn({unsigned: true})
     id: number;
 
     @Column()

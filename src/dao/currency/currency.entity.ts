@@ -2,7 +2,7 @@ import {Column, Entity, PrimaryGeneratedColumn} from 'typeorm';
 
 @Entity('currency')
 export class CurrencyEntity {
-    @PrimaryGeneratedColumn()
+    @PrimaryGeneratedColumn({unsigned: true})
     id: number;
 
     @Column({

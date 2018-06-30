@@ -5,7 +5,7 @@ import {calculateFee} from '../../functions/calculateFee';
 
 @Entity('payment_service_currency')
 export class PaymentServiceCurrencyEntity {
-    @PrimaryGeneratedColumn()
+    @PrimaryGeneratedColumn({unsigned: true})
     id: number;
 
     @ManyToOne(type => PaymentServiceEntity, {eager: true})

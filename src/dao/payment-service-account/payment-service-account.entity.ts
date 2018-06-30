@@ -3,7 +3,7 @@ import {PaymentServiceEntity} from '../payment-service/payment-service.entity';
 
 @Entity('payment_service_account')
 export class PaymentServiceAccountEntity {
-    @PrimaryGeneratedColumn()
+    @PrimaryGeneratedColumn({unsigned: true})
     id: number;
 
     @ManyToOne(type => PaymentServiceEntity, {nullable: true, onDelete: 'CASCADE', eager: true})
