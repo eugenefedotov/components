@@ -1,5 +1,4 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {MenuEntity} from '../../../../dao/core/menu/menu.entity';
 
 @Component({
     selector: 'app-header-menu',
@@ -8,7 +7,6 @@ import {MenuEntity} from '../../../../dao/core/menu/menu.entity';
 })
 export class HeaderMenuComponent implements OnInit {
 
-    @Input() menuItems: MenuEntity[];
 
     constructor() {
     }

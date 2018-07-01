@@ -8,6 +8,7 @@
     "typeRoots": [
       "node_modules/@types"
     ],
+    "downlevelIteration": true,
     "lib": [
       "es2017",
       "dom"
@@ -22,6 +23,7 @@
     "**/*.spec.ts",
     "./server/**",
     "./dao/**",
-    "./functions/**"
+    "./functions/**",
+    "./shared/**"
   ]
 }
