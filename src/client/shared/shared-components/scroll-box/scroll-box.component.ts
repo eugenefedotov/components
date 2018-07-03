@@ -1,25 +1,31 @@
-import {Component, DoCheck, ElementRef, EventEmitter, HostListener, Input, OnInit, Output, ViewChild} from '@angular/core';
+import {
+    AfterContentChecked,
+    AfterViewChecked,
+    Component,
+    ElementRef,
+    EventEmitter,
+    HostListener,
+    Input,
+    OnInit,
+    Output,
+    ViewChild
+} from '@angular/core';
 
 @Component({
     selector: 'app-scroll-box',
     templateUrl: './scroll-box.component.html',
     styleUrls: ['./scroll-box.component.scss']
 })
-export class ScrollBoxComponent implements OnInit, DoCheck {
+export class ScrollBoxComponent implements OnInit, AfterViewChecked, AfterContentChecked {
     @Input() wheelSize = 50;
-
     @Input() horizontal = false;
     @Input() vertical = true;
-
     @Input() horizontalRelativeScrollPosition = 0;
     @Input() verticalRelativeScrollPosition = 0;
-
     @Output() horizontalRelativeScrollPositionChange = new EventEmitter<number>();
     @Output() verticalRelativeScrollPositionChange = new EventEmitter<number>();
-
     horizontalScrollSize = 1;
     verticalScrollSize = 1;
-
     @ViewChild('scrollContainer') scrollContainerRef: ElementRef<HTMLElement>;
 
     constructor() {
@@ -36,7 +42,11 @@ export class ScrollBoxComponent implements OnInit, DoCheck {
     ngOnInit() {
     }
 
-    ngDoCheck(): void {
+    ngAfterViewChecked(): void {
+        this.updateScrolls();
+    }
+
+    ngAfterContentChecked(): void {
         this.updateScrolls();
     }
 
@@ -46,14 +56,18 @@ export class ScrollBoxComponent implements OnInit, DoCheck {
     }
 
     onWheel(event: WheelEvent) {
+        if (!this.isHorizontalScrollVisible && !this.isVerticalScrollVisible) {
+            return;
+        }
+
         event.stopPropagation();
         event.preventDefault();
 
         const el = this.scrollContainerRef.nativeElement;
         const verticalScrollSize = el.scrollHeight - el.offsetHeight;
 
-        let delta = -event.deltaY || -event.detail || event.wheelDelta;
-        let deltaY = delta < 0 ? this.wheelSize : -this.wheelSize;
+        const delta = -event.deltaY || -event.detail || event.wheelDelta;
+        const deltaY = delta < 0 ? this.wheelSize : -this.wheelSize;
 
         const position = this.verticalRelativeScrollPosition + deltaY / verticalScrollSize;
 

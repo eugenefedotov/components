@@ -31,6 +31,10 @@ export class RepositoryDataSource<T> implements DataSource<T> {
 
         let [items, count] = await qb.getManyAndCount();
 
+        items = await this.repository.find({
+            where: items
+        });
+
         if (request.fields) {
             items = this.filterFields(items, request.fields);
         }
