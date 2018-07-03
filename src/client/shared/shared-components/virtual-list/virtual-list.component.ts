@@ -2,11 +2,11 @@ import {
     AfterViewChecked,
     ChangeDetectionStrategy,
     Component,
-    ElementRef,
+    ElementRef, EventEmitter,
     Input,
     OnChanges,
     OnDestroy,
-    OnInit,
+    OnInit, Output,
     QueryList,
     SimpleChanges,
     TemplateRef,
@@ -16,6 +16,8 @@ import {
 import {ListSource} from '../../../../shared/list-source/list-source';
 import {Subject} from 'rxjs';
 import {ListSourceResponseModel} from '../../../../shared/list-source/models/list-source-response.model';
+import {EqualsComparator} from '../../../../shared/comparator/equals-comparator';
+import {Comparator} from '../../../../shared/comparator/comparator';
 
 @Component({
     selector: 'app-virtual-list',
@@ -24,6 +26,11 @@ import {ListSourceResponseModel} from '../../../../shared/list-source/models/lis
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class VirtualListComponent implements OnInit, OnChanges, AfterViewChecked, OnDestroy {
+
+    @Input() selectedItem: any;
+    @Output() selectedItemChange = new EventEmitter<any>();
+
+    @Input() comparator: Comparator<any> = new EqualsComparator();
 
     @Input() source: ListSource<any>;
     @Input() itemTemplate: TemplateRef<any>;
@@ -72,7 +79,7 @@ export class VirtualListComponent implements OnInit, OnChanges, AfterViewChecked
         while (currentOffset + addOffset + this.pageSize <= items.length + offset) {
             const page = this.getPageByOffset(offset + addOffset);
 
-            if (!this.itemsPageCache.has(page)){
+            if (!this.itemsPageCache.has(page)) {
 
             }
 

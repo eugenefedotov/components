@@ -1,7 +1,9 @@
 <app-scroll-box class="virtual-list">
     <div class="virtual-list__top" #top></div>
     <div class="virtual-list__view" #view>
-        <div class="virtual-list__view-item" #viewItem *ngFor="let item of viewItems$ | async">
+        <div class="virtual-list__view-item"
+             [class.virtual-list__view-item_selected]="comparator.equals(selectedItem, item)"
+             #viewItem *ngFor="let item of viewItems$ | async">
             <ng-container *ngTemplateOutlet="itemTemplate; context: {item: item}"></ng-container>
         </div>
     </div>
