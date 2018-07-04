@@ -13,7 +13,7 @@
              #viewItem *ngFor="let item of viewportItems; let i = index"
              (click)="onItemClick(item)"
         >
-            <ng-container *ngTemplateOutlet="itemTemplate; context: {item: item}"></ng-container>
+            <ng-container *ngTemplateOutlet="itemTemplate; context: {item: item, selected: comparator.equals(selectedItem, item)}"></ng-container>
         </div>
     </div>
     <div class="virtual-list__bottom" [style.height.px]="bottomVirtualHeight"></div>

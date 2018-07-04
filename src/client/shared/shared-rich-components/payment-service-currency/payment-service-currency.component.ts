@@ -11,6 +11,7 @@ export class PaymentServiceCurrencyComponent implements OnInit, OnChanges {
 
     @Input() id: number;
     @Input() item: PaymentServiceCurrencyEntity;
+    @Input() selected = false;
 
     constructor(private paymentServiceCurrencyRestService: PaymentServiceCurrencyRestService) {
     }
