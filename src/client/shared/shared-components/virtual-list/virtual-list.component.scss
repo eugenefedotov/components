@@ -4,22 +4,40 @@
   display: flex;
   flex-direction: column;
 
-  .virtual-list {
-    &__top {
+  position: relative;
 
-    }
+}
 
-    &__view {
-      &-item {
+.virtual-list {
+  &__top {
+  }
 
-        &_selected {
+  &__view {
 
-        }
+    &-item {
+      &_selected {
+
       }
     }
 
-    &__bottom {
-
+    &_selectable &-item {
+      cursor: pointer;
+      &_selected {
+        cursor: default;
+      }
     }
   }
+
+  &__bottom {
+  }
+}
+
+app-spinner {
+  width: 4rem;
+  height: 4rem;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-top: -2rem;
+  margin-left: -2rem;
 }

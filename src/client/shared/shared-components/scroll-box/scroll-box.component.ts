@@ -5,9 +5,9 @@ import {
     ElementRef,
     EventEmitter,
     HostListener,
-    Input,
+    Input, OnChanges,
     OnInit,
-    Output,
+    Output, SimpleChanges,
     ViewChild
 } from '@angular/core';
 
@@ -16,7 +16,7 @@ import {
     templateUrl: './scroll-box.component.html',
     styleUrls: ['./scroll-box.component.scss']
 })
-export class ScrollBoxComponent implements OnInit, AfterViewChecked, AfterContentChecked {
+export class ScrollBoxComponent implements OnInit, OnChanges, AfterViewChecked, AfterContentChecked {
     @Input() wheelSize = 50;
 
     @Input() horizontal = false;
@@ -26,14 +26,23 @@ export class ScrollBoxComponent implements OnInit, AfterViewChecked, AfterConten
     @Input() horizontalRelativeScrollPosition = 0;
     @Output() horizontalRelativeScrollPositionChange = new EventEmitter<number>();
 
+    @Input() horizontalAbsoluteScrollPosition = 0;
+    @Output() horizontalAbsoluteScrollPositionChange = new EventEmitter<number>();
+
     @Input() verticalRelativeScrollPosition = 0;
     @Output() verticalRelativeScrollPositionChange = new EventEmitter<number>();
 
-    horizontalScrollSize = 1;
-    verticalScrollSize = 1;
+    @Input() verticalAbsoluteScrollPosition = 0;
+    @Output() verticalAbsoluteScrollPositionChange = new EventEmitter<number>();
 
-    @Output() horizontalScrollSizeChange = new EventEmitter<number>();
-    @Output() verticalScrollSizeChange = new EventEmitter<number>();
+    horizontalRelativeScrollSize = 1;
+    verticalRelativeScrollSize = 1;
+
+    @Output() horizontalRelativeScrollSizeChange = new EventEmitter<number>();
+    @Output() verticalRelativeScrollSizeChange = new EventEmitter<number>();
+
+    @Output() horizontalAbsoluteScrollSizeChange = new EventEmitter<number>();
+    @Output() verticalAbsoluteScrollSizeChange = new EventEmitter<number>();
 
     @ViewChild('scrollContainer') scrollContainerRef: ElementRef<HTMLElement>;
 
@@ -41,11 +50,15 @@ export class ScrollBoxComponent implements OnInit, AfterViewChecked, AfterConten
     }
 
     get isHorizontalScrollVisible() {
-        return this.horizontal && this.horizontalScrollSize < 1;
+        return this.horizontal && this.horizontalRelativeScrollSize < 1;
     }
 
     get isVerticalScrollVisible() {
-        return this.vertical && this.verticalScrollSize < 1;
+        return this.vertical && this.verticalRelativeScrollSize < 1;
+    }
+
+    ngOnChanges(changes: SimpleChanges): void {
+        // todo обработать установку абсолютного скролла
     }
 
     ngOnInit() {
@@ -128,14 +141,16 @@ export class ScrollBoxComponent implements OnInit, AfterViewChecked, AfterConten
         const verticalScrollSize = el.offsetHeight / el.scrollHeight;
         const horizontalScrollSize = el.offsetWidth / el.scrollWidth;
 
-        if (this.verticalScrollSize !== verticalScrollSize) {
-            this.verticalScrollSize = verticalScrollSize;
-            this.verticalScrollSizeChange.emit(this.verticalScrollSize);
+        if (this.verticalRelativeScrollSize !== verticalScrollSize) {
+            this.verticalRelativeScrollSize = verticalScrollSize;
+            this.verticalRelativeScrollSizeChange.emit(this.verticalRelativeScrollSize);
+            this.verticalAbsoluteScrollSizeChange.emit(el.scrollHeight);
         }
 
-        if (this.horizontalScrollSize !== horizontalScrollSize) {
-            this.horizontalScrollSize = horizontalScrollSize;
-            this.horizontalScrollSizeChange.emit(this.horizontalScrollSize);
+        if (this.horizontalRelativeScrollSize !== horizontalScrollSize) {
+            this.horizontalRelativeScrollSize = horizontalScrollSize;
+            this.horizontalRelativeScrollSizeChange.emit(this.horizontalRelativeScrollSize);
+            this.horizontalAbsoluteScrollSizeChange.emit(el.scrollWidth);
         }
     }
 
@@ -145,8 +160,19 @@ export class ScrollBoxComponent implements OnInit, AfterViewChecked, AfterConten
         const horizontalScrollSize = el.scrollWidth - el.offsetWidth;
         const verticalScrollSize = el.scrollHeight - el.offsetHeight;
 
-        el.scrollLeft = horizontalScrollSize * this.horizontalRelativeScrollPosition;
-        el.scrollTop = verticalScrollSize * this.verticalRelativeScrollPosition;
+        const horizontalAbsoluteScrollPosition = horizontalScrollSize * this.horizontalRelativeScrollPosition;
+        const verticalAbsoluteScrollPosition = verticalScrollSize * this.verticalRelativeScrollPosition;
+
+        if (el.scrollLeft !== horizontalAbsoluteScrollPosition) {
+            el.scrollLeft = horizontalAbsoluteScrollPosition;
+            this.horizontalAbsoluteScrollPositionChange.emit(el.scrollLeft);
+        }
+
+        if (el.scrollTop !== verticalAbsoluteScrollPosition) {
+            el.scrollTop = verticalAbsoluteScrollPosition;
+            this.verticalAbsoluteScrollPositionChange.emit(el.scrollTop);
+        }
+
     }
 
 }

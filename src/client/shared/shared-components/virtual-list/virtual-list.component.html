@@ -1,15 +1,21 @@
 <app-scroll-box class="virtual-list"
                 [wheelSize]="getAvgHeight() * 2"
-                (verticalScrollSizeChange)="onScrollSizeChange($event)"
-                [verticalRelativeScrollPosition]="scrollPos"
-                (verticalRelativeScrollPositionChange)="onScrollPosChange($event)">
-    <div class="virtual-list__top" [style.height.px]="topVirtualHeight" [attr.offset-index]="offsetIndex"></div>
-    <div class="virtual-list__view" #viewport>
+                [verticalAbsoluteScrollPosition]="scrollPos"
+                (verticalAbsoluteScrollPositionChange)="onScrollPosChange($event)"
+                (verticalRelativeScrollSizeChange)="onScrollSizeChange($event)"
+>
+    <div class="virtual-list__top" [style.height.px]="topVirtualHeight"></div>
+    <div class="virtual-list__view" #viewport
+         [class.virtual-list__view_selectable]="selectable"
+    >
         <div class="virtual-list__view-item"
              [class.virtual-list__view-item_selected]="comparator.equals(selectedItem, item)"
-             #viewItem *ngFor="let item of viewportItems">
+             #viewItem *ngFor="let item of viewportItems; let i = index"
+             (click)="onItemClick(item)"
+        >
             <ng-container *ngTemplateOutlet="itemTemplate; context: {item: item}"></ng-container>
         </div>
     </div>
     <div class="virtual-list__bottom" [style.height.px]="bottomVirtualHeight"></div>
 </app-scroll-box>
+<app-spinner *ngIf="loading"></app-spinner>

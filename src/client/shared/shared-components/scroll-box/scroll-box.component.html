@@ -12,12 +12,12 @@
                 [horizontal]="false"
                 [position]="verticalRelativeScrollPosition"
                 (positionChange)="onScrollBarVerticalRelativeScrollPositionChange($event)"
-                [size]="verticalScrollSize"
+                [size]="verticalRelativeScrollSize"
 ></app-scroll-bar>
 <app-scroll-bar *ngIf="isHorizontalScrollVisible"
                 [otherScrollVisible]="isVerticalScrollVisible"
                 [horizontal]="true"
                 [position]="horizontalRelativeScrollPosition"
                 (positionChange)="onScrollBarHorizontalRelativeScrollPositionChange($event)"
-                [size]="horizontalScrollSize"
+                [size]="horizontalRelativeScrollSize"
 ></app-scroll-bar>

@@ -21,6 +21,8 @@ import {EqualsComparator} from '../../../../shared/comparator/equals-comparator'
 import {Comparator} from '../../../../shared/comparator/comparator';
 import {CachedListSource} from '../../../../shared/list-source/impl/cached-list-source';
 import {hasAnyChanges} from '../../../../functions/has-any-changes';
+import {Subject} from 'rxjs';
+import {debounceTime} from 'rxjs/operators';
 
 @Component({
     selector: 'app-virtual-list',
@@ -28,10 +30,14 @@ import {hasAnyChanges} from '../../../../functions/has-any-changes';
     styleUrls: ['./virtual-list.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class VirtualListComponent<T = any> implements OnInit, OnChanges, AfterViewChecked, OnDestroy {
+export class VirtualListComponent<T = any> implements OnInit, OnChanges, OnInit, AfterViewChecked, OnDestroy {
 
+    @Input() selectable = true;
+    @Input() deselectable = false;
     @Input() selectedItem: T;
     @Output() selectedItemChange = new EventEmitter<T>();
+
+    @Output() itemClick = new EventEmitter<T>();
 
     @Input() comparator: Comparator<T> = new EqualsComparator();
 
@@ -49,7 +55,9 @@ export class VirtualListComponent<T = any> implements OnInit, OnChanges, AfterVi
     topVirtualHeight = 0;
     bottomVirtualHeight = 0;
 
-    scrollSize = 1;
+    needUpdate$ = new Subject();
+
+    loading = false;
     scrollPos = 0;
 
     @ViewChildren('viewItem') viewItemElements: QueryList<ElementRef<HTMLElement>>;
@@ -64,6 +72,29 @@ export class VirtualListComponent<T = any> implements OnInit, OnChanges, AfterVi
         }
     }
 
+    ngOnInit() {
+        this.needUpdate$.pipe(debounceTime(10)).subscribe(() => this.updateAll());
+    }
+
+    onItemClick(item: T) {
+        if (this.selectable) {
+            this.selectItem(item);
+        }
+
+        this.itemClick.emit(item);
+    }
+
+    selectItem(item: T) {
+        if (this.deselectable && this.selectedItem === item) {
+            this.selectedItem = null;
+            this.selectedItemChange.emit(this.selectedItem);
+        }
+        if (this.selectable && this.selectedItem !== item) {
+            this.selectedItem = item;
+            this.selectedItemChange.emit(this.selectedItem);
+        }
+    }
+
     getAvgHeight(): number {
         if (this.realItemsHeight.size) {
             return [...this.realItemsHeight.values()].reduce((p, c) => p + c) / this.realItemsHeight.size;
@@ -72,15 +103,14 @@ export class VirtualListComponent<T = any> implements OnInit, OnChanges, AfterVi
         }
     }
 
-    getSliceHeight(offset: number, limit: number): number {
+    getRangeHeight(offset: number, end: number): number {
         let height = 0;
         let _avgHeight;
         const avgHeight = () => _avgHeight || (_avgHeight = this.getAvgHeight());
 
-        for (let i = 0; i < limit; i++) {
-            const index = offset + i;
-            if (this.realItemsHeight.has(index)) {
-                height += this.realItemsHeight.get(index);
+        for (let i = offset; i <= end; i++) {
+            if (this.realItemsHeight.has(i)) {
+                height += this.realItemsHeight.get(i);
             } else {
                 height += avgHeight();
             }
@@ -95,7 +125,7 @@ export class VirtualListComponent<T = any> implements OnInit, OnChanges, AfterVi
     }
 
     getScrollOffsetTopPx(): number {
-        return this.hostElement.nativeElement.offsetHeight / this.scrollSize * this.scrollPos;
+        return this.scrollPos;
     }
 
     getViewportOffsetIndex(): number {
@@ -106,27 +136,24 @@ export class VirtualListComponent<T = any> implements OnInit, OnChanges, AfterVi
     getViewportRange(): { offset: number, limit: number } {
         return {
             offset: this.getViewportOffsetIndex(),
-            limit: this.getViewportLimitIndex()
+            limit: this.getViewportLimitIndex() + 1
         };
-    }
-
-    ngOnInit() {
-
     }
 
     ngAfterViewChecked() {
         this.saveViewItemsHeight();
         this.updateVirtualHeights();
-    }
 
-    onScrollSizeChange(size: number) {
-        this.scrollSize = size;
-        this.updateAll();
+        this.needUpdate$.next();
     }
 
     onScrollPosChange(pos: number) {
         this.scrollPos = pos;
-        this.updateAll();
+        this.needUpdate$.next();
+    }
+
+    onScrollSizeChange($event: number) {
+        this.needUpdate$.next();
     }
 
     saveViewItemsHeight() {
@@ -140,9 +167,9 @@ export class VirtualListComponent<T = any> implements OnInit, OnChanges, AfterVi
         this.sourceSize = 0;
         this.viewportItems = [];
         this.realItemsHeight.clear();
-        this.cachedSource = new CachedListSource(this.source, 100);
+        this.cachedSource = new CachedListSource(this.source, 500);
 
-        this.updateAll();
+        this.needUpdate$.next();
     }
 
     async updateAll() {
@@ -152,22 +179,19 @@ export class VirtualListComponent<T = any> implements OnInit, OnChanges, AfterVi
             return;
         }
 
+        this.loading = true;
         const result = await this.cachedSource.getItems(offset, limit);
+        this.loading = false;
         this.offsetIndex = offset;
         this.sourceSize = result.count;
         this.viewportItems = result.items;
-
-        this.cdr.detectChanges();
 
         this.updateVirtualHeights();
     }
 
     updateVirtualHeights() {
-        const topOffset = this.offsetIndex - 1;
-        const bottomOffset = this.offsetIndex + this.viewportItems.length;
-
-        this.topVirtualHeight = this.getSliceHeight(0, topOffset);
-        this.bottomVirtualHeight = this.getSliceHeight(bottomOffset, this.sourceSize - bottomOffset);
+        this.topVirtualHeight = this.getRangeHeight(0, this.offsetIndex - 1);
+        this.bottomVirtualHeight = this.getRangeHeight(this.offsetIndex + this.viewportItems.length + 2, this.sourceSize);
 
         this.cdr.detectChanges();
     }
@@ -175,4 +199,5 @@ export class VirtualListComponent<T = any> implements OnInit, OnChanges, AfterVi
     ngOnDestroy() {
 
     }
+
 }
