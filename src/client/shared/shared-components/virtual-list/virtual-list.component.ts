@@ -94,12 +94,12 @@ export class VirtualListComponent<T = any> implements OnInit, OnChanges, AfterVi
         return Math.ceil(height / this.getAvgHeight());
     }
 
-    getScrollOffsetTop(): number {
+    getScrollOffsetTopPx(): number {
         return this.hostElement.nativeElement.offsetHeight / this.scrollSize * this.scrollPos;
     }
 
     getViewportOffsetIndex(): number {
-        const offsetTop = this.getScrollOffsetTop();
+        const offsetTop = this.getScrollOffsetTopPx();
         return Math.floor(offsetTop / this.getAvgHeight());
     }
 
