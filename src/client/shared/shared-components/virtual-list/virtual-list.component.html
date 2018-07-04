@@ -1,8 +1,9 @@
 <app-scroll-box class="virtual-list"
                 [wheelSize]="getAvgHeight() * 2"
-                [(verticalRelativeScrollPosition)]="scrollPos"
+                (verticalScrollSizeChange)="onScrollSizeChange($event)"
+                [verticalRelativeScrollPosition]="scrollPos"
                 (verticalRelativeScrollPositionChange)="onScrollPosChange($event)">
-    <div class="virtual-list__top" [style.height.px]="topVirtualHeight"></div>
+    <div class="virtual-list__top" [style.height.px]="topVirtualHeight" [attr.offset-index]="offsetIndex"></div>
     <div class="virtual-list__view" #viewport>
         <div class="virtual-list__view-item"
              [class.virtual-list__view-item_selected]="comparator.equals(selectedItem, item)"

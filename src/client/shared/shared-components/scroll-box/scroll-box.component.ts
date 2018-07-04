@@ -32,6 +32,9 @@ export class ScrollBoxComponent implements OnInit, AfterViewChecked, AfterConten
     horizontalScrollSize = 1;
     verticalScrollSize = 1;
 
+    @Output() horizontalScrollSizeChange = new EventEmitter<number>();
+    @Output() verticalScrollSizeChange = new EventEmitter<number>();
+
     @ViewChild('scrollContainer') scrollContainerRef: ElementRef<HTMLElement>;
 
     constructor() {
@@ -122,8 +125,18 @@ export class ScrollBoxComponent implements OnInit, AfterViewChecked, AfterConten
     updateScrollSizes() {
         const el = this.scrollContainerRef.nativeElement;
 
-        this.verticalScrollSize = el.offsetHeight / el.scrollHeight;
-        this.horizontalScrollSize = el.offsetWidth / el.scrollWidth;
+        const verticalScrollSize = el.offsetHeight / el.scrollHeight;
+        const horizontalScrollSize = el.offsetWidth / el.scrollWidth;
+
+        if (this.verticalScrollSize !== verticalScrollSize) {
+            this.verticalScrollSize = verticalScrollSize;
+            this.verticalScrollSizeChange.emit(this.verticalScrollSize);
+        }
+
+        if (this.horizontalScrollSize !== horizontalScrollSize) {
+            this.horizontalScrollSize = horizontalScrollSize;
+            this.horizontalScrollSizeChange.emit(this.horizontalScrollSize);
+        }
     }
 
     updateAbsoluteScrollPosition() {

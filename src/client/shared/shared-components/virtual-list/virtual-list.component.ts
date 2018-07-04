@@ -49,6 +49,7 @@ export class VirtualListComponent<T = any> implements OnInit, OnChanges, AfterVi
     topVirtualHeight = 0;
     bottomVirtualHeight = 0;
 
+    scrollSize = 1;
     scrollPos = 0;
 
     @ViewChildren('viewItem') viewItemElements: QueryList<ElementRef<HTMLElement>>;
@@ -94,13 +95,11 @@ export class VirtualListComponent<T = any> implements OnInit, OnChanges, AfterVi
     }
 
     getScrollOffsetTop(): number {
-        const height = this.viewElement.nativeElement.offsetHeight + this.topVirtualHeight + this.bottomVirtualHeight;
-        return height * this.scrollPos;
+        return this.hostElement.nativeElement.offsetHeight / this.scrollSize * this.scrollPos;
     }
 
     getViewportOffsetIndex(): number {
         const offsetTop = this.getScrollOffsetTop();
-        console.log({offsetTop});
         return Math.floor(offsetTop / this.getAvgHeight());
     }
 
@@ -120,7 +119,13 @@ export class VirtualListComponent<T = any> implements OnInit, OnChanges, AfterVi
         this.updateVirtualHeights();
     }
 
+    onScrollSizeChange(size: number) {
+        this.scrollSize = size;
+        this.updateAll();
+    }
+
     onScrollPosChange(pos: number) {
+        this.scrollPos = pos;
         this.updateAll();
     }
 
@@ -142,6 +147,11 @@ export class VirtualListComponent<T = any> implements OnInit, OnChanges, AfterVi
 
     async updateAll() {
         const {offset, limit} = this.getViewportRange();
+
+        if (this.offsetIndex === offset && this.viewportItems.length === limit) {
+            return;
+        }
+
         const result = await this.cachedSource.getItems(offset, limit);
         this.offsetIndex = offset;
         this.sourceSize = result.count;
@@ -153,8 +163,11 @@ export class VirtualListComponent<T = any> implements OnInit, OnChanges, AfterVi
     }
 
     updateVirtualHeights() {
-        this.topVirtualHeight = this.getSliceHeight(0, this.offsetIndex);
-        this.bottomVirtualHeight = this.getSliceHeight(this.offsetIndex + this.viewportItems.length, this.sourceSize - this.offsetIndex - this.viewportItems.length);
+        const topOffset = this.offsetIndex - 1;
+        const bottomOffset = this.offsetIndex + this.viewportItems.length;
+
+        this.topVirtualHeight = this.getSliceHeight(0, topOffset);
+        this.bottomVirtualHeight = this.getSliceHeight(bottomOffset, this.sourceSize - bottomOffset);
 
         this.cdr.detectChanges();
     }
