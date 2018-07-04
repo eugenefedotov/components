@@ -1,11 +1,14 @@
-<app-scroll-box class="virtual-list" [(verticalRelativeScrollPosition)]="verticalRelativeScrollPosition">
-    <div class="virtual-list__top" #top></div>
-    <div class="virtual-list__view" #view>
+<app-scroll-box class="virtual-list"
+                [wheelSize]="getAvgHeight() * 2"
+                [(verticalRelativeScrollPosition)]="scrollPos"
+                (verticalRelativeScrollPositionChange)="onScrollPosChange($event)">
+    <div class="virtual-list__top" [style.height.px]="topVirtualHeight"></div>
+    <div class="virtual-list__view" #viewport>
         <div class="virtual-list__view-item"
              [class.virtual-list__view-item_selected]="comparator.equals(selectedItem, item)"
-             #viewItem *ngFor="let item of viewItems$ | async">
+             #viewItem *ngFor="let item of viewportItems">
             <ng-container *ngTemplateOutlet="itemTemplate; context: {item: item}"></ng-container>
         </div>
     </div>
-    <div class="virtual-list__bottom" #bottom></div>
+    <div class="virtual-list__bottom" [style.height.px]="bottomVirtualHeight"></div>
 </app-scroll-box>

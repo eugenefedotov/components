@@ -18,14 +18,20 @@ import {
 })
 export class ScrollBoxComponent implements OnInit, AfterViewChecked, AfterContentChecked {
     @Input() wheelSize = 50;
+
     @Input() horizontal = false;
+
     @Input() vertical = true;
+
     @Input() horizontalRelativeScrollPosition = 0;
-    @Input() verticalRelativeScrollPosition = 0;
     @Output() horizontalRelativeScrollPositionChange = new EventEmitter<number>();
+
+    @Input() verticalRelativeScrollPosition = 0;
     @Output() verticalRelativeScrollPositionChange = new EventEmitter<number>();
+
     horizontalScrollSize = 1;
     verticalScrollSize = 1;
+
     @ViewChild('scrollContainer') scrollContainerRef: ElementRef<HTMLElement>;
 
     constructor() {
