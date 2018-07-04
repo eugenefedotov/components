@@ -5,9 +5,6 @@
   flex-direction: column;
 
   .virtual-list {
-    //flex: 1 1 auto;
-    //display: block;
-
     &__top {
 
     }
@@ -24,9 +21,5 @@
     &__bottom {
 
     }
-  }
-
-  .virtual-list-spinner {
-
   }
 }

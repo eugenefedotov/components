@@ -1,4 +1,4 @@
-<app-scroll-box class="virtual-list">
+<app-scroll-box class="virtual-list" [(verticalRelativeScrollPosition)]="verticalRelativeScrollPosition">
     <div class="virtual-list__top" #top></div>
     <div class="virtual-list__view" #view>
         <div class="virtual-list__view-item"
@@ -9,4 +9,3 @@
     </div>
     <div class="virtual-list__bottom" #bottom></div>
 </app-scroll-box>
-<app-spinner class="virtual-list-spinner" *ngIf="spinnerDisplay"></app-spinner>

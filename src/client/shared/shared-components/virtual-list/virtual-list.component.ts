@@ -19,6 +19,8 @@ import {ListSource} from '../../../../shared/list-source/list-source';
 import {Subject} from 'rxjs';
 import {EqualsComparator} from '../../../../shared/comparator/equals-comparator';
 import {Comparator} from '../../../../shared/comparator/comparator';
+import {CachedListSource} from '../../../../shared/list-source/impl/cached-list-source';
+import {hasAnyChanges} from '../../../../functions/has-any-changes';
 
 @Component({
     selector: 'app-virtual-list',
@@ -34,17 +36,17 @@ export class VirtualListComponent implements OnInit, OnChanges, AfterViewChecked
     @Input() comparator: Comparator<any> = new EqualsComparator();
 
     @Input() source: ListSource<any>;
-    @Input() itemTemplate: TemplateRef<any>;
     @Input() pageSize = 100;
+    @Input() itemTemplate: TemplateRef<any>;
 
-    heightsCache = new Map<number, number>();
 
+    cachedSource: CachedListSource<any>;
     viewOffset: number;
-    viewLimit: number;
     sourceSize: number;
 
     viewItems$ = new Subject<any[]>();
-    spinnerDisplay = false;
+
+    verticalRelativeScrollPosition = 0;
 
     @ViewChildren('viewItem') viewItemElements: QueryList<ElementRef>;
 
@@ -55,35 +57,29 @@ export class VirtualListComponent implements OnInit, OnChanges, AfterViewChecked
     constructor(private hostElement: ElementRef<HTMLElement>) {
     }
 
-    ngOnInit() {
-    }
-
-    async updateItems() {
-        const {items, count} = await this.source.getItems(this.viewOffset, this.viewLimit);
-        this.sourceSize = count;
-        this.viewItems$.next(items);
-    }
-
-    async onSourceChange() {
-        this.viewOffset = 0;
-        this.viewLimit = this.pageSize;
-        this.sourceSize = 0;
-        this.viewItems$.next([]);
-        this.heightsCache.clear();
-
-        if (this.source) {
-            await this.updateItems();
-        }
-    }
-
     ngOnChanges(changes: SimpleChanges): void {
-        if (changes.hasOwnProperty('source')) {
-            this.onSourceChange();
+        if (hasAnyChanges(changes, ['source', 'pageSize'])) {
+            this.clearCache();
+            this.updateCachedSource();
         }
+    }
+
+    ngOnInit() {
+
     }
 
     ngAfterViewChecked() {
 
+    }
+
+    clearCache() {
+        this.viewOffset = 0;
+        this.sourceSize = 0;
+        this.viewItems$.next([]);
+    }
+
+    updateCachedSource() {
+        this.cachedSource = new CachedListSource(this.source, this.pageSize);
     }
 
     ngOnDestroy() {
