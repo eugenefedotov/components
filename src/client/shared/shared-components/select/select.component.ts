@@ -1,4 +1,4 @@
-import {Component, forwardRef, Input, OnChanges, OnDestroy, OnInit, SimpleChanges} from '@angular/core';
+import {Component, EventEmitter, forwardRef, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges} from '@angular/core';
 import {ControlValueAccessor, NG_VALUE_ACCESSOR} from '@angular/forms';
 import {SelectSource} from '../../../../shared/select-source/select-source';
 import {SelectItemModel} from '../../../../shared/select-source/models/select-item.model';
@@ -25,7 +25,9 @@ export class SelectComponent implements OnInit, OnChanges, OnDestroy, ControlVal
 
     @Input() source: SelectSource;
 
-    item: SelectItemModel;
+    @Input() selectedItem: SelectItemModel;
+    @Output() selectedItemChange = new EventEmitter<SelectItemModel>();
+
     value: any;
 
     destroy$ = new Subject();
@@ -66,11 +68,11 @@ export class SelectComponent implements OnInit, OnChanges, OnDestroy, ControlVal
     }
 
     async updateItem() {
-        if (!this.value || !this.source || this.item && this.item.value === this.value) {
+        if (!this.value || !this.source || this.selectedItem && this.selectedItem.value === this.value) {
             return;
         }
 
-        this.item = await this.source.getByValue(this.value);
+        this.selectedItem = await this.source.getByValue(this.value);
     }
 
     ngOnDestroy(): void {
@@ -84,11 +86,18 @@ export class SelectComponent implements OnInit, OnChanges, OnDestroy, ControlVal
         }
 
         this.drop = !this.drop;
-        this.onTouched();
+
+        if (this.onTouched) {
+            this.onTouched();
+        }
     }
 
     onItemClick($event: MouseEvent, item: SelectItemModel) {
-        this.item = item;
-        this.onChange(this.item.value);
+        this.selectedItem = item;
+        this.selectedItemChange.emit(this.selectedItem);
+
+        if (this.onChange) {
+            this.onChange(this.selectedItem.value);
+        }
     }
 }

@@ -9,6 +9,9 @@ import {KeyComparator} from '../../../../shared/comparator/key-comparator';
 import {DataSourceRequestFilterTypeEnum} from '../../../../shared/data-source/models/data-source-request-filter-type.enum';
 import {DataSourceRequestFilterItemModel} from '../../../../shared/data-source/models/data-source-request-filter-item.model';
 import {hasAnyChanges} from '../../../../functions/has-any-changes';
+import {CurrencyRestService} from '../../shared-rest-services/currency-rest/currency-rest.service';
+import {SelectSource} from '../../../../shared/select-source/select-source';
+import {DataSourceSelectSource} from '../../../../shared/select-source/impl/data-source-select-source';
 
 @Component({
     selector: 'app-payment-service-currency-list',
@@ -29,9 +32,13 @@ export class PaymentServiceCurrencyListComponent implements OnChanges, OnInit {
 
     @Input() listSource: ListSource<PaymentServiceCurrencyEntity>;
 
+    currencySelectSource: SelectSource<CurrencyEntity>;
+
     paymentServiceCurrencyComparator = new KeyComparator<PaymentServiceCurrencyEntity>('id');
 
-    constructor(private paymentServiceCurrencyRestService: PaymentServiceCurrencyRestService) {
+    constructor(private paymentServiceCurrencyRestService: PaymentServiceCurrencyRestService,
+                private currencyRestService: CurrencyRestService
+    ) {
     }
 
     ngOnChanges(changes: SimpleChanges): void {
@@ -44,6 +51,8 @@ export class PaymentServiceCurrencyListComponent implements OnChanges, OnInit {
         if (!this.listSource) {
             this.updateListSource();
         }
+
+        this.currencySelectSource = new DataSourceSelectSource(this.currencyRestService);
     }
 
     updateListSource() {

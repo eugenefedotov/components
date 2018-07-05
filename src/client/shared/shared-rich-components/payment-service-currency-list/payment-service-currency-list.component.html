@@ -2,8 +2,14 @@
     <app-payment-service-currency [item]="item" [selected]="selected"></app-payment-service-currency>
 </ng-template>
 
-<app-virtual-list
-        [selectedItem]="paymentServiceCurrency"
-        [source]="listSource"
-        [itemTemplate]="itemTemplate"
-        [comparator]="paymentServiceCurrencyComparator"></app-virtual-list>
+<div class="payment-service-currency-list">
+    <div class="payment-service-currency-list__filter">
+        <app-select [source]="currencySelectSource" [(selectedItem)]="currency"></app-select>
+    </div>
+    <app-virtual-list
+            class="payment-service-currency-list__list"
+            [selectedItem]="paymentServiceCurrency"
+            [source]="listSource"
+            [itemTemplate]="itemTemplate"
+            [comparator]="paymentServiceCurrencyComparator"></app-virtual-list>
+</div>

@@ -1,5 +1,5 @@
 <div class="select" #selectElement (click)="onSelectClick($event)">
-    <div class="select__name">{{item?.name}}</div>
+    <div class="select__name">{{selectedItem?.name}}</div>
     <div class="select__arrow"><fa [name]="drop ? 'angle-up' : 'angle-down'"></fa></div>
 </div>
 <ng-template #itemTemplate let-item="item" let-selected="selected">
@@ -10,7 +10,7 @@
             class="select__drop"
             *appPopUp="selectElement; contentAlign: PopUpAlign.FitByRelative; contentPosition: PopUpPosition.Bottom;"
             [source]="source"
-            [selectedItem]="item"
+            [selectedItem]="selectedItem"
             [itemTemplate]="itemTemplate"
     ></app-virtual-list>
 </ng-container>
