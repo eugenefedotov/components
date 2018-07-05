@@ -3,17 +3,17 @@ import {SelectSourceRequestModel} from '../models/select-source-request.model';
 import {SelectSourceResponseModel} from '../models/select-source-response.model';
 import {SelectItemModel} from '../models/select-item.model';
 
-export class LocalSelectSource<T extends SelectItemModel = SelectItemModel> implements SelectSource<T> {
+export class LocalSelectSource<T = any> implements SelectSource<T> {
 
-    constructor(private items: T[]) {
+    constructor(private items: SelectItemModel<T>[]) {
 
     }
 
-    async getByValue(value: T['value']): Promise<T> {
+    async getByValue(value: SelectItemModel['value']): Promise<SelectItemModel<T>> {
         return this.items.find(item => item.value === value);
     }
 
-    async getSlice(request: SelectSourceRequestModel): Promise<SelectSourceResponseModel<T>> {
+    async getData(request: SelectSourceRequestModel): Promise<SelectSourceResponseModel<T>> {
         let items = [...this.items];
 
         if (request.filter) {

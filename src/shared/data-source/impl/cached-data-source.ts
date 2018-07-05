@@ -59,7 +59,9 @@ export class CachedDataSource<T> implements DataSource<T> {
                         type: DataSourceRequestFilterTypeEnum.Equal,
                         values: keys
                     }
-                ]
+                ],
+                offset: 0,
+                limit: keys.length
             });
 
             result.items.forEach(item => this.resolve(item[this.key], item));

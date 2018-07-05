@@ -6,17 +6,17 @@ import {DataSource} from '../../data-source/data-source';
 import {DataSourceRequestModel} from '../../data-source/models/data-source-request.model';
 import {DataSourceRequestFilterTypeEnum} from '../../data-source/models/data-source-request-filter-type.enum';
 
-export class DataSourceSelectSource<T extends object, T2 extends SelectItemModel<T> = SelectItemModel<T>> implements SelectSource<T2> {
+export class DataSourceSelectSource<T extends object> implements SelectSource<T> {
 
-    constructor(private restDataSource: DataSource<T>,
+    constructor(private dataSource: DataSource<T>,
                 private nameKey = 'name' as keyof T,
                 private valueKey = 'id' as keyof T) {
 
     }
 
-    async getByValue(value: T2['value']): Promise<T2> {
+    async getByValue(value: SelectItemModel['value']): Promise<SelectItemModel<T>> {
 
-        const restDataRequest: DataSourceRequestModel<T> = {
+        const dataSourceRequestModel: DataSourceRequestModel<T> = {
             offset: 0,
             limit: 1,
             fields: [this.nameKey, this.valueKey],
@@ -29,12 +29,12 @@ export class DataSourceSelectSource<T extends object, T2 extends SelectItemModel
             ]
         };
 
-        const result = await this.restDataSource.getData(restDataRequest);
+        const result = await this.dataSource.getData(dataSourceRequestModel);
 
         return result.items.length ? this.mapItem(result.items[0]) : void 0;
     }
 
-    async getSlice(request: SelectSourceRequestModel): Promise<SelectSourceResponseModel<T2>> {
+    async getData(request: SelectSourceRequestModel): Promise<SelectSourceResponseModel<T>> {
         const restDataRequest: DataSourceRequestModel<T> = {
             offset: request.offset,
             limit: request.limit,
@@ -50,7 +50,7 @@ export class DataSourceSelectSource<T extends object, T2 extends SelectItemModel
             });
         }
 
-        const result = await this.restDataSource.getData(restDataRequest);
+        const result = await this.dataSource.getData(restDataRequest);
 
         return {
             count: result.count,
@@ -58,11 +58,11 @@ export class DataSourceSelectSource<T extends object, T2 extends SelectItemModel
         };
     }
 
-    private mapItem(item: T): T2 {
+    private mapItem(item: T): SelectItemModel<T> {
         return {
             name: item[this.nameKey] as any,
             value: item[this.valueKey] as any,
             attributes: item
-        } as T2;
+        } as SelectItemModel<T>;
     }
 }

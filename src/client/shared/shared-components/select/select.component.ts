@@ -34,6 +34,7 @@ export class SelectComponent implements OnInit, OnChanges, OnDestroy, ControlVal
     onTouched: () => void;
 
     drop = false;
+    disabled = false;
 
     constructor() {
     }
@@ -56,6 +57,7 @@ export class SelectComponent implements OnInit, OnChanges, OnDestroy, ControlVal
     }
 
     setDisabledState(isDisabled: boolean): void {
+        this.disabled = isDisabled;
     }
 
     writeValue(obj: any): void {
@@ -76,5 +78,17 @@ export class SelectComponent implements OnInit, OnChanges, OnDestroy, ControlVal
         this.destroy$.complete();
     }
 
+    onSelectClick($event: MouseEvent) {
+        if (this.disabled) {
+            return;
+        }
 
+        this.drop = !this.drop;
+        this.onTouched();
+    }
+
+    onItemClick($event: MouseEvent, item: SelectItemModel) {
+        this.item = item;
+        this.onChange(this.item.value);
+    }
 }

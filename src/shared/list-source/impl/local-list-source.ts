@@ -8,7 +8,7 @@ export class LocalListSource<T> implements ListSource<T> {
     }
 
 
-    async getItems(offset: number, limit: number): Promise<ListSourceResponseModel<T>> {
+    async getData(offset: number, limit: number): Promise<ListSourceResponseModel<T>> {
         return {
             count: this.items.length,
             items: this.items.slice(offset, offset + limit)

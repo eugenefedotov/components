@@ -1,5 +1,6 @@
 import {ListSource} from '../list-source';
 import {ListSourceResponseModel} from '../models/list-source-response.model';
+import {ListSourceRequestModel} from '../models/list-source-request.model';
 
 export class CachedListSource<T> implements ListSource<T> {
 
@@ -11,12 +12,12 @@ export class CachedListSource<T> implements ListSource<T> {
 
     }
 
-    async getItems(offset: number, limit: number): Promise<ListSourceResponseModel<T>> {
-        if (!this._getRangeOutOfCache(offset, limit)) {
-            return this._getResponseFromCache(offset, limit);
+    async getData(request: ListSourceRequestModel): Promise<ListSourceResponseModel<T>> {
+        if (!this._getRangeOutOfCache(request.offset, request.limit)) {
+            return this._getResponseFromCache(request.offset, request.limit);
         }
 
-        return this._getItems(offset, limit);
+        return this._getItems(request.offset, request.limit);
     }
 
     private getRequestKey(offset: number, limit: number): string {
@@ -32,7 +33,7 @@ export class CachedListSource<T> implements ListSource<T> {
 
         if (!this.promises.has(requestKey)) {
             this.promises.set(requestKey, (async () => {
-                const result = await this.listSource.getItems(range.offset, range.limit);
+                const result = await this.listSource.getData(range);
                 this.count = result.count;
                 result.items.forEach((item, index) => this.cache.set(index + offset, item));
 

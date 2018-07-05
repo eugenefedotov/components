@@ -1,12 +1,13 @@
-<div class="select" #selectElement>
+<div class="select" #selectElement (click)="onSelectClick($event)">
     <div class="select__name">{{item?.name}}</div>
     <div class="select__arrow"><fa [name]="drop ? 'angle-up' : 'angle-down'"></fa></div>
 </div>
 <ng-template #itemTemplate let-item="item" let-selected="selected">
-    <app-select-item [item]="item" [selected]="selected"></app-select-item>
+    <app-select-item (click)="onItemClick($event, item)" [item]="item" [selected]="selected"></app-select-item>
 </ng-template>
 <ng-container *ngIf="drop">
     <app-virtual-list
+            class="select__drop"
             *appPopUp="selectElement; contentAlign: PopUpAlign.FitByRelative; contentPosition: PopUpPosition.Bottom;"
             [source]="source"
             [selectedItem]="item"

@@ -180,7 +180,7 @@ export class VirtualListComponent<T = any> implements OnInit, OnChanges, OnInit,
         }
 
         this.loading = true;
-        const result = await this.cachedSource.getItems(offset, limit);
+        const result = await this.cachedSource.getData({offset, limit});
         this.loading = false;
         this.offsetIndex = offset;
         this.sourceSize = result.count;
