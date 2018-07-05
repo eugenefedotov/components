@@ -4,31 +4,22 @@ import {
     Component,
     DoCheck,
     ElementRef,
+    HostBinding,
     Input,
-    NgZone,
-    OnChanges,
     OnDestroy,
     OnInit,
-    Renderer2,
-    SimpleChanges,
     TemplateRef
 } from '@angular/core';
 import {PopUpAlign, PopUpBound, PopUpPosition} from '../../shared-directives/pop-up/pop-up.directive';
 import {Subject} from 'rxjs';
-import {debounceTime, throttleTime} from 'rxjs/operators';
-
-
-interface PopUpSize {
-    width: number;
-    height: number;
-}
+import {throttleTime} from 'rxjs/operators';
 
 @Component({
     selector: 'app-pop-up-container',
     template: '<ng-container *ngTemplateOutlet="templateRef"></ng-container>',
     styleUrls: ['./pop-up-container.component.scss']
 })
-export class PopUpContainerComponent implements OnInit, OnChanges, DoCheck, AfterViewChecked, AfterContentChecked, OnDestroy {
+export class PopUpContainerComponent implements OnInit, DoCheck, AfterViewChecked, AfterContentChecked, OnDestroy {
 
     @Input() templateRef: TemplateRef<any>;
 
@@ -42,29 +33,70 @@ export class PopUpContainerComponent implements OnInit, OnChanges, DoCheck, Afte
     _popUpContentPosition: PopUpPosition;
     _popUpContentAlign: PopUpAlign;
 
-    _viewportBound: PopUpBound;
-    _relativeBound: PopUpBound;
-    _contentSize: PopUpSize;
-
     needUpdate$ = new Subject();
 
-    constructor(private elementRef: ElementRef<HTMLElement>,
-                private renderer: Renderer2,
-                private zone: NgZone) {
+    @HostBinding('style.top.px')
+    top: number;
+
+    @HostBinding('style.left.px')
+    left: number;
+
+    @HostBinding('style.right.px')
+    right: number;
+
+    @HostBinding('style.bottom.px')
+    bottom: number;
+
+    @HostBinding('style.width.px')
+    width: number;
+
+    @HostBinding('style.height.px')
+    height: number;
+
+    constructor(private elementRef: ElementRef<HTMLElement>) {
     }
 
-    ngOnChanges(changes: SimpleChanges): void {
+    @HostBinding('class.pop-up-container_position-top')
+    get positionTop() {
+        return this._popUpContentPosition === PopUpPosition.Top;
+    }
 
-        this._popUpContentPosition = this.popUpContentPosition;
-        this._popUpContentAlign = this.popUpContentAlign;
+    @HostBinding('class.pop-up-container_position-left')
+    get positionLeft() {
+        return this._popUpContentPosition === PopUpPosition.Left;
+    }
 
-        // this.needUpdate();
+    @HostBinding('class.pop-up-container_position-right')
+    get positionRight() {
+        return this._popUpContentPosition === PopUpPosition.Right;
+    }
+
+    @HostBinding('class.pop-up-container_position-bottom')
+    get positionBottom() {
+        return this._popUpContentPosition === PopUpPosition.Bottom;
+    }
+
+    @HostBinding('class.pop-up-container_align-start')
+    get alignStart() {
+        return this._popUpContentAlign === PopUpAlign.Start;
+    }
+
+    @HostBinding('class.pop-up-container_align-center')
+    get alignCenter() {
+        return this._popUpContentAlign === PopUpAlign.Center;
+    }
+
+    @HostBinding('class.pop-up-container_align-end')
+    get alignEnd() {
+        return this._popUpContentAlign === PopUpAlign.End;
+    }
+
+    @HostBinding('class.pop-up-container_align-fit-by-relative')
+    get alignFitByRelative() {
+        return this._popUpContentAlign === PopUpAlign.FitByRelative;
     }
 
     ngOnInit() {
-        this.renderer.setStyle(this.elementRef.nativeElement, 'top', '-10000px');
-        this.renderer.setStyle(this.elementRef.nativeElement, 'left', '-10000px');
-
         this.needUpdate$
             .pipe(throttleTime(50))
             .subscribe(() => this.updateAll());
@@ -83,15 +115,10 @@ export class PopUpContainerComponent implements OnInit, OnChanges, DoCheck, Afte
     }
 
     needUpdate() {
-        this.zone.runOutsideAngular(() => {
-            this.needUpdate$.next();
-        });
+        this.needUpdate$.next();
     }
 
     updateAll() {
-        this.getViewportBound();
-        this.getRelativeBound();
-        this.getContentSize();
 
         this.updateRealContentAlign();
         this.updateRealContentPosition();
@@ -100,11 +127,10 @@ export class PopUpContainerComponent implements OnInit, OnChanges, DoCheck, Afte
 
     getViewportBound() {
         if (this.viewportBound) {
-            this._viewportBound = this.viewportBound;
-            return;
+            return this.viewportBound;
         }
 
-        this._viewportBound = {
+        return {
             left: 0,
             top: 0,
             right: window.innerWidth,
@@ -115,7 +141,7 @@ export class PopUpContainerComponent implements OnInit, OnChanges, DoCheck, Afte
     getRelativeBound() {
         const el = this.popUpRelativeHtmlElement;
         const bound = el.getBoundingClientRect();
-        this._relativeBound = {
+        return {
             left: bound.left,
             top: bound.top,
             right: bound.right,
@@ -125,7 +151,7 @@ export class PopUpContainerComponent implements OnInit, OnChanges, DoCheck, Afte
 
     getContentSize() {
         const el = this.elementRef.nativeElement;
-        this._contentSize = {
+        return {
             width: el.offsetWidth,
             height: el.offsetHeight
         };
@@ -142,7 +168,6 @@ export class PopUpContainerComponent implements OnInit, OnChanges, DoCheck, Afte
     updateContentStyle() {
         let isPositionHorizontal: boolean;
         const allAnchors = [PopUpPosition.Left, PopUpPosition.Right, PopUpPosition.Top, PopUpPosition.Bottom];
-        const allAligns = [PopUpAlign.Start, PopUpAlign.Center, PopUpAlign.End];
         const sizeProps = ['height', 'width'];
 
         let positionAnchor: PopUpPosition;
@@ -179,38 +204,29 @@ export class PopUpContainerComponent implements OnInit, OnChanges, DoCheck, Afte
         }
 
         allAnchors.forEach(anchor => {
+            const anchorStyleName = this.getAnchorStyleName(anchor);
             const isPositionAnchor = positionAnchor === anchor;
             const isAlignAnchor = alignAnchor === anchor;
 
             if (!isPositionAnchor && !isAlignAnchor) {
-                this.renderer.removeStyle(this.elementRef.nativeElement, anchor);
+                this[anchorStyleName] = null;
             }
 
             if (isPositionAnchor) {
-                this.renderer.setStyle(this.elementRef.nativeElement, anchor, this.getPositionAnchorValue(anchor).toFixed() + 'px');
+                this[anchorStyleName] = this.getPositionAnchorValue(anchor).toFixed();
             }
 
             if (isAlignAnchor) {
-                this.renderer.setStyle(this.elementRef.nativeElement, anchor, this.getAlignAnchorValue(anchor).toFixed() + 'px');
+                this[anchorStyleName] = this.getAlignAnchorValue(anchor).toFixed();
             }
-
-            this.renderer.removeClass(this.elementRef.nativeElement, `pop-up-container_position-${anchor}`);
         });
-
-        this.renderer.addClass(this.elementRef.nativeElement, `pop-up-container_position-${this._popUpContentPosition}`);
-
-        allAligns.forEach(align => {
-            this.renderer.removeClass(this.elementRef.nativeElement, `pop-up-container_align-${align}`);
-        });
-
-        this.renderer.addClass(this.elementRef.nativeElement, `pop-up-container_align-${this._popUpContentAlign}`);
 
         if (this._popUpContentAlign === PopUpAlign.FitByRelative) {
-            const sizeProp = isPositionHorizontal ? 'height' : 'width';
-            this.renderer.setStyle(this.elementRef.nativeElement, sizeProp, this.getSizeValue().toFixed() + 'px');
+            const sizeProp: string = isPositionHorizontal ? 'height' : 'width';
+            this[sizeProp] = this.getSizeValue().toFixed();
         } else {
             sizeProps.forEach(sizeProp => {
-                this.renderer.removeStyle(this.elementRef.nativeElement, sizeProp);
+                this[sizeProp] = null;
             });
         }
     }
@@ -220,48 +236,68 @@ export class PopUpContainerComponent implements OnInit, OnChanges, DoCheck, Afte
     }
 
     private getPositionAnchorValue(anchor: PopUpPosition): number {
+        const viewportBound = this.getViewportBound();
+        const relativeBound = this.getRelativeBound();
+
         switch (anchor) {
             case PopUpPosition.Left:
-                return this._relativeBound.right;
+                return relativeBound.right;
             case PopUpPosition.Right:
-                return this._viewportBound.right - this._relativeBound.left;
+                return viewportBound.right - relativeBound.left;
             case PopUpPosition.Top:
-                return this._relativeBound.bottom;
+                return relativeBound.bottom;
             case PopUpPosition.Bottom:
-                return this._viewportBound.bottom - this._relativeBound.top;
+                return viewportBound.bottom - relativeBound.top;
             default:
                 return 0;
         }
     }
 
     private getAlignAnchorValue(anchor: PopUpPosition): number {
+        const relativeBound = this.getRelativeBound();
+        const contentSize = this.getContentSize();
         const isCenter = this._popUpContentAlign === PopUpAlign.Center;
 
-        const leftOffset = isCenter ? ((this._relativeBound.right - this._relativeBound.left) / 2) - (this._contentSize.width / 2) : 0;
-        const topOffset = isCenter ? ((this._relativeBound.bottom - this._relativeBound.top) / 2) - (this._contentSize.height / 2) : 0;
+        const leftOffset = isCenter ? ((relativeBound.right - relativeBound.left) / 2) - (contentSize.width / 2) : 0;
+        const topOffset = isCenter ? ((relativeBound.bottom - relativeBound.top) / 2) - (contentSize.height / 2) : 0;
 
         switch (anchor) {
             case PopUpPosition.Left:
-                return this._relativeBound.left + leftOffset;
+                return relativeBound.left + leftOffset;
             case PopUpPosition.Right:
-                return this._relativeBound.right - leftOffset;
+                return relativeBound.right - leftOffset;
             case PopUpPosition.Top:
-                return this._relativeBound.top + topOffset;
+                return relativeBound.top + topOffset;
             case PopUpPosition.Bottom:
-                return this._relativeBound.bottom - topOffset;
+                return relativeBound.bottom - topOffset;
             default:
                 return 0;
         }
     }
 
+    private getAnchorStyleName(anchor: PopUpPosition): string {
+        switch (anchor) {
+            case PopUpPosition.Left:
+                return 'left';
+            case PopUpPosition.Right:
+                return 'right';
+            case PopUpPosition.Top:
+                return 'top';
+            case PopUpPosition.Bottom:
+                return 'bottom';
+        }
+    }
+
     private getSizeValue(): number {
+        const relativeBound = this.getRelativeBound();
+
         switch (this._popUpContentPosition) {
             case PopUpPosition.Top:
             case PopUpPosition.Bottom:
-                return this._relativeBound.right - this._relativeBound.left;
+                return relativeBound.right - relativeBound.left;
             case PopUpPosition.Left:
             case PopUpPosition.Right:
-                return this._relativeBound.bottom - this._relativeBound.top;
+                return relativeBound.bottom - relativeBound.top;
         }
     }
 }
