@@ -21,8 +21,8 @@ import {EqualsComparator} from '../../../../shared/comparator/equals-comparator'
 import {Comparator} from '../../../../shared/comparator/comparator';
 import {CachedListSource} from '../../../../shared/list-source/impl/cached-list-source';
 import {hasAnyChanges} from '../../../../functions/has-any-changes';
-import {Subject} from 'rxjs';
-import {debounceTime} from 'rxjs/operators';
+import {BehaviorSubject, Subject} from 'rxjs';
+import {debounceTime, takeUntil} from 'rxjs/operators';
 
 @Component({
     selector: 'app-virtual-list',
@@ -56,6 +56,7 @@ export class VirtualListComponent<T = any> implements OnInit, OnChanges, OnInit,
     bottomVirtualHeight = 0;
 
     needUpdate$ = new Subject();
+    destroy$ = new Subject();
 
     loading = false;
     scrollPos = 0;
@@ -73,7 +74,12 @@ export class VirtualListComponent<T = any> implements OnInit, OnChanges, OnInit,
     }
 
     ngOnInit() {
-        this.needUpdate$.pipe(debounceTime(10)).subscribe(() => this.updateAll());
+        this.needUpdate$
+            .pipe(
+                debounceTime(10),
+                takeUntil(this.destroy$)
+            )
+            .subscribe(() => this.updateAll());
     }
 
     onItemClick(item: T) {
@@ -197,7 +203,8 @@ export class VirtualListComponent<T = any> implements OnInit, OnChanges, OnInit,
     }
 
     ngOnDestroy() {
-
+        this.destroy$.next();
+        this.destroy$.complete();
     }
 
 }

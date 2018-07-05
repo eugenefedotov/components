@@ -5,6 +5,7 @@ import {SelectItemModel} from '../../../../shared/select-source/models/select-it
 import {Subject} from 'rxjs';
 import {hasAnyChanges} from '../../../../functions/has-any-changes';
 import {PopUpAlign, PopUpPosition} from '../../shared-directives/pop-up/pop-up.directive';
+import {KeyComparator} from '../../../../shared/comparator/key-comparator';
 
 const SELECT_VALUE_ACCESSOR = {
     provide: NG_VALUE_ACCESSOR,
@@ -37,6 +38,8 @@ export class SelectComponent implements OnInit, OnChanges, OnDestroy, ControlVal
 
     drop = false;
     disabled = false;
+
+    comparator = new KeyComparator('value');
 
     constructor() {
     }

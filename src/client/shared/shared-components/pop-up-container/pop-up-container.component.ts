@@ -15,7 +15,7 @@ import {
 } from '@angular/core';
 import {PopUpAlign, PopUpBound, PopUpPosition} from '../../shared-directives/pop-up/pop-up.directive';
 import {Subject} from 'rxjs';
-import {debounceTime} from 'rxjs/operators';
+import {debounceTime, throttleTime} from 'rxjs/operators';
 
 
 interface PopUpSize {
@@ -54,8 +54,11 @@ export class PopUpContainerComponent implements OnInit, OnChanges, DoCheck, Afte
     }
 
     ngOnChanges(changes: SimpleChanges): void {
+
         this._popUpContentPosition = this.popUpContentPosition;
         this._popUpContentAlign = this.popUpContentAlign;
+
+        // this.needUpdate();
     }
 
     ngOnInit() {
@@ -63,7 +66,7 @@ export class PopUpContainerComponent implements OnInit, OnChanges, DoCheck, Afte
         this.renderer.setStyle(this.elementRef.nativeElement, 'left', '-10000px');
 
         this.needUpdate$
-            .pipe(debounceTime(50))
+            .pipe(throttleTime(50))
             .subscribe(() => this.updateAll());
     }
 
@@ -204,7 +207,6 @@ export class PopUpContainerComponent implements OnInit, OnChanges, DoCheck, Afte
 
         if (this._popUpContentAlign === PopUpAlign.FitByRelative) {
             const sizeProp = isPositionHorizontal ? 'height' : 'width';
-
             this.renderer.setStyle(this.elementRef.nativeElement, sizeProp, this.getSizeValue().toFixed() + 'px');
         } else {
             sizeProps.forEach(sizeProp => {

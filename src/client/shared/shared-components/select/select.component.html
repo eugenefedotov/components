@@ -3,7 +3,7 @@
     <div class="select__arrow"><fa [name]="drop ? 'angle-up' : 'angle-down'"></fa></div>
 </div>
 <ng-template #itemTemplate let-item="item" let-selected="selected">
-    <app-select-item (click)="onItemClick($event, item)" [item]="item" [selected]="selected"></app-select-item>
+    <app-select-item class="select__item" (click)="onItemClick($event, item)" [item]="item" [selected]="selected"></app-select-item>
 </ng-template>
 <ng-container *ngIf="drop">
     <app-virtual-list
@@ -11,6 +11,7 @@
             *appPopUp="selectElement; contentAlign: PopUpAlign.FitByRelative; contentPosition: PopUpPosition.Bottom;"
             [source]="source"
             [selectedItem]="selectedItem"
+            [comparator]="comparator"
             [itemTemplate]="itemTemplate"
     ></app-virtual-list>
 </ng-container>
