@@ -1,4 +1,5 @@
-export interface SelectItemModel {
-    id: number | string;
+export interface SelectItemModel<T = any> {
+    value: number | string;
     name: string;
+    attributes?: T;
 }

@@ -9,8 +9,8 @@ export class LocalSelectSource<T extends SelectItemModel = SelectItemModel> impl
 
     }
 
-    async getById(id: T['id']): Promise<T> {
-        return this.items.find(item => item.id === id);
+    async getByValue(value: T['value']): Promise<T> {
+        return this.items.find(item => item.value === value);
     }
 
     async getSlice(request: SelectSourceRequestModel): Promise<SelectSourceResponseModel<T>> {

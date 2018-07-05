@@ -29,7 +29,7 @@ export class PaymentServiceCurrencyListComponent implements OnChanges, OnInit {
 
     @Input() listSource: ListSource<PaymentServiceCurrencyEntity>;
 
-    comparator = new KeyComparator<PaymentServiceCurrencyEntity>('id');
+    paymentServiceCurrencyComparator = new KeyComparator<PaymentServiceCurrencyEntity>('id');
 
     constructor(private paymentServiceCurrencyRestService: PaymentServiceCurrencyRestService) {
     }
