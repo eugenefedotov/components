@@ -29,15 +29,22 @@ export class RepositoryDataSource<T> implements DataSource<T> {
             this.addOffsetAndLimit(qb, request.offset, request.limit);
         }
 
+        qb.select(this.repository.metadata.primaryColumns.map(md => md.propertyPath));
+
+        if (request.fields) {
+            request.fields.forEach(field => {
+                if (!this.fields.includes(field)) {
+                    throw new Error(`field ${field} non exists`);
+                }
+            });
+        }
+
         let [items, count] = await qb.getManyAndCount();
 
         items = await this.repository.find({
-            where: items
+            where: items,
+            select: request.fields
         });
-
-        if (request.fields) {
-            items = this.filterFields(items, request.fields);
-        }
 
         return <DataSourceResponseModel<T>>{count, items};
     }
@@ -109,22 +116,6 @@ export class RepositoryDataSource<T> implements DataSource<T> {
         if (limit) {
             qb.limit(limit);
         }
-    }
-
-    private filterFields(items: T[], fields: (keyof T)[]): T[] {
-        if (!fields || !fields.length) {
-            return items;
-        }
-
-        return items.map(item => {
-            const filteredItem = {};
-
-            fields.forEach(field => {
-                filteredItem[field as string] = item[field];
-            });
-
-            return filteredItem as T;
-        });
     }
 
     private getPropertyName(field: keyof T) {
