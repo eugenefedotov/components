@@ -1,3 +1,14 @@
-<p>
-  select works!
-</p>
+<div class="select" #selectElement>
+    <div class="select__name">{{item?.name}}</div>
+</div>
+<ng-template #itemTemplate let-item="item" let-selected="selected">
+    <app-select-item [item]="item" [selected]="selected"></app-select-item>
+</ng-template>
+<ng-container *ngIf="drop">
+    <app-virtual-list
+            *appPopUp="selectElement; contentAlign: PopUpAlign.FitByRelative; contentPosition: PopUpPosition.Bottom;"
+            [source]="source"
+            [selectedItem]="item"
+            [itemTemplate]="itemTemplate"
+    ></app-virtual-list>
+</ng-container>

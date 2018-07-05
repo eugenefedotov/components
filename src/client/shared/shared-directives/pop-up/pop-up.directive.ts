@@ -31,7 +31,8 @@ export enum PopUpPosition {
 export enum PopUpAlign {
     Start = 'start',
     Center = 'center',
-    End = 'end'
+    End = 'end',
+    FitByRelative = 'fit-by-relative'
 }
 
 @Directive({
@@ -41,10 +42,10 @@ export class PopUpDirective implements OnInit, OnChanges, OnDestroy {
 
     @Input('appPopUp') popUpRelativeHtmlElement: HTMLElement;
 
-    @Input() viewportBound: PopUpBound;
+    @Input() appPopUpViewportBound: PopUpBound;
 
-    @Input() popUpContentPosition: PopUpPosition = PopUpPosition.Top;
-    @Input() popUpContentAlign: PopUpAlign = PopUpAlign.Center;
+    @Input() appPopUpContentPosition: PopUpPosition = PopUpPosition.Top;
+    @Input() appPopUpContentAlign: PopUpAlign = PopUpAlign.Center;
 
     private readonly container: ComponentRef<PopUpContainerComponent>;
 
@@ -53,20 +54,18 @@ export class PopUpDirective implements OnInit, OnChanges, OnDestroy {
                 private componentFactoryService: ComponentFactoryService,
                 private popUpService: PopUpService) {
         this.container = this.componentFactoryService.createComponent(PopUpContainerComponent);
-
-        console.log('appPopUp create');
     }
 
     ngOnChanges(changes: SimpleChanges): void {
         const cont = this.container.instance;
 
         cont.templateRef = this.templateRef;
-        cont.viewportBound = this.viewportBound;
+        cont.viewportBound = this.appPopUpViewportBound;
 
         cont.popUpRelativeHtmlElement = this.popUpRelativeHtmlElement;
 
-        cont.popUpContentPosition = this.popUpContentPosition;
-        cont.popUpContentAlign = this.popUpContentAlign;
+        cont.popUpContentPosition = this.appPopUpContentPosition;
+        cont.popUpContentAlign = this.appPopUpContentAlign;
 
         this.container.changeDetectorRef.detectChanges();
     }

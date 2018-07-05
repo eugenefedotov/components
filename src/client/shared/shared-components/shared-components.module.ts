@@ -20,6 +20,7 @@ import {PopUpContainerComponent} from './pop-up-container/pop-up-container.compo
 import {TooltipComponent} from './tooltip/tooltip.component';
 import {SharedDirectivesModule} from '../shared-directives/shared-directives.module';
 import {HeaderMenuComponent} from './header-menu/header-menu.component';
+import { SelectItemComponent } from './select-item/select-item.component';
 
 @NgModule({
     imports: [
@@ -46,6 +47,7 @@ import {HeaderMenuComponent} from './header-menu/header-menu.component';
         PopUpContainerComponent,
         TooltipComponent,
         HeaderMenuComponent,
+        SelectItemComponent,
     ],
     exports: [
         ScrollBoxComponent,

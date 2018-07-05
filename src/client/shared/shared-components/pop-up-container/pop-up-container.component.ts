@@ -137,11 +137,10 @@ export class PopUpContainerComponent implements OnInit, OnChanges, DoCheck, Afte
     }
 
     updateContentStyle() {
-        console.log('updateContentStyle');
-
         let isPositionHorizontal: boolean;
         const allAnchors = [PopUpPosition.Left, PopUpPosition.Right, PopUpPosition.Top, PopUpPosition.Bottom];
         const allAligns = [PopUpAlign.Start, PopUpAlign.Center, PopUpAlign.End];
+        const sizeProps = ['height', 'width'];
 
         let positionAnchor: PopUpPosition;
         let alignAnchor: PopUpPosition;
@@ -157,7 +156,7 @@ export class PopUpContainerComponent implements OnInit, OnChanges, DoCheck, Afte
                 break;
             case PopUpPosition.Left:
                 positionAnchor = PopUpPosition.Right;
-                isPositionHorizontal = false;
+                isPositionHorizontal = true;
                 break;
             case PopUpPosition.Right:
                 positionAnchor = PopUpPosition.Left;
@@ -168,6 +167,7 @@ export class PopUpContainerComponent implements OnInit, OnChanges, DoCheck, Afte
         switch (this._popUpContentAlign) {
             case PopUpAlign.Start:
             case PopUpAlign.Center:
+            case PopUpAlign.FitByRelative:
                 alignAnchor = isPositionHorizontal ? PopUpPosition.Top : PopUpPosition.Left;
                 break;
             case PopUpAlign.End:
@@ -201,6 +201,16 @@ export class PopUpContainerComponent implements OnInit, OnChanges, DoCheck, Afte
         });
 
         this.renderer.addClass(this.elementRef.nativeElement, `pop-up-container_align-${this._popUpContentAlign}`);
+
+        if (this._popUpContentAlign === PopUpAlign.FitByRelative) {
+            const sizeProp = isPositionHorizontal ? 'height' : 'width';
+
+            this.renderer.setStyle(this.elementRef.nativeElement, sizeProp, this.getSizeValue().toFixed() + 'px');
+        } else {
+            sizeProps.forEach(sizeProp => {
+                this.renderer.removeStyle(this.elementRef.nativeElement, sizeProp);
+            });
+        }
     }
 
     ngOnDestroy(): void {
@@ -239,6 +249,17 @@ export class PopUpContainerComponent implements OnInit, OnChanges, DoCheck, Afte
                 return this._relativeBound.bottom - topOffset;
             default:
                 return 0;
+        }
+    }
+
+    private getSizeValue(): number {
+        switch (this._popUpContentPosition) {
+            case PopUpPosition.Top:
+            case PopUpPosition.Bottom:
+                return this._relativeBound.right - this._relativeBound.left;
+            case PopUpPosition.Left:
+            case PopUpPosition.Right:
+                return this._relativeBound.bottom - this._relativeBound.top;
         }
     }
 }
