@@ -1,5 +1,6 @@
 <div class="select" #selectElement>
     <div class="select__name">{{item?.name}}</div>
+    <div class="select__arrow"><fa [name]="drop ? 'angle-up' : 'angle-down'"></fa></div>
 </div>
 <ng-template #itemTemplate let-item="item" let-selected="selected">
     <app-select-item [item]="item" [selected]="selected"></app-select-item>

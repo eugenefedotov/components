@@ -1,0 +1,27 @@
+@import "scss/variables";
+
+:host {
+  display: flex;
+
+  .select-item {
+    display: flex;
+    height: 2rem;
+
+    align-items: center;
+
+    background-color: $color-light;
+    color: $color-dark;
+
+    &_selected {
+      background-color: $color-accent-dark;
+      color: $color-accent-light;
+    }
+
+    &__name {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+
+}
