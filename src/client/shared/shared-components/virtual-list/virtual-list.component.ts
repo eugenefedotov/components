@@ -21,7 +21,7 @@ import {EqualsComparator} from '../../../../shared/comparator/equals-comparator'
 import {Comparator} from '../../../../shared/comparator/comparator';
 import {CachedListSource} from '../../../../shared/list-source/impl/cached-list-source';
 import {hasAnyChanges} from '../../../../functions/has-any-changes';
-import {BehaviorSubject, Subject} from 'rxjs';
+import {Subject} from 'rxjs';
 import {debounceTime, takeUntil} from 'rxjs/operators';
 
 @Component({

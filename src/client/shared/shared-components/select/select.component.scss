@@ -1,31 +1,47 @@
 @import "scss/variables";
 @import "scss/mixins";
 
+
+
 :host {
   display: flex;
+}
 
-  .select {
+.select {
+  flex: 1;
+  height: 2rem;
+  display: flex;
+
+  align-items: center;
+
+  border: 1px solid $color-border;
+  cursor: pointer;
+
+  &__name {
     flex: 1;
-    height: 2rem;
-    display: flex;
+    min-width: 0;
 
-    align-items: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 
-    &__name {
-      flex: 1;
-      min-width: 0;
+    padding: 0 1rem;
+  }
 
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
+  &__arrow {
+    flex: 0 0 2rem;
+    margin-left: auto;
+    text-align: center;
+  }
 
-    &__arrow {
-      flex: 0 0 2rem;
-      margin-left: auto;
-      text-align: center;
-    }
 
+  &_drop {
+    border-color: $color-accent-border;
+    cursor: default;
+  }
+
+  &_drop &__arrow {
+    color: $color-accent-dark;
   }
 
 }
@@ -34,6 +50,9 @@
   max-height: 16rem;
 
   background-color: transparentize($color-light, .1);
+
+
+  border: 1px solid $color-accent-border;
 }
 
 .select__item {

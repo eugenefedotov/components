@@ -1,4 +1,4 @@
-<div class="select" #selectElement (click)="onSelectClick($event)">
+<div class="select" [class.select_drop]="drop" #selectElement (click)="onSelectClick($event)">
     <div class="select__name">{{selectedItem?.name}}</div>
     <div class="select__arrow"><fa [name]="drop ? 'angle-up' : 'angle-down'"></fa></div>
 </div>

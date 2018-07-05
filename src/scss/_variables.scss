@@ -7,3 +7,6 @@ $color-accent-dark: #6c96ff;
 
 $radius-base: 2px;
 $radius-infinity: 10000000px;
+
+$color-border: transparentize($color-dark, .5);
+$color-accent-border: transparentize($color-accent-dark, .5);
