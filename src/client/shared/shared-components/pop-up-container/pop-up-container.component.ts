@@ -212,17 +212,17 @@ export class PopUpContainerComponent implements OnInit, DoCheck, AfterViewChecke
             }
 
             if (isPositionAnchor) {
-                this[anchorStyleName] = this.getPositionAnchorValue(anchor);
+                this[anchorStyleName] = Math.floor(this.getPositionAnchorValue(anchor));
             }
 
             if (isAlignAnchor) {
-                this[anchorStyleName] = this.getAlignAnchorValue(anchor);
+                this[anchorStyleName] = Math.floor(this.getAlignAnchorValue(anchor));
             }
         });
 
         if (this._popUpContentAlign === PopUpAlign.FitByRelative) {
             const sizeProp: string = isPositionHorizontal ? 'height' : 'width';
-            this[sizeProp] = this.getSizeValue();
+            this[sizeProp] = Math.ceil(this.getSizeValue());
         } else {
             sizeProps.forEach(sizeProp => {
                 this[sizeProp] = null;

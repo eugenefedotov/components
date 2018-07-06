@@ -60,6 +60,7 @@ export class TooltipDirective implements OnInit, OnDestroy {
             .subscribe((e: MouseEvent) => this.onComponentMouseOut(e)));
 
         this.viewContainerRef.insert(this.component.hostView);
+        this.component.changeDetectorRef.detectChanges();
     }
 
     doComponentDestroy() {
