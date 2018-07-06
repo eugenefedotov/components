@@ -17,8 +17,8 @@
       display: flex;
       flex-direction: column;
 
-      background-color: $color-accent-dark;
-      color: $color-accent-light;
+      background-color: $color-dark-accent;
+      color: $color-light-accent;
 
       &-width-limit {
         flex: 1;

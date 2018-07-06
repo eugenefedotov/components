@@ -17,8 +17,8 @@
     color: $color-dark;
 
     &_selected {
-      background-color: $color-accent-dark;
-      color: $color-accent-light;
+      background-color: $color-dark-accent;
+      color: $color-light-accent;
     }
 
     &__name {

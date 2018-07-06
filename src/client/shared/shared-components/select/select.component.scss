@@ -14,7 +14,7 @@
 
   align-items: center;
 
-  border: 1px solid $color-border;
+  border: 1px solid $control-color-border;
   cursor: pointer;
 
   &__name {
@@ -36,12 +36,12 @@
 
 
   &_drop {
-    border-color: $color-accent-border;
+    border-color: $control-color-border-accent;
     cursor: default;
   }
 
   &_drop &__arrow {
-    color: $color-accent-dark;
+    color: $color-dark-accent;
   }
 
 }
@@ -52,7 +52,7 @@
   background-color: transparentize($color-light, .1);
 
 
-  border: 1px solid $color-accent-border;
+  border: 1px solid $control-color-border-accent;
 }
 
 .select__item {
