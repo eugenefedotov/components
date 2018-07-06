@@ -30,9 +30,13 @@
 
   &__bottom {
   }
+
+  &_spinner {
+    min-height: 4rem;
+  }
 }
 
-app-spinner {
+.virtual-list__spinner {
   width: 4rem;
   height: 4rem;
   position: absolute;

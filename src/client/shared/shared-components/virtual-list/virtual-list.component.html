@@ -1,4 +1,5 @@
 <app-scroll-box class="virtual-list"
+                [class.virtual-list_spinner]="loading"
                 [wheelSize]="getAvgHeight() * 2"
                 [verticalAbsoluteScrollPosition]="scrollPos"
                 (verticalAbsoluteScrollPositionChange)="onScrollPosChange($event)"
@@ -18,4 +19,4 @@
     </div>
     <div class="virtual-list__bottom" [style.height.px]="bottomVirtualHeight"></div>
 </app-scroll-box>
-<app-spinner *ngIf="loading"></app-spinner>
+<app-spinner class="virtual-list__spinner" *ngIf="loading"></app-spinner>

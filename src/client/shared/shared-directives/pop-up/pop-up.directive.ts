@@ -76,14 +76,11 @@ export class PopUpDirective implements OnInit, OnChanges, OnDestroy {
             return;
         }
 
-        console.log('popUpRelativeHtmlElement', this.popUpRelativeHtmlElement);
-
         this.viewContainer.clear();
         this.popUpService.insertComponent(this.container);
     }
 
     ngOnDestroy(): void {
         this.container.destroy();
-        console.log('appPopUp destroy');
     }
 }
