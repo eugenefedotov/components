@@ -1,9 +1,5 @@
 @import "~scss/variables";
 
-$tooltip-bg-color: $color-light;
-$tooltip-text-color: $color-dark;
-$tooltip-border-color: $color-dark;
-
 :host {
   display: none;
 }
@@ -11,12 +7,12 @@ $tooltip-border-color: $color-dark;
 .tooltip {
   position: relative;
 
-  background-color: $tooltip-bg-color;
-  border: 1px solid transparentize($tooltip-border-color, .5);
+  background-color: $color-light;
+  border: 1px solid $control-color-border;
   border-radius: $radius-base;
 
   &__text {
-    color: $tooltip-text-color;
+    color: $color-dark;
 
     padding: .25rem;
 
@@ -44,12 +40,12 @@ $tooltip-border-color: $color-dark;
       &:before, &:after {
         top: 100%;
 
-        border-top-color: $tooltip-bg-color;
+        border-top-color: $color-light;
         border-bottom: none;
       }
 
       &:before {
-        border-top-color: $tooltip-border-color;
+        border-top-color: opacify($control-color-border, 1);
       }
 
       &:after {
@@ -68,11 +64,11 @@ $tooltip-border-color: $color-dark;
         bottom: 100%;
 
         border-top: none;
-        border-bottom-color: $tooltip-bg-color;
+        border-bottom-color: $color-light;
       }
 
       &:before {
-        border-bottom-color: $tooltip-border-color;
+        border-bottom-color: $control-color-border;
       }
 
       &:after {

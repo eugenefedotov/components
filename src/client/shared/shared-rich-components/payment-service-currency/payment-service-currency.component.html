@@ -1,5 +1,6 @@
 <div class="payment-service-currency"
      [class.payment-service-currency_selected]="selected"
+     [appTooltip]="item.paymentService.name + ' ' + item.currency.name"
 >
     <div class="payment-service-currency__name">{{item.code}}</div>
 </div>
