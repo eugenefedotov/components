@@ -38,6 +38,7 @@ export class SelectComponent implements OnInit, OnChanges, OnDestroy, ControlVal
     PopUpAlign = PopUpAlign;
 
     @Input() source: SelectSource;
+    @Input() canClear = true;
 
     @Input() selectedItem: SelectItemModel;
     @Output() selectedItemChange = new EventEmitter<SelectItemModel>();
@@ -103,16 +104,26 @@ export class SelectComponent implements OnInit, OnChanges, OnDestroy, ControlVal
             return;
         }
 
+        if (!this.source) {
+            console.error(`no source`);
+            return;
+        }
+
+
         this.drop ? this.closeDrop() : this.openDrop();
     }
 
-    onItemClick($event: MouseEvent, item: SelectItemModel) {
+    setItem(item: SelectItemModel) {
         this.selectedItem = item;
         this.selectedItemChange.emit(this.selectedItem);
 
         if (this.onChange) {
             this.onChange(this.selectedItem.value);
         }
+    }
+
+    onItemClick($event: MouseEvent, item: SelectItemModel) {
+        this.setItem(item);
 
         this.closeDrop();
     }
@@ -140,4 +151,7 @@ export class SelectComponent implements OnInit, OnChanges, OnDestroy, ControlVal
         this.drop = false;
     }
 
+    onClearClick($event) {
+        this.setItem(null);
+    }
 }

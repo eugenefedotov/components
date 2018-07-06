@@ -4,7 +4,18 @@
 
 <div class="payment-service-currency-list">
     <div class="payment-service-currency-list__filter">
-        <app-select [source]="currencySelectSource" [(selectedItem)]="currency" (selectedItemChange)="onCurrencyChange($event)"></app-select>
+        <app-select
+                class="payment-service-currency-list__filter-item"
+                [source]="currencySelectSource"
+                [(selectedItem)]="currency"
+                (selectedItemChange)="onCurrencyChange($event)"
+        ></app-select>
+        <app-select
+                class="payment-service-currency-list__filter-item"
+                [source]="paymentServiceSelectSource"
+                [(selectedItem)]="paymentService"
+                (selectedItemChange)="onPaymentServiceChange($event)"
+        ></app-select>
     </div>
     <app-virtual-list
             class="payment-service-currency-list__list"

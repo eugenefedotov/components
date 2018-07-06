@@ -1,6 +1,7 @@
-<div class="select" [class.select_drop]="drop" #selectElement (click)="onSelectClick($event)">
+<div class="select" [class.select_drop]="drop" #selectElement>
     <div class="select__name">{{selectedItem?.name}}</div>
-    <div class="select__arrow"><fa [name]="drop ? 'angle-up' : 'angle-down'"></fa></div>
+    <div class="select__icon-button" *ngIf="canClear && selectedItem" (click)="onClearClick($event)"><fa [name]="'times'"></fa></div>
+    <div class="select__icon-button" (click)="onSelectClick($event)"><fa [name]="drop ? 'caret-up' : 'caret-down'"></fa></div>
 </div>
 <ng-template #itemTemplate let-item="item" let-selected="selected">
     <app-select-item class="select__item" (click)="onItemClick($event, item)" [item]="item" [selected]="selected"></app-select-item>

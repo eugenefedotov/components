@@ -12,6 +12,13 @@
 
     &__filter {
       flex: none;
+
+      display: flex;
+      justify-content: stretch;
+
+      &-item {
+        flex: 1;
+      }
     }
 
     &__list {

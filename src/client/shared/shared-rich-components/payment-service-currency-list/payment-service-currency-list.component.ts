@@ -13,6 +13,7 @@ import {CurrencyRestService} from '../../shared-rest-services/currency-rest/curr
 import {SelectSource} from '../../../../shared/select-source/select-source';
 import {DataSourceSelectSource} from '../../../../shared/select-source/impl/data-source-select-source';
 import {SelectItemModel} from '../../../../shared/select-source/models/select-item.model';
+import {PaymentServiceRestService} from '../../shared-rest-services/payment-service-rest/payment-service-rest.service';
 
 @Component({
     selector: 'app-payment-service-currency-list',
@@ -34,10 +35,12 @@ export class PaymentServiceCurrencyListComponent implements OnChanges, OnInit {
     @Input() listSource: ListSource<PaymentServiceCurrencyEntity>;
 
     currencySelectSource: SelectSource<CurrencyEntity>;
+    paymentServiceSelectSource: SelectSource<PaymentServiceEntity>;
 
     paymentServiceCurrencyComparator = new KeyComparator<PaymentServiceCurrencyEntity>('id');
 
     constructor(private paymentServiceCurrencyRestService: PaymentServiceCurrencyRestService,
+                private paymentServiceRestService: PaymentServiceRestService,
                 private currencyRestService: CurrencyRestService
     ) {
     }
@@ -54,6 +57,7 @@ export class PaymentServiceCurrencyListComponent implements OnChanges, OnInit {
         }
 
         this.currencySelectSource = new DataSourceSelectSource(this.currencyRestService);
+        this.paymentServiceSelectSource = new DataSourceSelectSource(this.paymentServiceRestService);
     }
 
     updateListSource() {
@@ -79,6 +83,10 @@ export class PaymentServiceCurrencyListComponent implements OnChanges, OnInit {
     }
 
     onCurrencyChange($event: SelectItemModel) {
+        this.updateListSource();
+    }
+
+    onPaymentServiceChange($event: SelectItemModel) {
         this.updateListSource();
     }
 }

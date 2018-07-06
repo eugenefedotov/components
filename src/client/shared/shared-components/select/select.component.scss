@@ -13,7 +13,6 @@
   align-items: center;
 
   border: 1px solid $control-color-border;
-  cursor: pointer;
 
   &__name {
     flex: 1;
@@ -26,21 +25,30 @@
     padding: 0 1rem;
   }
 
-  &__arrow {
-    flex: 0 0 2rem;
+  &__icon-button {
+    align-self: stretch;
+    flex: none;
+    width: 2rem;
     margin-left: auto;
-    text-align: center;
+
+    cursor: pointer;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: $control-color-border;
+
+    &:hover {
+      background-color: $color-light-accent;
+      color: $color-dark-accent;
+    }
   }
 
   &_drop {
     border-color: $control-color-border-accent;
     cursor: default;
   }
-
-  &_drop &__arrow {
-    color: $color-dark-accent;
-  }
-
 }
 
 .select__drop {

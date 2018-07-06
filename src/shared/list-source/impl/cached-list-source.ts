@@ -9,7 +9,9 @@ export class CachedListSource<T> implements ListSource<T> {
     private promises = new Map<string, Promise<ListSourceResponseModel<T>>>();
 
     constructor(private listSource: ListSource<T>, private minRequestSize: number) {
-
+        if (!this.listSource) {
+            throw new Error('required ListSource');
+        }
     }
 
     async getData(request: ListSourceRequestModel): Promise<ListSourceResponseModel<T>> {
