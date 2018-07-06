@@ -9,19 +9,6 @@
 
     align-items: center;
 
-    background-color: $color-light;
-    color: $color-dark;
-
-    &:hover {
-      background-color: $color-light-accent;
-      color: $color-dark-accent;
-    }
-
-    &_selected {
-      background-color: $color-dark-accent;
-      color: $color-light-accent;
-    }
-
     &__name {
       white-space: nowrap;
       overflow: hidden;

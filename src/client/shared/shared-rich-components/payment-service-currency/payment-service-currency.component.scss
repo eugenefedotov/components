@@ -13,14 +13,6 @@
     align-items: center;
     justify-content: stretch;
 
-    background-color: $color-light;
-    color: $color-dark;
-
-    &_selected {
-      background-color: $color-dark-accent;
-      color: $color-light-accent;
-    }
-
     &__name {
       padding: 0 1em;
     }
