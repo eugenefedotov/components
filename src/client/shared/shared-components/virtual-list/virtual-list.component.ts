@@ -213,6 +213,10 @@ export class VirtualListComponent<T = any> implements OnInit, OnChanges, OnInit,
         this.viewportItems = result.items;
 
         this.updateVirtualHeights();
+
+        setTimeout(() => {
+            this.cdr.detectChanges();
+        });
     }
 
     updateVirtualHeights() {
