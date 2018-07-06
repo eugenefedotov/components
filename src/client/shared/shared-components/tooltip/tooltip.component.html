@@ -1,4 +1,5 @@
 <div class="tooltip" *appPopUp="relativeHtmlElement"
+     [@fadeInOut]
      (mouseover)="mouseover.emit($event)"
      (mouseout)="mouseout.emit($event)">
     <div class="tooltip__text">{{text}}</div>
