@@ -13,8 +13,8 @@
     color: $color-dark;
 
     &:hover {
-      background-color: $color-dark-accent;
-      color: $color-light-accent;
+      background-color: $color-light-accent;
+      color: $color-dark-accent;
     }
 
     &_selected {
