@@ -1,4 +1,5 @@
 import {
+    AfterContentChecked,
     AfterViewChecked,
     ChangeDetectionStrategy,
     ChangeDetectorRef,
@@ -6,6 +7,7 @@ import {
     ElementRef,
     EventEmitter,
     Input,
+    NgZone,
     OnChanges,
     OnDestroy,
     OnInit,
@@ -22,7 +24,7 @@ import {Comparator} from '../../../../shared/comparator/comparator';
 import {CachedListSource} from '../../../../shared/list-source/impl/cached-list-source';
 import {hasAnyChanges} from '../../../../functions/has-any-changes';
 import {Subject} from 'rxjs';
-import {debounceTime, takeUntil} from 'rxjs/operators';
+import {takeUntil, throttleTime} from 'rxjs/operators';
 
 @Component({
     selector: 'app-virtual-list',
@@ -30,7 +32,7 @@ import {debounceTime, takeUntil} from 'rxjs/operators';
     styleUrls: ['./virtual-list.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class VirtualListComponent<T = any> implements OnInit, OnChanges, OnInit, AfterViewChecked, OnDestroy {
+export class VirtualListComponent<T = any> implements OnInit, OnChanges, OnInit, AfterViewChecked, AfterContentChecked, OnDestroy {
 
     @Input() selectable = true;
     @Input() deselectable = false;
@@ -64,7 +66,10 @@ export class VirtualListComponent<T = any> implements OnInit, OnChanges, OnInit,
     @ViewChildren('viewItem') viewItemElements: QueryList<ElementRef<HTMLElement>>;
     @ViewChild('viewport') viewElement: ElementRef<HTMLElement>;
 
-    constructor(private hostElement: ElementRef<HTMLElement>, private cdr: ChangeDetectorRef) {
+    constructor(private hostElement: ElementRef<HTMLElement>,
+                private cdr: ChangeDetectorRef,
+                private ngZone: NgZone
+    ) {
     }
 
     ngOnChanges(changes: SimpleChanges): void {
@@ -76,7 +81,7 @@ export class VirtualListComponent<T = any> implements OnInit, OnChanges, OnInit,
     ngOnInit() {
         this.needUpdate$
             .pipe(
-                debounceTime(10),
+                throttleTime(10),
                 takeUntil(this.destroy$)
             )
             .subscribe(() => this.updateAll());
@@ -150,7 +155,20 @@ export class VirtualListComponent<T = any> implements OnInit, OnChanges, OnInit,
         this.saveViewItemsHeight();
         this.updateVirtualHeights();
 
-        this.needUpdate$.next();
+        this.needUpdate();
+    }
+
+    ngAfterContentChecked(): void {
+        this.saveViewItemsHeight();
+        this.updateVirtualHeights();
+
+        this.needUpdate();
+    }
+
+    needUpdate() {
+        this.ngZone.runOutsideAngular(() => {
+            this.needUpdate$.next();
+        });
     }
 
     onScrollPosChange(pos: number) {
@@ -163,9 +181,11 @@ export class VirtualListComponent<T = any> implements OnInit, OnChanges, OnInit,
     }
 
     saveViewItemsHeight() {
-        this.viewItemElements.forEach((item, index) => {
-            this.realItemsHeight.set(this.offsetIndex + index, item.nativeElement.offsetHeight);
-        });
+        if (this.viewItemElements) {
+            this.viewItemElements.forEach((item, index) => {
+                this.realItemsHeight.set(this.offsetIndex + index, item.nativeElement.offsetHeight);
+            });
+        }
     }
 
     updateCachedSource() {
@@ -178,17 +198,13 @@ export class VirtualListComponent<T = any> implements OnInit, OnChanges, OnInit,
         this.needUpdate$.next();
     }
 
-    updateAll() {
+    async updateAll() {
         const {offset, limit} = this.getViewportRange();
 
         if (this.offsetIndex === offset && this.viewportItems.length === limit) {
             return;
         }
 
-        this._updateAll(offset, limit);
-    }
-
-    async _updateAll(offset, limit) {
         this.loading = true;
         const result = await this.cachedSource.getData({offset, limit});
         this.loading = false;

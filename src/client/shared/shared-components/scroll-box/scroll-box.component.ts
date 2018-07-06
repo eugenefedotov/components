@@ -2,12 +2,15 @@ import {
     AfterContentChecked,
     AfterViewChecked,
     Component,
+    DoCheck,
     ElementRef,
     EventEmitter,
     HostListener,
-    Input, OnChanges,
+    Input,
+    OnChanges,
     OnInit,
-    Output, SimpleChanges,
+    Output,
+    SimpleChanges,
     ViewChild
 } from '@angular/core';
 
@@ -16,7 +19,7 @@ import {
     templateUrl: './scroll-box.component.html',
     styleUrls: ['./scroll-box.component.scss']
 })
-export class ScrollBoxComponent implements OnInit, OnChanges, AfterViewChecked, AfterContentChecked {
+export class ScrollBoxComponent implements OnInit, OnChanges, DoCheck, AfterViewChecked, AfterContentChecked {
     @Input() wheelSize = 50;
 
     @Input() horizontal = false;
@@ -62,6 +65,10 @@ export class ScrollBoxComponent implements OnInit, OnChanges, AfterViewChecked, 
     }
 
     ngOnInit() {
+    }
+
+    ngDoCheck(): void {
+        this.updateScrolls();
     }
 
     ngAfterViewChecked(): void {
