@@ -29,7 +29,7 @@ export class RepositoryDataSource<T> implements DataSource<T> {
             this.addOffsetAndLimit(qb, request.offset, request.limit);
         }
 
-        qb.select(this.repository.metadata.primaryColumns.map(md => md.propertyPath));
+        qb.select(this.repository.metadata.primaryColumns.map(md => this.getPropertyName(md.propertyName)));
 
         if (request.fields) {
             request.fields.forEach(field => {
@@ -118,11 +118,24 @@ export class RepositoryDataSource<T> implements DataSource<T> {
         }
     }
 
-    private getPropertyName(field: keyof T) {
+    private getPropertyName(field: keyof T | string) {
         if (!this.fields.includes(field as string)) {
             throw new Error(`field ${field} non exists`);
         }
 
-        return `${this.alias}.${field}`;
+        const dbColumnName = this.propertyToFieldName(field);
+
+        return `${this.alias}.${dbColumnName}`;
+    }
+
+    private propertyToFieldName(field: keyof T | string) {
+        for (const column of this.repository.metadata.columns) {
+            if (column.propertyName === field) {
+                // console.log(column);
+                return column.databaseName;
+            }
+        }
+
+        return field;
     }
 }

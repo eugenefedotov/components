@@ -52,6 +52,10 @@ export class CachedListSource<T> implements ListSource<T> {
     }
 
     private _getRangeOutOfCache(offset: number, limit: number): { offset: number, limit: number } {
+        if (this.count) {
+            limit = Math.min(limit, this.count - offset);
+        }
+
         while (limit && this.cache.has(offset)) {
             offset++;
             limit--;
@@ -67,7 +71,7 @@ export class CachedListSource<T> implements ListSource<T> {
     private _getItemsFromCache(offset: number, limit: number): T[] {
         const result: T[] = [];
 
-        for (let i = offset; i < offset + limit; i++) {
+        for (let i = offset; i < offset + limit && i < this.count; i++) {
             result.push(this.cache.get(i));
         }
 

@@ -12,6 +12,7 @@ import {hasAnyChanges} from '../../../../functions/has-any-changes';
 import {CurrencyRestService} from '../../shared-rest-services/currency-rest/currency-rest.service';
 import {SelectSource} from '../../../../shared/select-source/select-source';
 import {DataSourceSelectSource} from '../../../../shared/select-source/impl/data-source-select-source';
+import {SelectItemModel} from '../../../../shared/select-source/models/select-item.model';
 
 @Component({
     selector: 'app-payment-service-currency-list',
@@ -21,11 +22,11 @@ import {DataSourceSelectSource} from '../../../../shared/select-source/impl/data
 })
 export class PaymentServiceCurrencyListComponent implements OnChanges, OnInit {
 
-    @Input() currency: CurrencyEntity;
-    @Output() currencyChange = new EventEmitter<CurrencyEntity>();
+    @Input() currency: SelectItemModel<CurrencyEntity>;
+    @Output() currencyChange = new EventEmitter<SelectItemModel<CurrencyEntity>>();
 
-    @Input() paymentService: PaymentServiceEntity;
-    @Output() paymentServiceChange = new EventEmitter<PaymentServiceEntity>();
+    @Input() paymentService: SelectItemModel<PaymentServiceEntity>;
+    @Output() paymentServiceChange = new EventEmitter<SelectItemModel<PaymentServiceEntity>>();
 
     @Input() paymentServiceCurrency: PaymentServiceCurrencyEntity;
     @Output() paymentServiceCurrencyChange = new EventEmitter<PaymentServiceCurrencyEntity>();
@@ -62,7 +63,7 @@ export class PaymentServiceCurrencyListComponent implements OnChanges, OnInit {
             filter.push({
                 field: 'currency',
                 type: DataSourceRequestFilterTypeEnum.Equal,
-                values: [this.currency.id]
+                values: [this.currency.value]
             });
         }
 
@@ -70,10 +71,14 @@ export class PaymentServiceCurrencyListComponent implements OnChanges, OnInit {
             filter.push({
                 field: 'paymentService',
                 type: DataSourceRequestFilterTypeEnum.Equal,
-                values: [this.paymentService.id]
+                values: [this.paymentService.value]
             });
         }
 
         this.listSource = new DataSourceListSource(this.paymentServiceCurrencyRestService, filter);
+    }
+
+    onCurrencyChange($event: SelectItemModel) {
+        this.updateListSource();
     }
 }
