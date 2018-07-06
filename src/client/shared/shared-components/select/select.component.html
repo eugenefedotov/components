@@ -7,6 +7,7 @@
 </ng-template>
 <ng-container *ngIf="drop">
     <app-virtual-list
+            #selectDrop
             class="select__drop"
             *appPopUp="selectElement; contentAlign: PopUpAlign.FitByRelative; contentPosition: PopUpPosition.Bottom;"
             [source]="source"

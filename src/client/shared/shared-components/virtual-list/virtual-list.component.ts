@@ -7,7 +7,6 @@ import {
     ElementRef,
     EventEmitter,
     Input,
-    NgZone,
     OnChanges,
     OnDestroy,
     OnInit,
@@ -58,6 +57,7 @@ export class VirtualListComponent<T = any> implements OnInit, OnChanges, OnInit,
     bottomVirtualHeight = 0;
 
     needUpdate$ = new Subject();
+    detectChanges$ = new Subject();
     destroy$ = new Subject();
 
     loading = false;
@@ -67,8 +67,7 @@ export class VirtualListComponent<T = any> implements OnInit, OnChanges, OnInit,
     @ViewChild('viewport') viewElement: ElementRef<HTMLElement>;
 
     constructor(private hostElement: ElementRef<HTMLElement>,
-                private cdr: ChangeDetectorRef,
-                private ngZone: NgZone
+                private cdr: ChangeDetectorRef
     ) {
     }
 
@@ -85,6 +84,12 @@ export class VirtualListComponent<T = any> implements OnInit, OnChanges, OnInit,
                 takeUntil(this.destroy$)
             )
             .subscribe(() => this.updateAll());
+
+        this.detectChanges$
+            .pipe(
+                takeUntil(this.destroy$)
+            )
+            .subscribe(() => this.cdr.detectChanges());
     }
 
     onItemClick(item: T) {
@@ -155,20 +160,14 @@ export class VirtualListComponent<T = any> implements OnInit, OnChanges, OnInit,
         this.saveViewItemsHeight();
         this.updateVirtualHeights();
 
-        this.needUpdate();
+        this.needUpdate$.next();
     }
 
     ngAfterContentChecked(): void {
         this.saveViewItemsHeight();
         this.updateVirtualHeights();
 
-        this.needUpdate();
-    }
-
-    needUpdate() {
-        this.ngZone.runOutsideAngular(() => {
-            this.needUpdate$.next();
-        });
+        this.needUpdate$.next();
     }
 
     onScrollPosChange(pos: number) {
@@ -214,16 +213,14 @@ export class VirtualListComponent<T = any> implements OnInit, OnChanges, OnInit,
 
         this.updateVirtualHeights();
 
-        setTimeout(() => {
-            this.cdr.detectChanges();
-        });
+        this.detectChanges$.next();
     }
 
     updateVirtualHeights() {
         this.topVirtualHeight = this.getRangeHeight(0, this.offsetIndex - 1);
         this.bottomVirtualHeight = this.getRangeHeight(this.offsetIndex + this.viewportItems.length + 2, this.sourceSize);
 
-        this.cdr.detectChanges();
+        this.detectChanges$.next();
     }
 
     ngOnDestroy() {
