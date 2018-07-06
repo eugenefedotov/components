@@ -178,13 +178,17 @@ export class VirtualListComponent<T = any> implements OnInit, OnChanges, OnInit,
         this.needUpdate$.next();
     }
 
-    async updateAll() {
+    updateAll() {
         const {offset, limit} = this.getViewportRange();
 
         if (this.offsetIndex === offset && this.viewportItems.length === limit) {
             return;
         }
 
+        this._updateAll(offset, limit);
+    }
+
+    async _updateAll(offset, limit) {
         this.loading = true;
         const result = await this.cachedSource.getData({offset, limit});
         this.loading = false;

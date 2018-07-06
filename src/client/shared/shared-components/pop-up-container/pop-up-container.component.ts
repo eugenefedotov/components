@@ -119,7 +119,6 @@ export class PopUpContainerComponent implements OnInit, DoCheck, AfterViewChecke
     }
 
     updateAll() {
-
         this.updateRealContentAlign();
         this.updateRealContentPosition();
         this.updateContentStyle();
