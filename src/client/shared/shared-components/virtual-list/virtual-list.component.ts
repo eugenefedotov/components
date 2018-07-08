@@ -192,6 +192,7 @@ export class VirtualListComponent<T = any> implements OnInit, OnChanges, OnInit,
         this.sourceSize = 0;
         this.viewportItems = [];
         this.realItemsHeight.clear();
+        this.scrollPos = 0;
 
         this.cachedSource = new CachedListSource(this.source, 500);
 

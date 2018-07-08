@@ -1,6 +1,7 @@
 import {
     AfterContentChecked,
     AfterViewChecked,
+    ChangeDetectionStrategy,
     Component,
     DoCheck,
     ElementRef,
@@ -13,11 +14,13 @@ import {
     SimpleChanges,
     ViewChild
 } from '@angular/core';
+import {hasAnyChanges} from '../../../../functions/has-any-changes';
 
 @Component({
     selector: 'app-scroll-box',
     templateUrl: './scroll-box.component.html',
-    styleUrls: ['./scroll-box.component.scss']
+    styleUrls: ['./scroll-box.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ScrollBoxComponent implements OnInit, OnChanges, DoCheck, AfterViewChecked, AfterContentChecked {
     @Input() wheelSize = 50;
@@ -61,7 +64,9 @@ export class ScrollBoxComponent implements OnInit, OnChanges, DoCheck, AfterView
     }
 
     ngOnChanges(changes: SimpleChanges): void {
-        // todo обработать установку абсолютного скролла
+        if (hasAnyChanges(changes, ['horizontalAbsoluteScrollPosition', 'verticalAbsoluteScrollPosition'], false)) {
+            this.setRelativeScrollByAbsolute();
+        }
     }
 
     ngOnInit() {
@@ -182,4 +187,13 @@ export class ScrollBoxComponent implements OnInit, OnChanges, DoCheck, AfterView
 
     }
 
+    setRelativeScrollByAbsolute() {
+        const el = this.scrollContainerRef.nativeElement;
+
+        const horizontalScrollSize = el.scrollWidth - el.offsetWidth;
+        const verticalScrollSize = el.scrollHeight - el.offsetHeight;
+
+        this.setHorizontalRelativeScrollPosition(this.horizontalAbsoluteScrollPosition / horizontalScrollSize);
+        this.setVerticalRelativeScrollPosition(this.verticalAbsoluteScrollPosition / verticalScrollSize);
+    }
 }
