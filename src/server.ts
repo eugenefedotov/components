@@ -16,7 +16,8 @@ import {createConnection} from 'typeorm';
         '${rootDir}/services/**/*.ts',
         '${rootDir}/converters/**/*.ts'
     ],
-    acceptMimes: ['application/json']
+    acceptMimes: ['application/json'],
+    httpPort: 8081
 })
 class Server extends ServerLoader {
     async $onInit() {

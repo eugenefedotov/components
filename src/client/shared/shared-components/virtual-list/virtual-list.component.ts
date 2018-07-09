@@ -11,7 +11,7 @@ import {
     OnDestroy,
     OnInit,
     Output,
-    QueryList,
+    QueryList, Renderer2,
     SimpleChanges,
     TemplateRef,
     ViewChild,
@@ -53,21 +53,22 @@ export class VirtualListComponent<T = any> implements OnInit, OnChanges, OnInit,
     offsetIndex: number;
     viewportItems: T[] = [];
 
-    topVirtualHeight = 0;
-    bottomVirtualHeight = 0;
-
     needUpdate$ = new Subject();
     detectChanges$ = new Subject();
     destroy$ = new Subject();
 
     loading = false;
-    scrollPos = 0;
+    scrollPosPx = 0;
 
     @ViewChildren('viewItem') viewItemElements: QueryList<ElementRef<HTMLElement>>;
     @ViewChild('viewport') viewElement: ElementRef<HTMLElement>;
 
+    @ViewChild('topVirtual') topVirtual: ElementRef<HTMLElement>;
+    @ViewChild('bottomVirtual') bottomVirtual: ElementRef<HTMLElement>;
+
     constructor(private hostElement: ElementRef<HTMLElement>,
-                private cdr: ChangeDetectorRef
+                private cdr: ChangeDetectorRef,
+                private renderer: Renderer2
     ) {
     }
 
@@ -141,7 +142,7 @@ export class VirtualListComponent<T = any> implements OnInit, OnChanges, OnInit,
     }
 
     getScrollOffsetTopPx(): number {
-        return this.scrollPos;
+        return this.scrollPosPx;
     }
 
     getViewportOffsetIndex(): number {
@@ -171,7 +172,7 @@ export class VirtualListComponent<T = any> implements OnInit, OnChanges, OnInit,
     }
 
     onScrollPosChange(pos: number) {
-        this.scrollPos = pos;
+        this.scrollPosPx = pos;
         this.needUpdate$.next();
     }
 
@@ -192,7 +193,7 @@ export class VirtualListComponent<T = any> implements OnInit, OnChanges, OnInit,
         this.sourceSize = 0;
         this.viewportItems = [];
         this.realItemsHeight.clear();
-        this.scrollPos = 0;
+        this.scrollPosPx = 0;
 
         this.cachedSource = new CachedListSource(this.source, 500);
 
@@ -219,8 +220,11 @@ export class VirtualListComponent<T = any> implements OnInit, OnChanges, OnInit,
     }
 
     updateVirtualHeights() {
-        this.topVirtualHeight = this.getRangeHeight(0, this.offsetIndex - 1);
-        this.bottomVirtualHeight = this.getRangeHeight(this.offsetIndex + this.viewportItems.length + 2, this.sourceSize);
+        const topVirtualHeightPx = this.getRangeHeight(0, this.offsetIndex - 1);
+        const bottomVirtualHeightPx = this.getRangeHeight(this.offsetIndex + this.viewportItems.length + 2, this.sourceSize);
+
+        this.renderer.setStyle(this.topVirtual.nativeElement, 'height', topVirtualHeightPx + 'px');
+        this.renderer.setStyle(this.bottomVirtual.nativeElement, 'height', bottomVirtualHeightPx + 'px');
 
         this.detectChanges$.next();
     }

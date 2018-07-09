@@ -1,11 +1,11 @@
 <app-scroll-box class="virtual-list"
                 [class.virtual-list_spinner]="loading"
                 [wheelSize]="getAvgHeight() * 2"
-                [verticalAbsoluteScrollPosition]="scrollPos"
+                [verticalAbsoluteScrollPosition]="scrollPosPx"
                 (verticalAbsoluteScrollPositionChange)="onScrollPosChange($event)"
                 (verticalRelativeScrollSizeChange)="onScrollSizeChange($event)"
 >
-    <div class="virtual-list__top" [style.height.px]="topVirtualHeight"></div>
+    <div class="virtual-list__top" #topVirtual></div>
     <div class="virtual-list__view" #viewport
          [class.virtual-list__view_selectable]="selectable"
     >
@@ -17,6 +17,6 @@
             <ng-container *ngTemplateOutlet="itemTemplate; context: {item: item, selected: comparator.equals(selectedItem, item)}"></ng-container>
         </div>
     </div>
-    <div class="virtual-list__bottom" [style.height.px]="bottomVirtualHeight"></div>
+    <div class="virtual-list__bottom" #bottomVirtual></div>
 </app-scroll-box>
 <app-spinner class="virtual-list__spinner" *ngIf="loading"></app-spinner>
