@@ -8,13 +8,14 @@ import {
     EventEmitter,
     HostListener,
     Input,
-    OnChanges,
+    OnDestroy,
     OnInit,
     Output,
-    SimpleChanges,
     ViewChild
 } from '@angular/core';
-import {hasAnyChanges} from '../../../../functions/has-any-changes';
+import {BigNumber} from 'bignumber.js';
+import {Subject} from 'rxjs';
+import {debounceTime, takeUntil} from 'rxjs/operators';
 
 @Component({
     selector: 'app-scroll-box',
@@ -22,66 +23,142 @@ import {hasAnyChanges} from '../../../../functions/has-any-changes';
     styleUrls: ['./scroll-box.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ScrollBoxComponent implements OnInit, OnChanges, DoCheck, AfterViewChecked, AfterContentChecked {
+export class ScrollBoxComponent implements OnInit, OnInit, DoCheck, AfterViewChecked, AfterContentChecked, OnDestroy {
     @Input() wheelSize = 50;
 
     @Input() horizontal = false;
 
     @Input() vertical = true;
 
-    @Input() horizontalRelativeScrollPosition = 0;
     @Output() horizontalRelativeScrollPositionChange = new EventEmitter<number>();
-
-    @Input() horizontalAbsoluteScrollPosition = 0;
     @Output() horizontalAbsoluteScrollPositionChange = new EventEmitter<number>();
 
-    @Input() verticalRelativeScrollPosition = 0;
     @Output() verticalRelativeScrollPositionChange = new EventEmitter<number>();
-
-    @Input() verticalAbsoluteScrollPosition = 0;
     @Output() verticalAbsoluteScrollPositionChange = new EventEmitter<number>();
-
-    horizontalRelativeScrollSize = 1;
-    verticalRelativeScrollSize = 1;
-
-    @Output() horizontalRelativeScrollSizeChange = new EventEmitter<number>();
-    @Output() verticalRelativeScrollSizeChange = new EventEmitter<number>();
 
     @Output() horizontalAbsoluteScrollSizeChange = new EventEmitter<number>();
     @Output() verticalAbsoluteScrollSizeChange = new EventEmitter<number>();
 
     @ViewChild('scrollContainer') scrollContainerRef: ElementRef<HTMLElement>;
+    needUpdate$ = new Subject();
+    destroy$ = new Subject();
 
     constructor() {
     }
 
+    _horizontalRelativeScrollPositionBig = new BigNumber(0);
+
+    set horizontalRelativeScrollPositionBig(value: BigNumber) {
+        if (value.isNaN()) {
+            console.error('isNaN');
+        }
+
+        value = BigNumber.min(BigNumber.max(value, 0), 1);
+
+        if (this._horizontalRelativeScrollPositionBig.eq(value)) {
+            return;
+        }
+
+        this._horizontalRelativeScrollPositionBig = value;
+        this.needUpdate$.next();
+    }
+
+    _verticalRelativeScrollPositionBig = new BigNumber(0);
+
+    set verticalRelativeScrollPositionBig(value: BigNumber) {
+        if (value.isNaN()) {
+            console.error('isNaN');
+        }
+
+        value = BigNumber.min(BigNumber.max(value, 0), 1);
+
+        if (this._verticalRelativeScrollPositionBig.eq(value)) {
+            return;
+        }
+
+        this._verticalRelativeScrollPositionBig = value;
+        this.needUpdate$.next();
+    }
+
+    get _horizontalRelativeScrollSizeBig(): BigNumber {
+        return new BigNumber(this.el.offsetWidth).div(this.el.scrollWidth);
+    }
+
+    get horizontalRelativeScrollSize(): number {
+        return this._horizontalRelativeScrollSizeBig.toNumber();
+    }
+
+    get _verticalRelativeScrollSizeBig(): BigNumber {
+        return new BigNumber(this.el.offsetHeight).div(this.el.scrollHeight);
+    }
+
+    get verticalRelativeScrollSize(): number {
+        return this._verticalRelativeScrollSizeBig.toNumber();
+    }
+
+    get el(): HTMLElement {
+        return this.scrollContainerRef.nativeElement;
+    }
+
+    get verticalScrollSize(): number {
+        return this.el.scrollHeight - this.el.offsetHeight;
+    }
+
+    get horizontalScrollSize(): number {
+        return this.el.scrollWidth - this.el.offsetWidth;
+    }
+
+    get horizontalRelativeScrollPosition(): number {
+        return this._horizontalRelativeScrollPositionBig.toNumber();
+    }
+
+    @Input() set horizontalRelativeScrollPosition(value: number) {
+        this.horizontalRelativeScrollPositionBig = new BigNumber(value);
+    }
+
+    get verticalRelativeScrollPosition(): number {
+        return this._verticalRelativeScrollPositionBig.toNumber();
+    }
+
+    @Input() set verticalRelativeScrollPosition(value: number) {
+        this.verticalRelativeScrollPositionBig = new BigNumber(value);
+    }
+
+    @Input() set horizontalAbsoluteScrollPosition(value: number) {
+        this.horizontalRelativeScrollPositionBig = new BigNumber(value).div(this.horizontalScrollSize || 1);
+    }
+
+    @Input() set verticalAbsoluteScrollPosition(value: number) {
+        this.verticalRelativeScrollPositionBig = new BigNumber(value).div(this.verticalScrollSize || 1);
+    }
+
     get isHorizontalScrollVisible() {
-        return this.horizontal && this.horizontalRelativeScrollSize < 1;
+        return this.horizontal && this._horizontalRelativeScrollSizeBig.lt(1);
     }
 
     get isVerticalScrollVisible() {
-        return this.vertical && this.verticalRelativeScrollSize < 1;
-    }
-
-    ngOnChanges(changes: SimpleChanges): void {
-        if (hasAnyChanges(changes, ['horizontalAbsoluteScrollPosition', 'verticalAbsoluteScrollPosition'], false)) {
-            this.setRelativeScrollByAbsolute();
-        }
+        return this.vertical && this._verticalRelativeScrollSizeBig.lt(1);
     }
 
     ngOnInit() {
+        this.needUpdate$
+            .pipe(
+                debounceTime(1),
+                takeUntil(this.destroy$)
+            )
+            .subscribe(() => this.updateScrolls());
     }
 
     ngDoCheck(): void {
-        this.updateScrolls();
+        this.needUpdate$.next();
     }
 
     ngAfterViewChecked(): void {
-        this.updateScrolls();
+        this.needUpdate$.next();
     }
 
     ngAfterContentChecked(): void {
-        this.updateScrolls();
+        this.needUpdate$.next();
     }
 
     @HostListener('window:resize', ['$event'])
@@ -97,103 +174,35 @@ export class ScrollBoxComponent implements OnInit, OnChanges, DoCheck, AfterView
         event.stopPropagation();
         event.preventDefault();
 
-        const el = this.scrollContainerRef.nativeElement;
-        const verticalScrollSize = el.scrollHeight - el.offsetHeight;
-
         const delta = -event.deltaY || -event.detail || event.wheelDelta;
         const deltaY = delta < 0 ? this.wheelSize : -this.wheelSize;
 
-        const position = this.verticalRelativeScrollPosition + deltaY / verticalScrollSize;
-
-        this.setVerticalRelativeScrollPosition(position);
-    }
-
-    onScrollBarVerticalRelativeScrollPositionChange(position: number) {
-        this.setVerticalRelativeScrollPosition(position);
-    }
-
-    onScrollBarHorizontalRelativeScrollPositionChange(position: number) {
-        this.setHorizontalRelativeScrollPosition(position);
-    }
-
-    setVerticalRelativeScrollPosition(position: number) {
-        position = Math.max(Math.min(position, 1), 0);
-
-        if (this.verticalRelativeScrollPosition === position) {
-            return;
-        }
-
-        this.verticalRelativeScrollPosition = position;
-        this.verticalRelativeScrollPositionChange.emit(this.verticalRelativeScrollPosition);
-
-        this.updateAbsoluteScrollPosition();
-    }
-
-    setHorizontalRelativeScrollPosition(position: number) {
-        position = Math.max(Math.min(position, 1), 0);
-
-        if (this.horizontalRelativeScrollPosition === position) {
-            return;
-        }
-
-        this.horizontalRelativeScrollPosition = position;
-        this.horizontalRelativeScrollPositionChange.emit(this.horizontalRelativeScrollPosition);
-
-        this.updateAbsoluteScrollPosition();
+        this.verticalRelativeScrollPositionBig = new BigNumber(deltaY).div(this.verticalScrollSize).plus(this._verticalRelativeScrollPositionBig);
     }
 
     updateScrolls() {
-        this.updateScrollSizes();
-        this.updateAbsoluteScrollPosition();
+        this.updateScrollPosition();
+        this.emitValues();
     }
 
-    updateScrollSizes() {
-        const el = this.scrollContainerRef.nativeElement;
-
-        const verticalScrollSize = el.offsetHeight / el.scrollHeight;
-        const horizontalScrollSize = el.offsetWidth / el.scrollWidth;
-
-        if (this.verticalRelativeScrollSize !== verticalScrollSize) {
-            this.verticalRelativeScrollSize = verticalScrollSize;
-            this.verticalRelativeScrollSizeChange.emit(this.verticalRelativeScrollSize);
-            this.verticalAbsoluteScrollSizeChange.emit(el.scrollHeight);
-        }
-
-        if (this.horizontalRelativeScrollSize !== horizontalScrollSize) {
-            this.horizontalRelativeScrollSize = horizontalScrollSize;
-            this.horizontalRelativeScrollSizeChange.emit(this.horizontalRelativeScrollSize);
-            this.horizontalAbsoluteScrollSizeChange.emit(el.scrollWidth);
-        }
+    updateScrollPosition() {
+        this.el.scrollTop = this._verticalRelativeScrollPositionBig.times(this.verticalScrollSize).toNumber();
+        this.el.scrollLeft = this._horizontalRelativeScrollPositionBig.times(this.horizontalScrollSize).toNumber();
     }
 
-    updateAbsoluteScrollPosition() {
-        const el = this.scrollContainerRef.nativeElement;
+    emitValues() {
+        this.horizontalAbsoluteScrollSizeChange.emit(this.horizontalScrollSize);
+        this.verticalAbsoluteScrollSizeChange.emit(this.verticalScrollSize);
 
-        const horizontalScrollSize = el.scrollWidth - el.offsetWidth;
-        const verticalScrollSize = el.scrollHeight - el.offsetHeight;
+        this.horizontalRelativeScrollPositionChange.emit(this.horizontalRelativeScrollPosition);
+        this.verticalRelativeScrollPositionChange.emit(this.verticalRelativeScrollPosition);
 
-        const horizontalAbsoluteScrollPosition = horizontalScrollSize * this.horizontalRelativeScrollPosition;
-        const verticalAbsoluteScrollPosition = verticalScrollSize * this.verticalRelativeScrollPosition;
-
-        if (el.scrollLeft !== horizontalAbsoluteScrollPosition) {
-            el.scrollLeft = horizontalAbsoluteScrollPosition;
-            this.horizontalAbsoluteScrollPositionChange.emit(el.scrollLeft);
-        }
-
-        if (el.scrollTop !== verticalAbsoluteScrollPosition) {
-            el.scrollTop = verticalAbsoluteScrollPosition;
-            this.verticalAbsoluteScrollPositionChange.emit(el.scrollTop);
-        }
-
+        this.horizontalAbsoluteScrollPositionChange.emit(this.el.scrollLeft);
+        this.verticalAbsoluteScrollPositionChange.emit(this.el.scrollTop);
     }
 
-    setRelativeScrollByAbsolute() {
-        const el = this.scrollContainerRef.nativeElement;
-
-        const horizontalScrollSize = el.scrollWidth - el.offsetWidth;
-        const verticalScrollSize = el.scrollHeight - el.offsetHeight;
-
-        this.setHorizontalRelativeScrollPosition(this.horizontalAbsoluteScrollPosition / horizontalScrollSize);
-        this.setVerticalRelativeScrollPosition(this.verticalAbsoluteScrollPosition / verticalScrollSize);
+    ngOnDestroy(): void {
+        this.destroy$.next();
+        this.destroy$.complete();
     }
 }
