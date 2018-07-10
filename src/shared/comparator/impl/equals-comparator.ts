@@ -1,4 +1,4 @@
-import {Comparator} from './comparator';
+import {Comparator} from '../comparator';
 
 export class EqualsComparator<T> implements Comparator<T> {
     equals(obj1: T, obj2: T): boolean {

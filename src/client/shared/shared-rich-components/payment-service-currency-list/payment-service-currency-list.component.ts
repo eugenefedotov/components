@@ -5,7 +5,7 @@ import {PaymentServiceCurrencyEntity} from '../../../../dao/payment-service-curr
 import {DataSourceListSource} from '../../../../shared/list-source/impl/data-source-list-source';
 import {CurrencyEntity} from '../../../../dao/currency/currency.entity';
 import {PaymentServiceEntity} from '../../../../dao/payment-service/payment-service.entity';
-import {KeyComparator} from '../../../../shared/comparator/key-comparator';
+import {KeyComparator} from '../../../../shared/comparator/impl/key-comparator';
 import {DataSourceRequestFilterTypeEnum} from '../../../../shared/data-source/models/data-source-request-filter-type.enum';
 import {DataSourceRequestFilterItemModel} from '../../../../shared/data-source/models/data-source-request-filter-item.model';
 import {hasAnyChanges} from '../../../../functions/has-any-changes';

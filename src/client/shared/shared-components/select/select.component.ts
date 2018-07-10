@@ -17,7 +17,7 @@ import {SelectItemModel} from '../../../../shared/select-source/models/select-it
 import {Subject} from 'rxjs';
 import {hasAnyChanges} from '../../../../functions/has-any-changes';
 import {PopUpAlign, PopUpPosition} from '../../shared-directives/pop-up/pop-up.directive';
-import {KeyComparator} from '../../../../shared/comparator/key-comparator';
+import {KeyComparator} from '../../../../shared/comparator/impl/key-comparator';
 import {VirtualListComponent} from '../virtual-list/virtual-list.component';
 
 const SELECT_VALUE_ACCESSOR = {
