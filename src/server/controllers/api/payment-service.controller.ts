@@ -1,23 +1,12 @@
-import {BodyParams, Controller, Post} from '@tsed/common';
-import {DataSourceResponseModel} from '../../../shared/data-source/models/data-source-response.model';
-import {RepositoryDataSource} from '../../../shared/data-source/impl/repository-data-source';
+import {Controller} from '@tsed/common';
 import {getCustomRepository} from 'typeorm';
-import {DataSourceRequestModel} from '../../../shared/data-source/models/data-source-request.model';
-import {DataSource} from '../../../shared/data-source/data-source';
-import {PaymentServiceEntity} from '../../../dao/payment-service/payment-service.entity';
+import {RepositoryRestControllerDataSource} from '../../../shared/data-source/impl/repository-rest-controller-data-source';
 import {PaymentServiceRepository} from '../../../dao/payment-service/payment-service.repository';
+import {PaymentServiceEntity} from '../../../dao/payment-service/payment-service.entity';
 
 @Controller('/payment-service')
-export class PaymentServiceController {
-
-    private restDataSource: DataSource<PaymentServiceEntity>;
-
+export class PaymentServiceController extends RepositoryRestControllerDataSource<PaymentServiceEntity> {
     constructor() {
-        this.restDataSource = new RepositoryDataSource(getCustomRepository(PaymentServiceRepository));
-    }
-
-    @Post('/get')
-    getItems(@BodyParams() request: DataSourceRequestModel<PaymentServiceEntity>): Promise<DataSourceResponseModel<PaymentServiceEntity>> {
-        return this.restDataSource.getData(request);
+        super(getCustomRepository(PaymentServiceRepository));
     }
 }

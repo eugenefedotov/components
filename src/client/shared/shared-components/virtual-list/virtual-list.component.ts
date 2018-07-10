@@ -172,6 +172,7 @@ export class VirtualListComponent<T = any> implements OnInit, OnChanges, OnInit,
     }
 
     onScrollPosChange(pos: number) {
+        console.log('onScrollPosChange', pos);
         this.scrollPosPx = pos;
         this.needUpdate$.next();
     }
