@@ -25,8 +25,4 @@ export class PaymentServiceEntity {
         default: 0
     })
     durationMinutes: number = 0;
-
-    @Column({default: true, comment: 'Реальный платежный сервис'})
-    @Index()
-    isReal: boolean;
 }

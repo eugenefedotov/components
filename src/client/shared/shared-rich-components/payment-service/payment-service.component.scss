@@ -1,0 +1,20 @@
+@import "scss/variables";
+
+:host {
+  display: flex;
+  flex-direction: column;
+
+  .payment-service {
+    flex: 0 0 2rem;
+
+    display: flex;
+    flex-direction: row;
+
+    align-items: center;
+    justify-content: stretch;
+
+    &__name {
+      padding: 0 1em;
+    }
+  }
+}

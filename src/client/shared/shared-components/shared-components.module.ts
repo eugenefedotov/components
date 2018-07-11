@@ -21,6 +21,7 @@ import {TooltipComponent} from './tooltip/tooltip.component';
 import {SharedDirectivesModule} from '../shared-directives/shared-directives.module';
 import {HeaderMenuComponent} from './header-menu/header-menu.component';
 import { SelectItemComponent } from './select-item/select-item.component';
+import { ValueWrapperComponent } from './value-wrapper/value-wrapper.component';
 
 @NgModule({
     imports: [
@@ -48,6 +49,7 @@ import { SelectItemComponent } from './select-item/select-item.component';
         TooltipComponent,
         HeaderMenuComponent,
         SelectItemComponent,
+        ValueWrapperComponent,
     ],
     exports: [
         ScrollBoxComponent,
@@ -59,6 +61,7 @@ import { SelectItemComponent } from './select-item/select-item.component';
         HeaderMenuComponent,
         VirtualListComponent,
         SelectComponent,
+        ValueWrapperComponent,
     ],
     entryComponents: [
         WindowComponent,

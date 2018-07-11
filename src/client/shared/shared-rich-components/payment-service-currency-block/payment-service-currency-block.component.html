@@ -1,0 +1,13 @@
+<div class="payment-service-currency-block">
+    <div class="payment-service-currency-block__header">
+        <app-payment-service-currency [item]="item"></app-payment-service-currency>
+    </div>
+    <div class="payment-service-currency-block__info" *ngIf="item">
+        <app-value-wrapper [title]="'Валюта'">
+            <app-currency [item]="item.currency"></app-currency>
+        </app-value-wrapper>
+        <app-value-wrapper [title]="'Платежный сервис'">
+            <app-payment-service [item]="item.paymentService"></app-payment-service>
+        </app-value-wrapper>
+    </div>
+</div>

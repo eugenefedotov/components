@@ -7,10 +7,15 @@ import {SharedDirectivesModule} from '../shared-directives/shared-directives.mod
 import {PaymentServiceCurrencyListComponent} from './payment-service-currency-list/payment-service-currency-list.component';
 import { PaymentServiceCurrencyComponent } from './payment-service-currency/payment-service-currency.component';
 import { ExchangeRouteComponent } from './exchange-route/exchange-route.component';
+import {Angular2FontawesomeModule} from 'angular2-fontawesome';
+import { PaymentServiceCurrencyBlockComponent } from './payment-service-currency-block/payment-service-currency-block.component';
+import { CurrencyComponent } from './currency/currency.component';
+import { PaymentServiceComponent } from './payment-service/payment-service.component';
 
 @NgModule({
     imports: [
         CommonModule,
+        Angular2FontawesomeModule,
         SharedComponentsModule,
         SharedServicesModule,
         SharedDirectivesModule
@@ -19,12 +24,18 @@ import { ExchangeRouteComponent } from './exchange-route/exchange-route.componen
         HeaderComponent,
         PaymentServiceCurrencyListComponent,
         PaymentServiceCurrencyComponent,
-        ExchangeRouteComponent
+        ExchangeRouteComponent,
+        PaymentServiceCurrencyBlockComponent,
+        CurrencyComponent,
+        PaymentServiceComponent
     ],
     exports: [
         HeaderComponent,
         PaymentServiceCurrencyListComponent,
-        ExchangeRouteComponent
+        ExchangeRouteComponent,
+        PaymentServiceCurrencyBlockComponent,
+        CurrencyComponent,
+        PaymentServiceComponent
     ]
 })
 export class SharedRichComponentsModule {
