@@ -1,6 +1,7 @@
 import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
 import {PaymentServiceCurrencyEntity} from '../../../../dao/payment-service-currency/payment-service-currency.entity';
 import {PaymentServiceCurrencyRestService} from '../../shared-rest-services/payment-service-currency-rest/payment-service-currency-rest.service';
+import {DataSourceRequestFilterTypeEnum} from '../../../../shared/data-source/models/data-source-request-filter-type.enum';
 
 @Component({
     selector: 'app-payment-service-currency',
@@ -34,6 +35,16 @@ export class PaymentServiceCurrencyComponent implements OnInit, OnChanges {
             return;
         }
 
-        this.item = await this.paymentServiceCurrencyRestService.getByKey(this.id);
+        this.item = (await this.paymentServiceCurrencyRestService.getData({
+            filter: [
+                {
+                    field: 'id',
+                    type: DataSourceRequestFilterTypeEnum.Equal,
+                    values: [this.id]
+                }
+            ],
+            offset: 0,
+            limit: 1
+        })).items[0];
     }
 }
