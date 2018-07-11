@@ -32,7 +32,7 @@ export class PaymentServiceCurrencyListComponent implements OnChanges, OnInit {
     @Input() paymentServiceCurrency: PaymentServiceCurrencyEntity;
     @Output() paymentServiceCurrencyChange = new EventEmitter<PaymentServiceCurrencyEntity>();
 
-    @Input() listSource: ListSource<PaymentServiceCurrencyEntity>;
+    listSource: ListSource<PaymentServiceCurrencyEntity>;
 
     currencySelectSource: SelectSource<CurrencyEntity>;
     paymentServiceSelectSource: SelectSource<PaymentServiceEntity>;
@@ -83,10 +83,12 @@ export class PaymentServiceCurrencyListComponent implements OnChanges, OnInit {
     }
 
     onCurrencyChange($event: SelectItemModel) {
+        this.currencyChange.emit($event);
         this.updateListSource();
     }
 
     onPaymentServiceChange($event: SelectItemModel) {
+        this.paymentServiceChange.emit($event);
         this.updateListSource();
     }
 }
