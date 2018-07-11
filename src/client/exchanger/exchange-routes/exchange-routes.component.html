@@ -1,6 +1,10 @@
 <div class="route-selector">
-    <app-payment-service-currency-list></app-payment-service-currency-list>
-    <app-payment-service-currency-list></app-payment-service-currency-list>
+    <app-payment-service-currency-list [(paymentServiceCurrency)]="fromPaymentServiceCurrency"></app-payment-service-currency-list>
+    <app-payment-service-currency-list [(paymentServiceCurrency)]="toPaymentServiceCurrency"></app-payment-service-currency-list>
 </div>
-<div class="route-info"></div>
+<div class="route-info">
+    <app-exchange-route
+            [fromPaymentServiceCurrency]="fromPaymentServiceCurrency"
+            [toPaymentServiceCurrency]="toPaymentServiceCurrency"></app-exchange-route>
+</div>
 
