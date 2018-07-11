@@ -91,4 +91,8 @@ export class PaymentServiceCurrencyListComponent implements OnChanges, OnInit {
         this.paymentServiceChange.emit($event);
         this.updateListSource();
     }
+
+    onPaymentServiceCurrencyChange($event: PaymentServiceCurrencyEntity) {
+        this.paymentServiceCurrencyChange.emit($event);
+    }
 }
