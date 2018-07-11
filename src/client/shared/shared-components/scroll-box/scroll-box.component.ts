@@ -1,7 +1,7 @@
 import {
     AfterContentChecked,
     AfterViewChecked,
-    ChangeDetectionStrategy,
+    ChangeDetectionStrategy, ChangeDetectorRef,
     Component,
     DoCheck,
     ElementRef,
@@ -43,7 +43,7 @@ export class ScrollBoxComponent implements OnInit, OnInit, DoCheck, AfterViewChe
     needUpdate$ = new Subject();
     destroy$ = new Subject();
 
-    constructor() {
+    constructor(private cdr: ChangeDetectorRef) {
     }
 
     _horizontalRelativeScrollPositionBig = new BigNumber(0);
@@ -61,6 +61,7 @@ export class ScrollBoxComponent implements OnInit, OnInit, DoCheck, AfterViewChe
 
         this._horizontalRelativeScrollPositionBig = value;
         this.needUpdate$.next();
+        this.emitValues(true);
     }
 
     _verticalRelativeScrollPositionBig = new BigNumber(0);
@@ -78,6 +79,7 @@ export class ScrollBoxComponent implements OnInit, OnInit, DoCheck, AfterViewChe
 
         this._verticalRelativeScrollPositionBig = value;
         this.needUpdate$.next();
+        this.emitValues(false);
     }
 
     get _horizontalRelativeScrollSizeBig(): BigNumber {
@@ -118,6 +120,14 @@ export class ScrollBoxComponent implements OnInit, OnInit, DoCheck, AfterViewChe
 
     get verticalRelativeScrollPosition(): number {
         return this._verticalRelativeScrollPositionBig.toNumber();
+    }
+
+    get horizontalAbsoluteScrollPosition(): number {
+        return this._horizontalRelativeScrollPositionBig.times(this.horizontalScrollSize).toNumber();
+    }
+
+    get verticalAbsoluteScrollPosition(): number {
+        return this._verticalRelativeScrollPositionBig.times(this.verticalScrollSize).toNumber();
     }
 
     @Input() set verticalRelativeScrollPosition(value: number) {
@@ -181,24 +191,22 @@ export class ScrollBoxComponent implements OnInit, OnInit, DoCheck, AfterViewChe
     }
 
     updateScrolls() {
-        this.updateScrollPosition();
-        this.emitValues();
+        this.el.scrollTop = this.verticalAbsoluteScrollPosition;
+        this.el.scrollLeft = this.horizontalAbsoluteScrollPosition;
+
+        this.cdr.detectChanges();
     }
 
-    updateScrollPosition() {
-        this.el.scrollTop = this._verticalRelativeScrollPositionBig.times(this.verticalScrollSize).toNumber();
-        this.el.scrollLeft = this._horizontalRelativeScrollPositionBig.times(this.horizontalScrollSize).toNumber();
-    }
-
-    emitValues() {
-        this.horizontalAbsoluteScrollSizeChange.emit(this.horizontalScrollSize);
-        this.verticalAbsoluteScrollSizeChange.emit(this.verticalScrollSize);
-
-        this.horizontalRelativeScrollPositionChange.emit(this.horizontalRelativeScrollPosition);
-        this.verticalRelativeScrollPositionChange.emit(this.verticalRelativeScrollPosition);
-
-        this.horizontalAbsoluteScrollPositionChange.emit(this.el.scrollLeft);
-        this.verticalAbsoluteScrollPositionChange.emit(this.el.scrollTop);
+    emitValues(horizontal: boolean) {
+        if (horizontal) {
+            this.horizontalAbsoluteScrollSizeChange.emit(this.horizontalScrollSize);
+            this.horizontalRelativeScrollPositionChange.emit(this.horizontalRelativeScrollPosition);
+            this.horizontalAbsoluteScrollPositionChange.emit(this.horizontalAbsoluteScrollPosition);
+        } else {
+            this.verticalAbsoluteScrollSizeChange.emit(this.verticalScrollSize);
+            this.verticalRelativeScrollPositionChange.emit(this.verticalRelativeScrollPosition);
+            this.verticalAbsoluteScrollPositionChange.emit(this.verticalAbsoluteScrollPosition);
+        }
     }
 
     ngOnDestroy(): void {

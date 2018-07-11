@@ -6,6 +6,7 @@ import {SharedServicesModule} from '../shared-services/shared-services.module';
 import {SharedDirectivesModule} from '../shared-directives/shared-directives.module';
 import {PaymentServiceCurrencyListComponent} from './payment-service-currency-list/payment-service-currency-list.component';
 import { PaymentServiceCurrencyComponent } from './payment-service-currency/payment-service-currency.component';
+import { ExchangeRouteComponent } from './exchange-route/exchange-route.component';
 
 @NgModule({
     imports: [
@@ -17,11 +18,13 @@ import { PaymentServiceCurrencyComponent } from './payment-service-currency/paym
     declarations: [
         HeaderComponent,
         PaymentServiceCurrencyListComponent,
-        PaymentServiceCurrencyComponent
+        PaymentServiceCurrencyComponent,
+        ExchangeRouteComponent
     ],
     exports: [
         HeaderComponent,
-        PaymentServiceCurrencyListComponent
+        PaymentServiceCurrencyListComponent,
+        ExchangeRouteComponent
     ]
 })
 export class SharedRichComponentsModule {
