@@ -2,20 +2,29 @@
   flex: 1;
 
   display: flex;
-  flex-direction: row;
-  justify-content: stretch;
+  flex-direction: column;
 
-  .route-selector {
-    flex: 3;
+  .exchange-routes {
+    flex: 1;
 
     display: flex;
     flex-direction: row;
 
+    &__selectors {
+      flex: 1;
+
+      display: flex;
+      flex-direction: column;
+    }
+
+    &__info {
+      flex: 2;
+      display: flex;
+    }
   }
 
-  .route-info {
-    flex: 1;
-    display: flex;
+  app-block-wrapper {
+    margin: .25rem;
   }
 
 }

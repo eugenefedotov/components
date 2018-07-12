@@ -1,10 +1,25 @@
-<div class="route-selector">
-    <app-payment-service-currency-list [(paymentServiceCurrency)]="fromPaymentServiceCurrency"></app-payment-service-currency-list>
-    <app-payment-service-currency-list [(paymentServiceCurrency)]="toPaymentServiceCurrency"></app-payment-service-currency-list>
+<div class="exchange-routes">
+    <div class="exchange-routes__selectors">
+        <app-block-wrapper [title]="'Отдаете'">
+            <app-payment-service-currency-list
+                    [(paymentServiceCurrency)]="fromPaymentServiceCurrency"></app-payment-service-currency-list>
+        </app-block-wrapper>
+        <app-block-wrapper [title]="'Получаете'">
+            <app-payment-service-currency-list
+                    [(paymentServiceCurrency)]="toPaymentServiceCurrency"></app-payment-service-currency-list>
+        </app-block-wrapper>
+    </div>
+    <div class="exchange-routes__info">
+        <app-block-wrapper [title]="'Информация'">
+            <app-exchange-route
+                    [fromPaymentServiceCurrency]="fromPaymentServiceCurrency"
+                    [toPaymentServiceCurrency]="toPaymentServiceCurrency"></app-exchange-route>
+        </app-block-wrapper>
+    </div>
 </div>
-<div class="route-info">
-    <app-exchange-route
-            [fromPaymentServiceCurrency]="fromPaymentServiceCurrency"
-            [toPaymentServiceCurrency]="toPaymentServiceCurrency"></app-exchange-route>
-</div>
+
+
+
+
+
 

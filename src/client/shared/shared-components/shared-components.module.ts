@@ -22,6 +22,7 @@ import {SharedDirectivesModule} from '../shared-directives/shared-directives.mod
 import {HeaderMenuComponent} from './header-menu/header-menu.component';
 import { SelectItemComponent } from './select-item/select-item.component';
 import { ValueWrapperComponent } from './value-wrapper/value-wrapper.component';
+import { BlockWrapperComponent } from './block-wrapper/block-wrapper.component';
 
 @NgModule({
     imports: [
@@ -50,6 +51,7 @@ import { ValueWrapperComponent } from './value-wrapper/value-wrapper.component';
         HeaderMenuComponent,
         SelectItemComponent,
         ValueWrapperComponent,
+        BlockWrapperComponent,
     ],
     exports: [
         ScrollBoxComponent,
@@ -62,6 +64,7 @@ import { ValueWrapperComponent } from './value-wrapper/value-wrapper.component';
         VirtualListComponent,
         SelectComponent,
         ValueWrapperComponent,
+        BlockWrapperComponent,
     ],
     entryComponents: [
         WindowComponent,
