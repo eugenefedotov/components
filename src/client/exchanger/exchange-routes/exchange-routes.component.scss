@@ -11,14 +11,14 @@
     flex-direction: row;
 
     &__selectors {
-      flex: 1;
+      flex: 0 1 400px;
 
       display: flex;
       flex-direction: column;
     }
 
     &__info {
-      flex: 2;
+      flex: 1;
       display: flex;
     }
   }

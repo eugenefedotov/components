@@ -25,6 +25,7 @@
     left: .25rem;
 
     .scroll-bar__slider {
+      min-width: .5rem;
       width: 100%;
       bottom: 0;
     }
@@ -38,6 +39,7 @@
     top: .25rem;
 
     .scroll-bar__slider {
+      min-height: .5rem;
       height: 100%;
       right: 0;
     }
