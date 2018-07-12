@@ -4,8 +4,12 @@ $color-light-accent: #d4e6ff;
 $color-dark: #333333;
 $color-dark-accent: #6c96ff;
 
-$control-color-border: transparentize($color-dark, .5);
+$control-color-background: #f1f1f1;
+$control-color-background-accent: #fff;
+
+$control-color-border: transparentize($color-dark, .66);
 $control-color-border-accent: transparentize($color-dark-accent, .5);
 
-$radius-base: 2px;
+$control-border-radius: 2px;
+
 $radius-infinity: 10000000px;

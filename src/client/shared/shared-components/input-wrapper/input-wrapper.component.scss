@@ -1,8 +1,14 @@
 :host {
   display: flex;
+  flex-direction: column;
 
   .input-wrapper {
+    flex: 1 0 2rem;
+
     display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: nowrap;
 
     &__title {
 

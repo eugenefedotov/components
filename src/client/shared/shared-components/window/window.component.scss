@@ -19,7 +19,7 @@
 
     @include convex(false);
     box-shadow: 0 .5rem 1rem -.5rem rgba(0, 0, 0, 1);
-    border-radius: multiply-px($radius-base, 2);
+    border-radius: multiply-px($control-border-radius, 2);
 
     &__header {
       flex: 0 0 3rem;

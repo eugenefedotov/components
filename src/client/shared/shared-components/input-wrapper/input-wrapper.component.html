@@ -1,5 +1,7 @@
 <div class="input-wrapper">
     <div class="input-wrapper__title">{{title}}</div>
-    <div class="input-wrapper__content"><ng-content></ng-content></div>
+    <div class="input-wrapper__content">
+        <ng-content></ng-content>
+    </div>
     <div class="input-wrapper__error" *ngIf="isViewError()">{{getError()}}</div>
 </div>

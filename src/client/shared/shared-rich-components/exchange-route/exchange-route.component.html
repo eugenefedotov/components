@@ -1,6 +1,32 @@
 <div class="exchange-route">
-    <app-payment-service-currency-block [item]="fromPaymentServiceCurrency"></app-payment-service-currency-block>
-    <app-payment-service-currency-block [item]="toPaymentServiceCurrency"></app-payment-service-currency-block>
+
+    <app-input-wrapper [title]="'Вы отдаете'">
+        <input />
+    </app-input-wrapper>
+
+    <app-value-wrapper [title]="'Комиссия платежной системы'">
+
+    </app-value-wrapper>
+
+    <app-input-wrapper [title]="'Мы получаем'">
+        <input />
+    </app-input-wrapper>
+
+    <app-value-wrapper [title]="'Меняем по курсу'">
+
+    </app-value-wrapper>
+
+    <app-input-wrapper [title]="'Мы отправляем'">
+        <input />
+    </app-input-wrapper>
+
+    <app-value-wrapper [title]="'Комиссия платежной системы'">
+
+    </app-value-wrapper>
+
+    <app-input-wrapper [title]="'Вы получате'">
+        <input />
+    </app-input-wrapper>
 </div>
 
 

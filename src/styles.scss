@@ -4,6 +4,7 @@ $fa-font-path: "~font-awesome/fonts/";
 @import "~font-awesome/scss/font-awesome";
 
 @import "scss/variables";
+@import "scss/mixins";
 
 
 * {
@@ -37,9 +38,9 @@ input, input[type=text], input[type=password], input[type=number] {
   height: 2rem;
   padding: 0 1em;
 
-  background-color: $color-light;
+  @include control;
+
   color: $color-dark;
-  border: 1px solid $control-color-border;
 }
 
 router-outlet {
