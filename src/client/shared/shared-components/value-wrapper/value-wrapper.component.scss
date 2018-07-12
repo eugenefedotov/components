@@ -6,21 +6,14 @@
   .value-wrapper {
     flex: 1;
     display: flex;
-
+    justify-content: space-between;
     flex-wrap: nowrap;
 
     &__title {
-      flex: 1 1 0;
-      line-height: 2rem;
-
-      color: $color-dark;
     }
 
     &__value {
-      flex: 1 1 0;
-      line-height: 2rem;
 
-      color: $color-dark-accent;
     }
   }
 }
