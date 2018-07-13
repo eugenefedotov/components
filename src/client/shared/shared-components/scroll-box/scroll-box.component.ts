@@ -1,7 +1,8 @@
 import {
     AfterContentChecked,
     AfterViewChecked,
-    ChangeDetectionStrategy, ChangeDetectorRef,
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
     Component,
     DoCheck,
     ElementRef,
@@ -16,11 +17,26 @@ import {
 import {BigNumber} from 'bignumber.js';
 import {Subject} from 'rxjs';
 import {debounceTime, takeUntil} from 'rxjs/operators';
+import {animate, style, transition, trigger} from '@angular/animations';
 
 @Component({
     selector: 'app-scroll-box',
     templateUrl: './scroll-box.component.html',
     styleUrls: ['./scroll-box.component.scss'],
+    animations: [
+        trigger(
+            'enterAnimation', [
+                transition(':enter', [
+                    style({opacity: 0}),
+                    animate('.2s', style({opacity: 1}))
+                ]),
+                transition(':leave', [
+                    style({opacity: 1}),
+                    animate('.2s', style({opacity: 0}))
+                ])
+            ]
+        )
+    ],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ScrollBoxComponent implements OnInit, OnInit, DoCheck, AfterViewChecked, AfterContentChecked, OnDestroy {
@@ -122,20 +138,20 @@ export class ScrollBoxComponent implements OnInit, OnInit, DoCheck, AfterViewChe
         return this._verticalRelativeScrollPositionBig.toNumber();
     }
 
-    get horizontalAbsoluteScrollPosition(): number {
-        return this._horizontalRelativeScrollPositionBig.times(this.horizontalScrollSize).toNumber();
-    }
-
-    get verticalAbsoluteScrollPosition(): number {
-        return this._verticalRelativeScrollPositionBig.times(this.verticalScrollSize).toNumber();
-    }
-
     @Input() set verticalRelativeScrollPosition(value: number) {
         this.verticalRelativeScrollPositionBig = new BigNumber(value);
     }
 
+    get horizontalAbsoluteScrollPosition(): number {
+        return this._horizontalRelativeScrollPositionBig.times(this.horizontalScrollSize).toNumber();
+    }
+
     @Input() set horizontalAbsoluteScrollPosition(value: number) {
         this.horizontalRelativeScrollPositionBig = new BigNumber(value).div(this.horizontalScrollSize || 1);
+    }
+
+    get verticalAbsoluteScrollPosition(): number {
+        return this._verticalRelativeScrollPositionBig.times(this.verticalScrollSize).toNumber();
     }
 
     @Input() set verticalAbsoluteScrollPosition(value: number) {

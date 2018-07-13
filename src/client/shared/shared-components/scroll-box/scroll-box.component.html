@@ -19,3 +19,11 @@
                 [(position)]="horizontalRelativeScrollPosition"
                 [size]="horizontalRelativeScrollSize"
 ></app-scroll-bar>
+<div [@enterAnimation] *ngIf="isHorizontalScrollVisible && horizontalRelativeScrollPosition > 0"
+     class="scroll-box__overflow-shadow scroll-box__overflow-shadow_left"></div>
+<div [@enterAnimation] *ngIf="isVerticalScrollVisible && verticalRelativeScrollPosition > 0"
+     class="scroll-box__overflow-shadow scroll-box__overflow-shadow_top"></div>
+<div [@enterAnimation] *ngIf="isHorizontalScrollVisible && horizontalRelativeScrollPosition < 1"
+     class="scroll-box__overflow-shadow scroll-box__overflow-shadow_right"></div>
+<div [@enterAnimation] *ngIf="isVerticalScrollVisible && verticalRelativeScrollPosition < 1"
+     class="scroll-box__overflow-shadow scroll-box__overflow-shadow_bottom"></div>
