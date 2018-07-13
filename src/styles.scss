@@ -43,6 +43,10 @@ input, input[type=text], input[type=password], input[type=number] {
   color: $color-dark;
 }
 
+:focus {
+  outline: none;
+}
+
 router-outlet {
   display: none;
 }

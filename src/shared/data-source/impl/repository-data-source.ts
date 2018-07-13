@@ -8,14 +8,25 @@ import {DataSourceRequestSortOrderEnum} from '../models/data-source-request-sort
 import {DataSourceRequestFilterItemModel} from '../models/data-source-request-filter-item.model';
 
 export class RepositoryDataSource<T> implements DataSource<T> {
-    private fields: string[];
+    private alias = 'entity';
 
-    constructor(private repository: Repository<T>, private alias = 'entity') {
-        this.fields = this.repository.metadata.columns.map(column => column.propertyName);
+    constructor(private repository: Repository<T>, private middleware?: (qb: SelectQueryBuilder<T>) => void) {
+    }
+
+    private get fields() {
+        return this.repository.metadata.columns.map(column => column.propertyName);
+    }
+
+    private get primaryFields() {
+        return this.repository.metadata.primaryColumns.map(md => this.getPropertyName(md.propertyName));
     }
 
     async getData(request: DataSourceRequestModel<T>): Promise<DataSourceResponseModel<T>> {
         const qb = this.repository.createQueryBuilder(this.alias);
+
+        if (this.middleware) {
+            this.middleware(qb);
+        }
 
         if (request.filter) {
             this.addFilter(qb, request.filter);
@@ -29,7 +40,7 @@ export class RepositoryDataSource<T> implements DataSource<T> {
             this.addOffsetAndLimit(qb, request.offset, request.limit);
         }
 
-        qb.select(this.repository.metadata.primaryColumns.map(md => this.getPropertyName(md.propertyName)));
+        qb.select(this.primaryFields);
 
         if (request.fields) {
             request.fields.forEach(field => {
@@ -41,10 +52,12 @@ export class RepositoryDataSource<T> implements DataSource<T> {
 
         let [items, count] = await qb.getManyAndCount();
 
-        items = await this.repository.find({
-            where: items,
-            select: request.fields
-        });
+        if (items.length) {
+            items = await this.repository.find({
+                where: items,
+                select: request.fields
+            });
+        }
 
         return <DataSourceResponseModel<T>>{count, items};
     }
@@ -57,7 +70,7 @@ export class RepositoryDataSource<T> implements DataSource<T> {
         });
     }
 
-    private addFilterByField<P extends keyof T>(qb: WhereExpression, filterElement: DataSourceRequestFilterItemModel<T, P>) {
+    private addFilterByField<P extends keyof T>(qb: WhereExpression, filterElement: DataSourceRequestFilterItemModel<T>) {
         const field = filterElement.field;
         const filterValues: T[P][] = filterElement.values;
         const filterType: DataSourceRequestFilterTypeEnum = filterElement.type || DataSourceRequestFilterTypeEnum.Equal;

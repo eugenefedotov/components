@@ -47,9 +47,6 @@ export class PaymentServiceCurrencyEntity {
     })
     code: string;
 
-    @Column({default: false})
-    isEnabled: boolean;
-
     correctSourceSum(sourceSum: number): number {
         if (this.minAmount) {
             sourceSum = Math.max(sourceSum, this.minAmount);
