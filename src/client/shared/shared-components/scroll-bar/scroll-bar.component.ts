@@ -97,6 +97,9 @@ export class ScrollBarComponent implements OnInit, OnDestroy {
     }
 
     onMouseDown(event: MouseEvent) {
+        event.preventDefault();
+        event.stopPropagation();
+
         this.beginMove();
 
         this.moveStartAbsolutePosition = this.getEventAbsolutePosition(event);
