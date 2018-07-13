@@ -1,7 +1,7 @@
 import {
     Component,
     EventEmitter,
-    forwardRef,
+    forwardRef, HostBinding,
     HostListener,
     Input,
     OnChanges,

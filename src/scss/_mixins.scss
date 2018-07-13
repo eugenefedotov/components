@@ -31,4 +31,9 @@
   border: 1px solid $control-color-border;
   border-radius: $control-border-radius;
   background-color: $control-color-background;
+
+  &:focus, &.focus {
+    border: 1px solid $control-color-border-accent;
+    background-color: $control-color-background-accent;
+  }
 }
