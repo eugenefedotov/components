@@ -1,11 +1,12 @@
 /* You can add global styles to this file, and also import other style files */
-
-$fa-font-path: "~font-awesome/fonts/";
-@import "~font-awesome/scss/font-awesome";
+$fa-font-path: "~@fortawesome/fontawesome-free/webfonts";
+@import "~@fortawesome/fontawesome-free/scss/fontawesome.scss";
+@import "~@fortawesome/fontawesome-free/scss/fa-solid.scss";
+@import "~@fortawesome/fontawesome-free/scss/fa-regular.scss";
+@import "~@fortawesome/fontawesome-free/scss/fa-brands.scss";
 
 @import "scss/variables";
 @import "scss/mixins";
-
 
 * {
   box-sizing: border-box;
@@ -32,15 +33,6 @@ body {
 
 fa {
   font-size: 1rem;
-}
-
-input, input[type=text], input[type=password], input[type=number] {
-  height: 2rem;
-  padding: 0 1em;
-
-  @include control;
-
-  color: $color-dark;
 }
 
 :focus {

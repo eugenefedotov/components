@@ -1,0 +1,47 @@
+@import "scss/mixins";
+@import "scss/variables";
+
+:host {
+  display: flex;
+  width: 200px;
+
+  .input {
+    flex: 1;
+    display: flex;
+
+    align-items: stretch;
+
+    height: 2rem;
+
+    overflow: hidden;
+
+    @include control;
+
+    &__prefix, &__suffix {
+      flex: none;
+
+      display: flex;
+      align-items: center;
+
+      margin: 0 .5em;
+
+      color: $control-color-border;
+    }
+
+    &__field {
+      flex: 1;
+
+      display: flex;
+      min-width: 0;
+
+      input {
+        flex: 1;
+
+        min-width: 0;
+
+        border: none;
+        background: transparent;
+      }
+    }
+  }
+}

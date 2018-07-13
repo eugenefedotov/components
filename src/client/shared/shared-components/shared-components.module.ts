@@ -20,14 +20,17 @@ import {PopUpContainerComponent} from './pop-up-container/pop-up-container.compo
 import {TooltipComponent} from './tooltip/tooltip.component';
 import {SharedDirectivesModule} from '../shared-directives/shared-directives.module';
 import {HeaderMenuComponent} from './header-menu/header-menu.component';
-import { SelectItemComponent } from './select-item/select-item.component';
-import { ValueWrapperComponent } from './value-wrapper/value-wrapper.component';
-import { BlockWrapperComponent } from './block-wrapper/block-wrapper.component';
+import {SelectItemComponent} from './select-item/select-item.component';
+import {ValueWrapperComponent} from './value-wrapper/value-wrapper.component';
+import {BlockWrapperComponent} from './block-wrapper/block-wrapper.component';
+import {InputComponent} from './input/input.component';
+import {FormsModule} from '@angular/forms';
 
 @NgModule({
     imports: [
         CommonModule,
         RouterModule,
+        FormsModule,
         SharedDirectivesModule,
         Angular2FontawesomeModule
     ],
@@ -52,6 +55,7 @@ import { BlockWrapperComponent } from './block-wrapper/block-wrapper.component';
         SelectItemComponent,
         ValueWrapperComponent,
         BlockWrapperComponent,
+        InputComponent,
     ],
     exports: [
         ScrollBoxComponent,
@@ -65,6 +69,7 @@ import { BlockWrapperComponent } from './block-wrapper/block-wrapper.component';
         SelectComponent,
         ValueWrapperComponent,
         BlockWrapperComponent,
+        InputComponent,
     ],
     entryComponents: [
         WindowComponent,

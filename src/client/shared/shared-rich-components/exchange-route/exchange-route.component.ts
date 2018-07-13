@@ -17,6 +17,8 @@ export class ExchangeRouteComponent implements OnInit {
 
     exchangeRoute: ExchangeRouteEntity;
 
+    numberMask = [/\d/];
+
     constructor() {
     }
 

@@ -1,7 +1,9 @@
 <div class="exchange-route">
-
     <app-input-wrapper [title]="'Вы отдаете'">
-        <input />
+        <app-input
+                [type]="'number'"
+                [prefix]="fromPaymentServiceCurrency?.currency.prefix"
+                [suffix]="fromPaymentServiceCurrency?.currency.suffix"></app-input>
     </app-input-wrapper>
 
     <app-value-wrapper [title]="'Комиссия платежной системы'">
@@ -9,7 +11,9 @@
     </app-value-wrapper>
 
     <app-input-wrapper [title]="'Мы получаем'">
-        <input />
+        <app-input [type]="'number'"
+                   [prefix]="fromPaymentServiceCurrency?.currency.prefix"
+                   [suffix]="fromPaymentServiceCurrency?.currency.suffix"></app-input>
     </app-input-wrapper>
 
     <app-value-wrapper [title]="'Меняем по курсу'">
@@ -17,7 +21,9 @@
     </app-value-wrapper>
 
     <app-input-wrapper [title]="'Мы отправляем'">
-        <input />
+        <app-input [type]="'number'"
+                   [prefix]="toPaymentServiceCurrency?.currency.prefix"
+                   [suffix]="toPaymentServiceCurrency?.currency.suffix"></app-input>
     </app-input-wrapper>
 
     <app-value-wrapper [title]="'Комиссия платежной системы'">
@@ -25,7 +31,9 @@
     </app-value-wrapper>
 
     <app-input-wrapper [title]="'Вы получате'">
-        <input />
+        <app-input [type]="'number'"
+                   [prefix]="toPaymentServiceCurrency?.currency.prefix"
+                   [suffix]="toPaymentServiceCurrency?.currency.suffix"></app-input>
     </app-input-wrapper>
 </div>
 

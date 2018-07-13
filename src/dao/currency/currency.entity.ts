@@ -38,5 +38,10 @@ export class CurrencyEntity {
     @Column({
         nullable: true
     })
-    inputMask: string;
+    prefix: string;
+
+    @Column({
+        nullable: true
+    })
+    suffix: string;
 }

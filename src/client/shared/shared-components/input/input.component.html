@@ -1,0 +1,12 @@
+<div class="input" [class.focus]="focus">
+    <div class="input__prefix">{{prefix}}</div>
+    <div class="input__field">
+        <input [type]="type"
+               [(ngModel)]="value"
+               (ngModelChange)="onValueChange()"
+               (focus)="focus = true"
+               (blur)="focus = false"
+        >
+    </div>
+    <div class="input__suffix">{{suffix}}</div>
+</div>
