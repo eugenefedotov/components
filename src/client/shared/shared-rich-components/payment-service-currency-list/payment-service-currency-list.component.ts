@@ -14,6 +14,7 @@ import {SelectSource} from '../../../../shared/select-source/select-source';
 import {DataSourceSelectSource} from '../../../../shared/select-source/impl/data-source-select-source';
 import {SelectItemModel} from '../../../../shared/select-source/models/select-item.model';
 import {PaymentServiceRestService} from '../../shared-rest-services/payment-service-rest/payment-service-rest.service';
+import {PersistentFilterDataSource} from '../../../../shared/data-source/impl/persistent-filter-data-source';
 
 @Component({
     selector: 'app-payment-service-currency-list',
@@ -62,7 +63,6 @@ export class PaymentServiceCurrencyListComponent implements OnChanges, OnInit {
 
     updateListSource() {
         const filter: DataSourceRequestFilterItemModel<PaymentServiceCurrencyEntity>[] = [];
-
         if (this.currency) {
             filter.push({
                 field: 'currency',

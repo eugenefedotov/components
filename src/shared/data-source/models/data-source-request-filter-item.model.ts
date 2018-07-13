@@ -1,7 +1,7 @@
 import {DataSourceRequestFilterTypeEnum} from './data-source-request-filter-type.enum';
 
-export interface DataSourceRequestFilterItemModel<T, K extends keyof T = any> {
+export interface DataSourceRequestFilterItemModel<T> {
     type: DataSourceRequestFilterTypeEnum;
-    field: K;
-    values: T[K][];
+    field: keyof T;
+    values: any[];
 }

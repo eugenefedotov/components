@@ -17,7 +17,8 @@ export class CurrencyEntity {
 
     @Column({
         nullable: true,
-        unique: true
+        unique: true,
+        unsigned: true
     })
     iso4217_num3: number;
 
@@ -30,4 +31,12 @@ export class CurrencyEntity {
 
     @Column({default: false, comment: 'Валюта работает только со своим сервисом'})
     isIndependent: boolean;
+
+    @Column({default: false})
+    isEnabled: boolean;
+
+    @Column({
+        nullable: true
+    })
+    inputMask: string;
 }

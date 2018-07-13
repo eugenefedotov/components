@@ -28,6 +28,7 @@
     "@tsed/core": "^4.17.0",
     "@tsed/servestatic": "^4.17.0",
     "angular2-fontawesome": "^5.2.1",
+    "angular2-text-mask": "^9.0.0",
     "bignumber.js": "^7.2.1",
     "compression": "^1.7.2",
     "cookie-parser": "^1.4.3",

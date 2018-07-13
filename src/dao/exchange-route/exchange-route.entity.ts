@@ -7,6 +7,9 @@ export class ExchangeRouteEntity {
     @PrimaryGeneratedColumn({unsigned: true})
     id: number;
 
+    @Column({default: false})
+    isEnabled: boolean;
+
     @ManyToOne(type => PaymentServiceCurrencyEntity, {nullable: false, eager: true})
     fromPaymentServiceCurrency: PaymentServiceCurrencyEntity;
 

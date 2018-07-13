@@ -6,7 +6,7 @@ import {DataSourceRequestFilterTypeEnum} from '../models/data-source-request-fil
 import {DataSourceRequestSortOrderEnum} from '../models/data-source-request-sort-order.enum';
 import {DataSourceRequestFilterItemModel} from '../models/data-source-request-filter-item.model';
 
-export class InMemoryDataSource<T> implements DataSource<T> {
+export class LocalDataSource<T> implements DataSource<T> {
     constructor(private items: T[]) {
 
     }
