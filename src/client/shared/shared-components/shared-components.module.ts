@@ -24,13 +24,14 @@ import {SelectItemComponent} from './select-item/select-item.component';
 import {ValueWrapperComponent} from './value-wrapper/value-wrapper.component';
 import {BlockWrapperComponent} from './block-wrapper/block-wrapper.component';
 import {InputComponent} from './input/input.component';
-import {FormsModule} from '@angular/forms';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 
 @NgModule({
     imports: [
         CommonModule,
         RouterModule,
         FormsModule,
+        ReactiveFormsModule,
         SharedDirectivesModule,
         Angular2FontawesomeModule
     ],

@@ -5,16 +5,19 @@ import {SharedComponentsModule} from '../shared-components/shared-components.mod
 import {SharedServicesModule} from '../shared-services/shared-services.module';
 import {SharedDirectivesModule} from '../shared-directives/shared-directives.module';
 import {PaymentServiceCurrencyListComponent} from './payment-service-currency-list/payment-service-currency-list.component';
-import { PaymentServiceCurrencyComponent } from './payment-service-currency/payment-service-currency.component';
-import { ExchangeRouteComponent } from './exchange-route/exchange-route.component';
+import {PaymentServiceCurrencyComponent} from './payment-service-currency/payment-service-currency.component';
+import {ExchangeRouteComponent} from './exchange-route/exchange-route.component';
 import {Angular2FontawesomeModule} from 'angular2-fontawesome';
-import { PaymentServiceCurrencyBlockComponent } from './payment-service-currency-block/payment-service-currency-block.component';
-import { CurrencyComponent } from './currency/currency.component';
-import { PaymentServiceComponent } from './payment-service/payment-service.component';
+import {PaymentServiceCurrencyBlockComponent} from './payment-service-currency-block/payment-service-currency-block.component';
+import {CurrencyComponent} from './currency/currency.component';
+import {PaymentServiceComponent} from './payment-service/payment-service.component';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 
 @NgModule({
     imports: [
         CommonModule,
+        FormsModule,
+        ReactiveFormsModule,
         Angular2FontawesomeModule,
         SharedComponentsModule,
         SharedServicesModule,

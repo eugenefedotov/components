@@ -1,9 +1,12 @@
-<div class="exchange-route">
+<div class="exchange-route" *ngIf="exchangeRoute" [formGroup]="form">
     <app-input-wrapper [title]="'Вы отдаете'">
         <app-input
                 [type]="'number'"
-                [prefix]="fromPaymentServiceCurrency?.currency.prefix"
-                [suffix]="fromPaymentServiceCurrency?.currency.suffix"></app-input>
+                [formControlName]="'fromClient'"
+                [min]="exchangeRoute.fromMinAmount"
+                [max]="exchangeRoute.fromMaxAmount"
+                [prefix]="fromPaymentServiceCurrency.currency.prefix"
+                [suffix]="fromPaymentServiceCurrency.currency.suffix"></app-input>
     </app-input-wrapper>
 
     <app-value-wrapper [title]="'Комиссия платежной системы'">
@@ -12,18 +15,24 @@
 
     <app-input-wrapper [title]="'Мы получаем'">
         <app-input [type]="'number'"
-                   [prefix]="fromPaymentServiceCurrency?.currency.prefix"
-                   [suffix]="fromPaymentServiceCurrency?.currency.suffix"></app-input>
+                   [formControlName]="'from'"
+                   [min]="exchangeRoute.fromMinAmount"
+                   [max]="exchangeRoute.fromMaxAmount"
+                   [prefix]="fromPaymentServiceCurrency.currency.prefix"
+                   [suffix]="fromPaymentServiceCurrency.currency.suffix"></app-input>
     </app-input-wrapper>
 
     <app-value-wrapper [title]="'Меняем по курсу'">
-
+        {{exchangeRoute.fromAmount}}:{{exchangeRoute.toAmount}}
     </app-value-wrapper>
 
     <app-input-wrapper [title]="'Мы отправляем'">
         <app-input [type]="'number'"
-                   [prefix]="toPaymentServiceCurrency?.currency.prefix"
-                   [suffix]="toPaymentServiceCurrency?.currency.suffix"></app-input>
+                   [formControlName]="'to'"
+                   [min]="exchangeRoute.toMinAmount"
+                   [max]="exchangeRoute.toMaxAmount"
+                   [prefix]="toPaymentServiceCurrency.currency.prefix"
+                   [suffix]="toPaymentServiceCurrency.currency.suffix"></app-input>
     </app-input-wrapper>
 
     <app-value-wrapper [title]="'Комиссия платежной системы'">
@@ -32,8 +41,11 @@
 
     <app-input-wrapper [title]="'Вы получате'">
         <app-input [type]="'number'"
-                   [prefix]="toPaymentServiceCurrency?.currency.prefix"
-                   [suffix]="toPaymentServiceCurrency?.currency.suffix"></app-input>
+                   [formControlName]="'toClient'"
+                   [min]="exchangeRoute.toMinAmount"
+                   [max]="exchangeRoute.toMaxAmount"
+                   [prefix]="toPaymentServiceCurrency.currency.prefix"
+                   [suffix]="toPaymentServiceCurrency.currency.suffix"></app-input>
     </app-input-wrapper>
 </div>
 

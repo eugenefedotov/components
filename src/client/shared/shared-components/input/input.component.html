@@ -1,11 +1,15 @@
 <div class="input" [class.focus]="focus">
     <div class="input__prefix">{{prefix}}</div>
     <div class="input__field">
-        <input [type]="type"
+        <input [attr.type]="type"
+               [attr.min]="min"
+               [attr.max]="max"
+               [attr.step]="step"
+               [attr.disabled]="disabled"
                [(ngModel)]="value"
                (ngModelChange)="onValueChange()"
-               (focus)="focus = true"
-               (blur)="focus = false"
+               (focus)="setFocus(true)"
+               (blur)="setFocus(false)"
         >
     </div>
     <div class="input__suffix">{{suffix}}</div>

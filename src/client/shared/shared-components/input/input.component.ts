@@ -23,7 +23,16 @@ export class InputComponent implements OnInit, ControlValueAccessor, OnDestroy {
     suffix: string;
 
     @Input()
-    type = 'text';
+    type: string;
+
+    @Input()
+    min: number;
+
+    @Input()
+    max: number;
+
+    @Input()
+    step: number;
 
     focus: boolean;
     value: any;
@@ -57,12 +66,22 @@ export class InputComponent implements OnInit, ControlValueAccessor, OnDestroy {
         this.value = obj;
     }
 
+    onValueChange() {
+        if (this.onChange) {
+            this.onChange(this.value);
+        }
+    }
+
+    setFocus(focus: boolean) {
+        this.focus = focus;
+
+        if (this.focus && this.onTouched) {
+            this.onTouched();
+        }
+    }
+
     ngOnDestroy(): void {
         this.destroy$.next();
         this.destroy$.complete();
-    }
-
-    onValueChange() {
-
     }
 }

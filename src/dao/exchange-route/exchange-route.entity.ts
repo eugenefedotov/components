@@ -1,7 +1,8 @@
-import {Column, Entity, ManyToOne, PrimaryGeneratedColumn} from 'typeorm';
+import {Column, Entity, Index, ManyToOne, PrimaryGeneratedColumn} from 'typeorm';
 import {PaymentServiceCurrencyEntity} from '../payment-service-currency/payment-service-currency.entity';
 
 @Entity('exchange_route')
+@Index('route', ['fromPaymentServiceCurrency', 'toPaymentServiceCurrency'], {unique: true})
 export class ExchangeRouteEntity {
 
     @PrimaryGeneratedColumn({unsigned: true})
