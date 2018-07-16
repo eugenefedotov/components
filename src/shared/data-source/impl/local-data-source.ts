@@ -40,7 +40,7 @@ export class LocalDataSource<T> implements DataSource<T> {
         return response;
     }
 
-    private filterItems<P extends keyof T>(items: T[], filters: DataSourceRequestFilterItemModel<T, P>[]): T[] {
+    private filterItems(items: T[], filters: DataSourceRequestFilterItemModel<T>[]): T[] {
 
         filters.forEach(filter => {
             items = this.filterItemsByField(items, filter.field, filter.type, filter.values);
