@@ -1,7 +1,7 @@
-import {Column, Entity, ManyToOne, PrimaryGeneratedColumn} from 'typeorm';
+import {Column, Entity, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn} from 'typeorm';
 import {PaymentServiceEntity} from '../payment-service/payment-service.entity';
 import {CurrencyEntity} from '../currency/currency.entity';
-import {calculateFee} from '../../functions/calculateFee';
+import {PaymentServiceRequisiteTypeEntity} from '../payment-service-requisite-type/payment-service-requisite-type.entity';
 
 @Entity('payment_service_currency')
 export class PaymentServiceCurrencyEntity {
@@ -47,45 +47,7 @@ export class PaymentServiceCurrencyEntity {
     })
     code: string;
 
-    correctSourceSum(sourceSum: number): number {
-        if (this.minAmount) {
-            sourceSum = Math.max(sourceSum, this.minAmount);
-        }
-
-        if (this.maxAmount) {
-            sourceSum = Math.min(sourceSum, this.maxAmount);
-        }
-
-        return sourceSum;
-    }
-
-    /**
-     * расчет необходимой суммы с учетом комиссии, чтобы получить итоговую
-     */
-    calculateSourceSum(targetSum: number): number {
-        if (this.feeFixed) {
-            targetSum += this.feeFixed;
-        }
-
-        if (this.feePercent) {
-            targetSum += calculateFee(targetSum, this.feePercent, true);
-        }
-
-        return targetSum;
-    }
-
-    /**
-     * расчет итоговой суммы после вычета комиссии платежной системы
-     */
-    calculateTargetSum(sourceSum: number): number {
-        if (this.feePercent) {
-            sourceSum -= calculateFee(sourceSum, this.feePercent);
-        }
-
-        if (this.feeFixed) {
-            sourceSum -= this.feeFixed;
-        }
-
-        return sourceSum;
-    }
+    @ManyToMany(type => PaymentServiceRequisiteTypeEntity)
+    @JoinTable({name: `payment_service_currency__requisite_types`})
+    requisiteTypes: PaymentServiceRequisiteTypeEntity[];
 }

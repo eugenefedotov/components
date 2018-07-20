@@ -5,7 +5,7 @@
  * @param {boolean} byTargetSum расчет комиссии относительно итоговой суммы
  * @returns {number}
  */
-export function calculateFee(sum: number, percent: number, byTargetSum = false): number {
+export function calculateFeeFunction(sum: number, percent: number, byTargetSum = false): number {
   if (byTargetSum) {
     return sum / (100 + percent) * percent;
   } else {

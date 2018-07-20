@@ -15,7 +15,7 @@ import {ControlValueAccessor, NG_VALUE_ACCESSOR} from '@angular/forms';
 import {SelectSource} from '../../../../shared/select-source/select-source';
 import {SelectItemModel} from '../../../../shared/select-source/models/select-item.model';
 import {Subject} from 'rxjs';
-import {hasAnyChanges} from '../../../../functions/has-any-changes';
+import {hasAnyChangesFunction} from '../../../../functions/has-any-changes.function';
 import {PopUpAlign, PopUpPosition} from '../../shared-directives/pop-up/pop-up.directive';
 import {KeyComparator} from '../../../../shared/comparator/impl/key-comparator';
 import {VirtualListComponent} from '../virtual-list/virtual-list.component';
@@ -61,7 +61,7 @@ export class SelectComponent implements OnInit, OnChanges, OnDestroy, ControlVal
     }
 
     ngOnChanges(changes: SimpleChanges): void {
-        if (hasAnyChanges(changes, ['source'])) {
+        if (hasAnyChangesFunction(changes, ['source'])) {
             this.updateItem();
         }
     }

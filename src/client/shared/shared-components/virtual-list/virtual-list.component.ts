@@ -21,7 +21,7 @@ import {ListSource} from '../../../../shared/list-source/list-source';
 import {EqualsComparator} from '../../../../shared/comparator/impl/equals-comparator';
 import {Comparator} from '../../../../shared/comparator/comparator';
 import {CachedListSource} from '../../../../shared/list-source/impl/cached-list-source';
-import {hasAnyChanges} from '../../../../functions/has-any-changes';
+import {hasAnyChangesFunction} from '../../../../functions/has-any-changes.function';
 import {Subject} from 'rxjs';
 import {takeUntil, throttleTime} from 'rxjs/operators';
 
@@ -73,7 +73,7 @@ export class VirtualListComponent<T = any> implements OnInit, OnChanges, OnInit,
     }
 
     ngOnChanges(changes: SimpleChanges): void {
-        if (hasAnyChanges(changes, ['source'])) {
+        if (hasAnyChangesFunction(changes, ['source'])) {
             this.updateCachedSource();
         }
     }
