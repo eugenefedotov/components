@@ -3,7 +3,7 @@ import {PaymentServiceCurrencyEntity} from '../../../../dao/payment-service-curr
 import {ExchangeRouteEntity} from '../../../../dao/exchange-route/exchange-route.entity';
 import {ExchangeRouteRestService} from '../../shared-rest-services/exchange-route-rest/exchange-route-rest.service';
 import {DataSourceRequestFilterTypeEnum} from '../../../../shared/data-source/models/data-source-request-filter-type.enum';
-import {hasAnyChangesFunction} from '../../../../functions/has-any-changes.function';
+import {hasAnyChanges} from '../../../../functions/has-any-changes';
 import {FormControl, FormGroup} from '@angular/forms';
 import {Subject} from 'rxjs';
 import {distinctUntilChanged, takeUntil} from 'rxjs/operators';
@@ -37,7 +37,7 @@ export class ExchangeRouteComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     ngOnChanges(changes: SimpleChanges): void {
-        if (hasAnyChangesFunction(changes, ['fromPaymentServiceCurrency', 'toPaymentServiceCurrency'])) {
+        if (hasAnyChanges(changes, ['fromPaymentServiceCurrency', 'toPaymentServiceCurrency'])) {
             this.updateRoute();
         }
     }

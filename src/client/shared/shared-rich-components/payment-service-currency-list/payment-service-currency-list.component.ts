@@ -8,7 +8,7 @@ import {PaymentServiceEntity} from '../../../../dao/payment-service/payment-serv
 import {KeyComparator} from '../../../../shared/comparator/impl/key-comparator';
 import {DataSourceRequestFilterTypeEnum} from '../../../../shared/data-source/models/data-source-request-filter-type.enum';
 import {DataSourceRequestFilterItemModel} from '../../../../shared/data-source/models/data-source-request-filter-item.model';
-import {hasAnyChangesFunction} from '../../../../functions/has-any-changes.function';
+import {hasAnyChanges} from '../../../../functions/has-any-changes';
 import {CurrencyRestService} from '../../shared-rest-services/currency-rest/currency-rest.service';
 import {SelectSource} from '../../../../shared/select-source/select-source';
 import {DataSourceSelectSource} from '../../../../shared/select-source/impl/data-source-select-source';
@@ -47,7 +47,7 @@ export class PaymentServiceCurrencyListComponent implements OnChanges, OnInit {
     }
 
     ngOnChanges(changes: SimpleChanges): void {
-        if (hasAnyChangesFunction(changes, ['currency', 'paymentService'])) {
+        if (hasAnyChanges(changes, ['currency', 'paymentService'])) {
             this.updateListSource();
         }
     }

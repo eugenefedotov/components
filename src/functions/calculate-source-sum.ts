@@ -1,4 +1,4 @@
-import {calculateFeeFunction} from './calculate-fee.function';
+import {calculateFee} from './calculate.fee';
 
 /**
  * расчет необходимой суммы с учетом комиссии, чтобы получить итоговую
@@ -9,7 +9,7 @@ export function calculateSourceSum(targetSum: number, fee: { fixed: number, perc
     }
 
     if (fee.percent) {
-        targetSum += calculateFeeFunction(targetSum, fee.percent, true);
+        targetSum += calculateFee(targetSum, fee.percent, true);
     }
 
     return targetSum;
