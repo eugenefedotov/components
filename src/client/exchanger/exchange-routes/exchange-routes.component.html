@@ -2,11 +2,11 @@
     <div class="exchange-routes__selectors">
         <app-block-wrapper [title]="'Отдаете'">
             <app-payment-service-currency-list
-                    [(paymentServiceCurrency)]="fromPaymentServiceCurrency"></app-payment-service-currency-list>
+                    [(paymentServiceCurrency)]="fromPaymentServiceCurrency" (paymentServiceCurrencyChange)="onPaymentServiceCurrencyChange()"></app-payment-service-currency-list>
         </app-block-wrapper>
         <app-block-wrapper [title]="'Получаете'">
             <app-payment-service-currency-list
-                    [(paymentServiceCurrency)]="toPaymentServiceCurrency"></app-payment-service-currency-list>
+                    [(paymentServiceCurrency)]="toPaymentServiceCurrency" (paymentServiceCurrencyChange)="onPaymentServiceCurrencyChange()"></app-payment-service-currency-list>
         </app-block-wrapper>
     </div>
     <div class="exchange-routes__info">
