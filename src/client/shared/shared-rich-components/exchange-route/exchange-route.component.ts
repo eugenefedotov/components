@@ -8,6 +8,8 @@ import {FormControl, FormGroup} from '@angular/forms';
 import {Subject} from 'rxjs';
 import {distinctUntilChanged, takeUntil} from 'rxjs/operators';
 import {BigNumber} from 'bignumber.js';
+import {calculateSourceSum} from '../../../../functions/calculate-source-sum';
+import {calculateTargetSum} from '../../../../functions/calculate-target-sum';
 
 @Component({
     selector: 'app-exchange-route',
@@ -26,8 +28,10 @@ export class ExchangeRouteComponent implements OnInit, OnChanges, OnDestroy {
 
     form = new FormGroup({
         fromClient: new FormControl(),
+        fromFee: new FormControl(),
         from: new FormControl(),
         to: new FormControl(),
+        toFee: new FormControl(),
         toClient: new FormControl()
     });
 
@@ -70,26 +74,34 @@ export class ExchangeRouteComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     updateByFromClient(val: number) {
+        val = this.calculateFeeByPaymentServiceCurrency(val, this.fromPaymentServiceCurrency, false);
         this.form.get('from').setValue(val, {emitEvent: false});
-        this.updateTo();
+        this.updateToByFrom();
+        this.updateFee();
     }
 
     updateByFrom(val: number) {
+        val = this.calculateFeeByPaymentServiceCurrency(val, this.fromPaymentServiceCurrency, true);
         this.form.get('fromClient').setValue(val, {emitEvent: false});
-        this.updateTo();
+        this.updateToByFrom();
+        this.updateFee();
     }
 
     updateByTo(val: number) {
+        val = this.calculateFeeByPaymentServiceCurrency(val, this.toPaymentServiceCurrency, false);
         this.form.get('toClient').setValue(val, {emitEvent: false});
-        this.updateFrom();
+        this.updateFromByTo();
+        this.updateFee();
     }
 
     updateByToClient(val: number) {
+        val = this.calculateFeeByPaymentServiceCurrency(val, this.toPaymentServiceCurrency, true);
         this.form.get('to').setValue(val, {emitEvent: false});
-        this.updateFrom();
+        this.updateFromByTo();
+        this.updateFee();
     }
 
-    updateFrom() {
+    updateFromByTo() {
         const to = this.form.get('to').value;
         const from = new BigNumber(to).div(this.exchangeRoute.toAmount).times(this.exchangeRoute.fromAmount).toNumber();
 
@@ -97,12 +109,31 @@ export class ExchangeRouteComponent implements OnInit, OnChanges, OnDestroy {
         this.form.get('fromClient').setValue(from, {emitEvent: false});
     }
 
-    updateTo() {
+    updateToByFrom() {
         const from = this.form.get('from').value;
         const to = new BigNumber(from).div(this.exchangeRoute.fromAmount).times(this.exchangeRoute.toAmount).toNumber();
 
         this.form.get('to').setValue(to, {emitEvent: false});
         this.form.get('toClient').setValue(to, {emitEvent: false});
+    }
+
+    updateFee() {
+        const from = this.form.get('from').value;
+        const fromClient = this.form.get('fromClient').value;
+        this.form.get('fromFee').setValue(from - fromClient);
+
+
+        const to = this.form.get('to').value;
+        const toClient = this.form.get('toClient').value;
+        this.form.get('toFee').setValue(to - toClient);
+    }
+
+    calculateFeeByPaymentServiceCurrency(sum: number, paymentServiceCurrencyEntity: PaymentServiceCurrencyEntity, byTargetSum: boolean): number {
+        const func = byTargetSum ? calculateSourceSum : calculateTargetSum;
+        return func(sum, {
+            percent: paymentServiceCurrencyEntity.feePercent,
+            fixed: paymentServiceCurrencyEntity.feeFixed
+        });
     }
 
     async updateRoute() {
@@ -133,5 +164,4 @@ export class ExchangeRouteComponent implements OnInit, OnChanges, OnDestroy {
         this.destroy$.next();
         this.destroy$.complete();
     }
-
 }

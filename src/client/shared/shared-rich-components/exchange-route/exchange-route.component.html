@@ -9,35 +9,40 @@
                 [suffix]="fromPaymentServiceCurrency.currency.suffix"></app-input>
     </app-input-wrapper>
 
-    <app-value-wrapper [title]="'Комиссия платежной системы'">
+    <ng-container *ngIf="form.get('fromFee').value">
+        <app-value-wrapper [title]="'Комиссия платежной системы'">
+            {{form.get('fromFee').value}}
+        </app-value-wrapper>
 
-    </app-value-wrapper>
-
-    <app-input-wrapper [title]="'Мы получаем'">
-        <app-input [type]="'number'"
-                   [formControlName]="'from'"
-                   [min]="exchangeRoute.fromMinAmount"
-                   [max]="exchangeRoute.fromMaxAmount"
-                   [prefix]="fromPaymentServiceCurrency.currency.prefix"
-                   [suffix]="fromPaymentServiceCurrency.currency.suffix"></app-input>
-    </app-input-wrapper>
+        <app-input-wrapper [title]="'Мы получаем'">
+            <app-input [type]="'number'"
+                       [formControlName]="'from'"
+                       [min]="exchangeRoute.fromMinAmount"
+                       [max]="exchangeRoute.fromMaxAmount"
+                       [prefix]="fromPaymentServiceCurrency.currency.prefix"
+                       [suffix]="fromPaymentServiceCurrency.currency.suffix"></app-input>
+        </app-input-wrapper>
+    </ng-container>
 
     <app-value-wrapper [title]="'Меняем по курсу'">
         {{exchangeRoute.fromAmount}}:{{exchangeRoute.toAmount}}
     </app-value-wrapper>
 
-    <app-input-wrapper [title]="'Мы отправляем'">
-        <app-input [type]="'number'"
-                   [formControlName]="'to'"
-                   [min]="exchangeRoute.toMinAmount"
-                   [max]="exchangeRoute.toMaxAmount"
-                   [prefix]="toPaymentServiceCurrency.currency.prefix"
-                   [suffix]="toPaymentServiceCurrency.currency.suffix"></app-input>
-    </app-input-wrapper>
 
-    <app-value-wrapper [title]="'Комиссия платежной системы'">
+    <ng-container *ngIf="form.get('toFee').value">
+        <app-input-wrapper [title]="'Мы отправляем'">
+            <app-input [type]="'number'"
+                       [formControlName]="'to'"
+                       [min]="exchangeRoute.toMinAmount"
+                       [max]="exchangeRoute.toMaxAmount"
+                       [prefix]="toPaymentServiceCurrency.currency.prefix"
+                       [suffix]="toPaymentServiceCurrency.currency.suffix"></app-input>
+        </app-input-wrapper>
 
-    </app-value-wrapper>
+        <app-value-wrapper [title]="'Комиссия платежной системы'">
+            {{form.get('toFee').value}}
+        </app-value-wrapper>
+    </ng-container>
 
     <app-input-wrapper [title]="'Вы получате'">
         <app-input [type]="'number'"
