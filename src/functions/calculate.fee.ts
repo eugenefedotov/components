@@ -1,3 +1,5 @@
+import {BigNumber} from 'bignumber.js';
+
 /**
  * Расчет суммы комиссии
  * @param {number} sum сумма, относительно которой будет рассчитываться процент от комиссии
@@ -6,9 +8,9 @@
  * @returns {number}
  */
 export function calculateFee(sum: number, percent: number, byTargetSum = false): number {
-  if (byTargetSum) {
-    return sum / (100 + percent) * percent;
-  } else {
-    return sum * percent / 100;
-  }
+    if (byTargetSum) {
+        return new BigNumber(sum).div(100 + percent).times(percent).toNumber();
+    } else {
+        return new BigNumber(sum).times(percent).div(100).toNumber();
+    }
 }
