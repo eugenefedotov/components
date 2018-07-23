@@ -141,13 +141,13 @@ export class ExchangeRouteComponent implements OnInit, OnChanges, OnDestroy {
         });
     }
 
-    async updateRoute() {
+    updateRoute() {
         this.exchangeRoute = null;
         if (!this.fromPaymentServiceCurrency || !this.toPaymentServiceCurrency) {
             return;
         }
 
-        this.exchangeRoute = (await this.exchangeRouteRestService.getData({
+        this.exchangeRouteRestService.getData({
             filter: [
                 {
                     field: 'fromPaymentServiceCurrency',
@@ -162,7 +162,8 @@ export class ExchangeRouteComponent implements OnInit, OnChanges, OnDestroy {
             ],
             offset: 0,
             limit: 1
-        })).items[0];
+        })
+            .subscribe(value => this.exchangeRoute = value.items[0]);
     }
 
     ngOnDestroy(): void {

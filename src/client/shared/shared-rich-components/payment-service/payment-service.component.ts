@@ -34,7 +34,7 @@ export class PaymentServiceComponent implements OnInit, OnChanges {
             return;
         }
 
-        this.item = (await this.paymentServiceRestService.getData({
+        this.paymentServiceRestService.getData({
             filter: [
                 {
                     field: 'id',
@@ -44,6 +44,6 @@ export class PaymentServiceComponent implements OnInit, OnChanges {
             ],
             offset: 0,
             limit: 1
-        })).items[0];
+        }).subscribe(value => this.item = value.items[0]);
     }
 }

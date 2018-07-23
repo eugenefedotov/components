@@ -26,7 +26,7 @@ export class PaymentServiceCurrencyComponent implements OnInit, OnChanges {
     ngOnInit() {
     }
 
-    async updateItem() {
+    updateItem() {
         if (!this.id) {
             return;
         }
@@ -35,7 +35,7 @@ export class PaymentServiceCurrencyComponent implements OnInit, OnChanges {
             return;
         }
 
-        this.item = (await this.paymentServiceCurrencyRestService.getData({
+       this.paymentServiceCurrencyRestService.getData({
             filter: [
                 {
                     field: 'id',
@@ -45,6 +45,6 @@ export class PaymentServiceCurrencyComponent implements OnInit, OnChanges {
             ],
             offset: 0,
             limit: 1
-        })).items[0];
+        }).subscribe(value => this.item = value.items[0]);
     }
 }

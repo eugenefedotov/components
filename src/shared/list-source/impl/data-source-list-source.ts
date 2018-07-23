@@ -3,6 +3,7 @@ import {ListSourceResponseModel} from '../models/list-source-response.model';
 import {DataSource} from '../../data-source/data-source';
 import {DataSourceRequestFilterItemModel} from '../../data-source/models/data-source-request-filter-item.model';
 import {ListSourceRequestModel} from '../models/list-source-request.model';
+import {Observable} from 'rxjs';
 
 export class DataSourceListSource<T> implements ListSource<T> {
 
@@ -12,7 +13,7 @@ export class DataSourceListSource<T> implements ListSource<T> {
 
     }
 
-    getData(request: ListSourceRequestModel): Promise<ListSourceResponseModel<T>> {
+    getData(request: ListSourceRequestModel): Observable<ListSourceResponseModel<T>> {
         return this.restDataSource.getData({
             filter: this.filter,
             offset: request.offset,

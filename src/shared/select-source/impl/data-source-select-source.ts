@@ -5,6 +5,8 @@ import {SelectSourceResponseModel} from '../models/select-source-response.model'
 import {DataSource} from '../../data-source/data-source';
 import {DataSourceRequestModel} from '../../data-source/models/data-source-request.model';
 import {DataSourceRequestFilterTypeEnum} from '../../data-source/models/data-source-request-filter-type.enum';
+import {Observable} from 'rxjs';
+import {map} from 'rxjs/operators';
 
 export class DataSourceSelectSource<T extends object> implements SelectSource<T> {
 
@@ -14,7 +16,7 @@ export class DataSourceSelectSource<T extends object> implements SelectSource<T>
 
     }
 
-    async getByValue(value: SelectItemModel['value']): Promise<SelectItemModel<T>> {
+    getByValue(value: SelectItemModel['value']): Observable<SelectItemModel<T>> {
 
         const dataSourceRequestModel: DataSourceRequestModel<T> = {
             offset: 0,
@@ -29,12 +31,13 @@ export class DataSourceSelectSource<T extends object> implements SelectSource<T>
             ]
         };
 
-        const result = await this.dataSource.getData(dataSourceRequestModel);
-
-        return result.items.length ? this.mapItem(result.items[0]) : void 0;
+        return this.dataSource.getData(dataSourceRequestModel)
+            .pipe(
+                map(result => result.items.length ? this.mapItem(result.items[0]) : void 0)
+            );
     }
 
-    async getData(request: SelectSourceRequestModel): Promise<SelectSourceResponseModel<T>> {
+    getData(request: SelectSourceRequestModel): Observable<SelectSourceResponseModel<T>> {
         const restDataRequest: DataSourceRequestModel<T> = {
             offset: request.offset,
             limit: request.limit,
@@ -50,12 +53,15 @@ export class DataSourceSelectSource<T extends object> implements SelectSource<T>
             });
         }
 
-        const result = await this.dataSource.getData(restDataRequest);
-
-        return {
-            count: result.count,
-            items: result.items.map(item => this.mapItem(item))
-        };
+        return this.dataSource.getData(restDataRequest)
+            .pipe(
+                map(result => {
+                    return {
+                        count: result.count,
+                        items: result.items.map(item => this.mapItem(item))
+                    };
+                })
+            );
     }
 
     private mapItem(item: T): SelectItemModel<T> {

@@ -1,5 +1,7 @@
 import {ListSource} from '../list-source';
 import {ListSourceResponseModel} from '../models/list-source-response.model';
+import {Observable, of} from 'rxjs';
+import {ListSourceRequestModel} from '../models/list-source-request.model';
 
 export class LocalListSource<T> implements ListSource<T> {
 
@@ -7,11 +9,10 @@ export class LocalListSource<T> implements ListSource<T> {
 
     }
 
-
-    async getData(offset: number, limit: number): Promise<ListSourceResponseModel<T>> {
-        return {
+    getData(request: ListSourceRequestModel): Observable<ListSourceResponseModel<T>> {
+        return of({
             count: this.items.length,
-            items: this.items.slice(offset, offset + limit)
-        };
+            items: this.items.slice(request.offset, request.offset + request.limit)
+        });
     }
 }

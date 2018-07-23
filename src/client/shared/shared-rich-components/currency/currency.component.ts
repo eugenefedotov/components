@@ -36,7 +36,7 @@ export class CurrencyComponent implements OnInit, OnChanges {
             return;
         }
 
-        this.item = (await this.currencyRestService.getData({
+        this.currencyRestService.getData({
             filter: [
                 {
                     field: 'id',
@@ -46,6 +46,7 @@ export class CurrencyComponent implements OnInit, OnChanges {
             ],
             offset: 0,
             limit: 1
-        })).items[0];
+        })
+            .subscribe(value => this.item = value.items[0]);
     }
 }

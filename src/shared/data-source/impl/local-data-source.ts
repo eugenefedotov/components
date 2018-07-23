@@ -5,13 +5,14 @@ import {DataSource} from '../data-source';
 import {DataSourceRequestFilterTypeEnum} from '../models/data-source-request-filter-type.enum';
 import {DataSourceRequestSortOrderEnum} from '../models/data-source-request-sort-order.enum';
 import {DataSourceRequestFilterItemModel} from '../models/data-source-request-filter-item.model';
+import {Observable, of} from 'rxjs';
 
 export class LocalDataSource<T> implements DataSource<T> {
     constructor(private items: T[]) {
 
     }
 
-    async getData(request: DataSourceRequestModel<T>): Promise<DataSourceResponseModel<T>> {
+    getData(request: DataSourceRequestModel<T>): Observable<DataSourceResponseModel<T>> {
         const response: DataSourceResponseModel<T> = {items: null, count: null};
         let items = this.items;
 
@@ -37,7 +38,7 @@ export class LocalDataSource<T> implements DataSource<T> {
 
         response.items = items;
 
-        return response;
+        return of(response);
     }
 
     private filterItems(items: T[], filters: DataSourceRequestFilterItemModel<T>[]): T[] {

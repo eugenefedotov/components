@@ -11,7 +11,8 @@ import {
     OnDestroy,
     OnInit,
     Output,
-    QueryList, Renderer2,
+    QueryList,
+    Renderer2,
     SimpleChanges,
     TemplateRef,
     ViewChild,
@@ -208,15 +209,19 @@ export class VirtualListComponent<T = any> implements OnInit, OnChanges, OnInit,
         }
 
         this.loading = true;
-        const result = await this.cachedSource.getData({offset, limit});
-        this.loading = false;
-        this.offsetIndex = offset;
-        this.sourceSize = result.count;
-        this.viewportItems = result.items;
+        this.cachedSource.getData({offset, limit})
+            .pipe(
+                takeUntil(this.destroy$)
+            )
+            .subscribe(result => {
+                this.loading = false;
+                this.offsetIndex = offset;
+                this.sourceSize = result.count;
+                this.viewportItems = result.items;
 
-        this.updateVirtualHeights();
-
-        this.detectChanges$.next();
+                this.updateVirtualHeights();
+                this.detectChanges$.next();
+            });
     }
 
     updateVirtualHeights() {

@@ -3,6 +3,7 @@ import {DataSourceResponseModel} from '../models/data-source-response.model';
 import {DataSourceRequestModel} from '../models/data-source-request.model';
 import {HttpClient, HttpParams} from '@angular/common/http';
 import {environment} from '../../../environments/environment';
+import {Observable} from 'rxjs';
 
 export class RestClientDataSource<T> implements DataSource<T> {
 
@@ -10,12 +11,12 @@ export class RestClientDataSource<T> implements DataSource<T> {
                 private controllerUrl: string) {
     }
 
-    getData(request: DataSourceRequestModel<T>): Promise<DataSourceResponseModel<T>> {
+    getData(request: DataSourceRequestModel<T>): Observable<DataSourceResponseModel<T>> {
         return this.http.post<DataSourceResponseModel<T>>(`${this.controllerUrl}/get-data`,
             request,
             {
                 params: this.getFakeParams(request)
-            }).toPromise();
+            });
     }
 
     private getFakeParams(request: DataSourceRequestModel<T>): HttpParams {

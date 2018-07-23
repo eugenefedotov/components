@@ -91,7 +91,8 @@ export class SelectComponent implements OnInit, OnChanges, OnDestroy, ControlVal
             return;
         }
 
-        this.selectedItem = await this.source.getByValue(this.value);
+        this.source.getByValue(this.value)
+            .subscribe(result => this.selectedItem = result);
     }
 
     ngOnDestroy(): void {
