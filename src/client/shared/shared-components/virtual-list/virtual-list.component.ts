@@ -1,8 +1,7 @@
 import {
     AfterContentChecked,
-    AfterViewChecked,
-    ChangeDetectionStrategy,
-    ChangeDetectorRef,
+    AfterViewInit,
+    ChangeDetectionStrategy, ChangeDetectorRef,
     Component,
     ElementRef,
     EventEmitter,
@@ -11,8 +10,7 @@ import {
     OnDestroy,
     OnInit,
     Output,
-    QueryList,
-    Renderer2,
+    QueryList, Renderer2,
     SimpleChanges,
     TemplateRef,
     ViewChild,
@@ -24,7 +22,7 @@ import {Comparator} from '../../../../shared/comparator/comparator';
 import {CachedListSource} from '../../../../shared/list-source/impl/cached-list-source';
 import {hasAnyChanges} from '../../../../functions/has-any-changes';
 import {Subject} from 'rxjs';
-import {takeUntil, throttleTime} from 'rxjs/operators';
+import {debounceTime, takeUntil, throttleTime} from 'rxjs/operators';
 
 @Component({
     selector: 'app-virtual-list',
@@ -32,7 +30,7 @@ import {takeUntil, throttleTime} from 'rxjs/operators';
     styleUrls: ['./virtual-list.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class VirtualListComponent<T = any> implements OnInit, OnChanges, OnInit, AfterViewChecked, AfterContentChecked, OnDestroy {
+export class VirtualListComponent<T = any> implements OnInit, OnChanges, OnInit, AfterViewInit, AfterContentChecked, OnDestroy {
 
     @Input() selectable = true;
     @Input() deselectable = false;
@@ -55,7 +53,8 @@ export class VirtualListComponent<T = any> implements OnInit, OnChanges, OnInit,
     viewportItems: T[] = [];
 
     needUpdate$ = new Subject();
-    detectChanges$ = new Subject();
+    update$ = new Subject();
+
     destroy$ = new Subject();
 
     loading = false;
@@ -85,13 +84,21 @@ export class VirtualListComponent<T = any> implements OnInit, OnChanges, OnInit,
                 throttleTime(10),
                 takeUntil(this.destroy$)
             )
-            .subscribe(() => this.updateAll());
+            .subscribe(() => this.update$.next());
 
-        this.detectChanges$
+        this.update$
             .pipe(
                 takeUntil(this.destroy$)
             )
-            .subscribe(() => this.cdr.detectChanges());
+            .subscribe(() => this.updateAll());
+    }
+
+    ngAfterViewInit(): void {
+        this.viewItemElements.changes
+            .pipe(
+                takeUntil(this.destroy$)
+            )
+            .subscribe(() => this.onItemsChange());
     }
 
     onItemClick(item: T) {
@@ -154,19 +161,11 @@ export class VirtualListComponent<T = any> implements OnInit, OnChanges, OnInit,
     getViewportRange(): { offset: number, limit: number } {
         return {
             offset: this.getViewportOffsetIndex(),
-            limit: this.getViewportLimitIndex() + 1
+            limit: this.getViewportLimitIndex()
         };
     }
 
-    ngAfterViewChecked() {
-        this.saveViewItemsHeight();
-        this.updateVirtualHeights();
-
-        this.needUpdate$.next();
-    }
-
     ngAfterContentChecked(): void {
-        this.saveViewItemsHeight();
         this.updateVirtualHeights();
 
         this.needUpdate$.next();
@@ -178,6 +177,11 @@ export class VirtualListComponent<T = any> implements OnInit, OnChanges, OnInit,
     }
 
     onScrollSizeChange($event: number) {
+        this.needUpdate$.next();
+    }
+
+    onItemsChange() {
+        this.saveViewItemsHeight();
         this.needUpdate$.next();
     }
 
@@ -201,7 +205,8 @@ export class VirtualListComponent<T = any> implements OnInit, OnChanges, OnInit,
         this.needUpdate$.next();
     }
 
-    async updateAll() {
+    updateAll() {
+        this.cdr.detectChanges();
         const {offset, limit} = this.getViewportRange();
 
         if (this.offsetIndex === offset && this.viewportItems.length === limit) {
@@ -211,6 +216,7 @@ export class VirtualListComponent<T = any> implements OnInit, OnChanges, OnInit,
         this.loading = true;
         this.cachedSource.getData({offset, limit})
             .pipe(
+                takeUntil(this.update$),
                 takeUntil(this.destroy$)
             )
             .subscribe(result => {
@@ -220,18 +226,19 @@ export class VirtualListComponent<T = any> implements OnInit, OnChanges, OnInit,
                 this.viewportItems = result.items;
 
                 this.updateVirtualHeights();
-                this.detectChanges$.next();
+            }, null, () => {
+                this.loading = false;
             });
     }
 
     updateVirtualHeights() {
+        this.cdr.detectChanges();
+
         const topVirtualHeightPx = this.getRangeHeight(0, this.offsetIndex - 1);
-        const bottomVirtualHeightPx = this.getRangeHeight(this.offsetIndex + this.viewportItems.length + 2, this.sourceSize);
+        const bottomVirtualHeightPx = this.getRangeHeight(this.offsetIndex + this.viewportItems.length + 1, this.sourceSize);
 
         this.renderer.setStyle(this.topVirtual.nativeElement, 'height', topVirtualHeightPx + 'px');
         this.renderer.setStyle(this.bottomVirtual.nativeElement, 'height', bottomVirtualHeightPx + 'px');
-
-        this.detectChanges$.next();
     }
 
     ngOnDestroy() {
