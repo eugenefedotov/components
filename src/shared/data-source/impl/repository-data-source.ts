@@ -6,6 +6,9 @@ import {DataSourceRequestFilterTypeEnum} from '../models/data-source-request-fil
 import {DataSourceRequestSortModel} from '../models/data-source-request-sort.model';
 import {DataSourceRequestSortOrderEnum} from '../models/data-source-request-sort-order.enum';
 import {DataSourceRequestFilterItemModel} from '../models/data-source-request-filter-item.model';
+import {Observable, of} from 'rxjs';
+import {fromPromise} from 'rxjs/internal-compatibility';
+import {map, switchMap} from 'rxjs/operators';
 
 export class RepositoryDataSource<T> implements DataSource<T> {
     private alias = 'entity';
@@ -21,7 +24,7 @@ export class RepositoryDataSource<T> implements DataSource<T> {
         return this.repository.metadata.primaryColumns.map(md => this.getPropertyName(md.propertyName));
     }
 
-    async getData(request: DataSourceRequestModel<T>): Promise<DataSourceResponseModel<T>> {
+    getData(request: DataSourceRequestModel<T>): Observable<DataSourceResponseModel<T>> {
         const qb = this.repository.createQueryBuilder(this.alias);
 
         if (this.middleware) {
@@ -37,6 +40,7 @@ export class RepositoryDataSource<T> implements DataSource<T> {
         }
 
         if (request.offset || request.limit) {
+            console.log(request);
             this.addOffsetAndLimit(qb, request.offset, request.limit);
         }
 
@@ -50,16 +54,13 @@ export class RepositoryDataSource<T> implements DataSource<T> {
             });
         }
 
-        let [items, count] = await qb.getManyAndCount();
-
-        if (items.length) {
-            items = await this.repository.find({
-                where: items,
-                select: request.fields
-            });
-        }
-
-        return <DataSourceResponseModel<T>>{count, items};
+        return fromPromise(qb.getManyAndCount())
+            .pipe(
+                switchMap(result => this.loadItemsWithRelations(request, {
+                    items: result[0],
+                    count: result[1]
+                }))
+            );
     }
 
     private addFilter(qb: SelectQueryBuilder<T>, filters: DataSourceRequestFilterItemModel<T>[]) {
@@ -123,11 +124,11 @@ export class RepositoryDataSource<T> implements DataSource<T> {
 
     private addOffsetAndLimit(qb: SelectQueryBuilder<T>, offset: number | undefined, limit: number | undefined) {
         if (offset) {
-            qb.offset(offset);
+            qb.skip(offset);
         }
 
         if (limit) {
-            qb.limit(limit);
+            qb.take(limit);
         }
     }
 
@@ -150,5 +151,22 @@ export class RepositoryDataSource<T> implements DataSource<T> {
         }
 
         return field;
+    }
+
+    private loadItemsWithRelations(request: DataSourceRequestModel<T>, result: DataSourceResponseModel<T>): Observable<DataSourceResponseModel<T>> {
+        if (result.items.length) {
+            return fromPromise(this.repository.find({
+                where: result.items,
+                select: request.fields
+            }))
+                .pipe(
+                    map((items) => ({
+                        items,
+                        count: result.count
+                    }))
+                );
+        }
+
+        return of(result);
     }
 }

@@ -1,7 +1,8 @@
 import {
     AfterContentChecked,
     AfterViewInit,
-    ChangeDetectionStrategy, ChangeDetectorRef,
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
     Component,
     ElementRef,
     EventEmitter,
@@ -10,7 +11,7 @@ import {
     OnDestroy,
     OnInit,
     Output,
-    QueryList, Renderer2,
+    QueryList,
     SimpleChanges,
     TemplateRef,
     ViewChild,
@@ -63,12 +64,11 @@ export class VirtualListComponent<T = any> implements OnInit, OnChanges, OnInit,
     @ViewChildren('viewItem') viewItemElements: QueryList<ElementRef<HTMLElement>>;
     @ViewChild('viewport') viewElement: ElementRef<HTMLElement>;
 
-    @ViewChild('topVirtual') topVirtual: ElementRef<HTMLElement>;
-    @ViewChild('bottomVirtual') bottomVirtual: ElementRef<HTMLElement>;
+    topVirtualHeightPx: number;
+    bottomVirtualHeightPx: number;
 
     constructor(private hostElement: ElementRef<HTMLElement>,
-                private cdr: ChangeDetectorRef,
-                private renderer: Renderer2
+                private cdr: ChangeDetectorRef
     ) {
     }
 
@@ -159,10 +159,14 @@ export class VirtualListComponent<T = any> implements OnInit, OnChanges, OnInit,
     }
 
     getViewportRange(): { offset: number, limit: number } {
-        return {
-            offset: this.getViewportOffsetIndex(),
-            limit: this.getViewportLimitIndex()
-        };
+        const offset = this.getViewportOffsetIndex();
+        let limit = this.getViewportLimitIndex();
+
+        if (this.sourceSize) {
+            limit = Math.min(limit, this.sourceSize - offset);
+        }
+
+        return {offset, limit};
     }
 
     ngAfterContentChecked(): void {
@@ -225,6 +229,8 @@ export class VirtualListComponent<T = any> implements OnInit, OnChanges, OnInit,
                 this.sourceSize = result.count;
                 this.viewportItems = result.items;
 
+                this.cdr.detectChanges(); // нужно отрендерить элементы для корректного расчета высот элементов и расчета высот заполнения
+
                 this.updateVirtualHeights();
             }, null, () => {
                 this.loading = false;
@@ -232,13 +238,10 @@ export class VirtualListComponent<T = any> implements OnInit, OnChanges, OnInit,
     }
 
     updateVirtualHeights() {
-        this.cdr.detectChanges();
+        this.topVirtualHeightPx = this.getRangeHeight(0, this.offsetIndex - 1);
+        this.bottomVirtualHeightPx = this.getRangeHeight(this.offsetIndex + this.viewportItems.length + 1, this.sourceSize);
 
-        const topVirtualHeightPx = this.getRangeHeight(0, this.offsetIndex - 1);
-        const bottomVirtualHeightPx = this.getRangeHeight(this.offsetIndex + this.viewportItems.length + 1, this.sourceSize);
-
-        this.renderer.setStyle(this.topVirtual.nativeElement, 'height', topVirtualHeightPx + 'px');
-        this.renderer.setStyle(this.bottomVirtual.nativeElement, 'height', bottomVirtualHeightPx + 'px');
+        this.cdr.detectChanges(); // рендерим заполнения и сообщаем скроллбоксу об изменениях высот заполнения элементов
     }
 
     ngOnDestroy() {
