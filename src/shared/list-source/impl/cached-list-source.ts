@@ -38,6 +38,7 @@ export class CachedListSource<T> implements ListSource<T> {
             );
 
         this.activeRequests.set(correctedRequest, createdResponse$.pipe(shareReplay()));
+        createdResponse$.subscribe(null,  null, () => this.activeRequests.delete(correctedRequest));
 
         return createdResponse$.pipe(map(() => this.getFromCache(request)));
     }
@@ -53,6 +54,10 @@ export class CachedListSource<T> implements ListSource<T> {
     }
 
     private getActiveRequest(request: ListSourceRequestModel): Observable<ListSourceResponseModel<T>> {
+        if (!request || !request.limit) {
+            return null;
+        }
+
         for (const [ar, obs] of this.activeRequests.entries()) {
             if (ar.offset <= request.offset && ar.offset + ar.limit >= request.offset + request.limit) {
                 return obs;
@@ -63,6 +68,10 @@ export class CachedListSource<T> implements ListSource<T> {
     }
 
     private getFromCache(request: ListSourceRequestModel): ListSourceResponseModel<T> {
+        if (!request || !request.limit) {
+            return null;
+        }
+
         const result = [];
 
         for (let i = 0; i < request.limit; i++) {

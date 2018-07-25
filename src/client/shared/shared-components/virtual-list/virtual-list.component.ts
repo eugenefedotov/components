@@ -23,7 +23,8 @@ import {Comparator} from '../../../../shared/comparator/comparator';
 import {CachedListSource} from '../../../../shared/list-source/impl/cached-list-source';
 import {hasAnyChanges} from '../../../../functions/has-any-changes';
 import {Subject} from 'rxjs';
-import {debounceTime, takeUntil, throttleTime} from 'rxjs/operators';
+import {distinctUntilChanged, takeUntil, throttleTime} from 'rxjs/operators';
+import {ListSourceRequestModel} from '../../../../shared/list-source/models/list-source-request.model';
 
 @Component({
     selector: 'app-virtual-list',
@@ -45,6 +46,7 @@ export class VirtualListComponent<T = any> implements OnInit, OnChanges, OnInit,
     @Input() source: ListSource<T>;
     @Input() itemTemplate: TemplateRef<any>;
     @Input() expectItemHeight = 32;
+    @Input() minRequestSize = 500;
 
     realItemsHeight = new Map<number, number>();
     cachedSource: CachedListSource<T>;
@@ -54,7 +56,7 @@ export class VirtualListComponent<T = any> implements OnInit, OnChanges, OnInit,
     viewportItems: T[] = [];
 
     needUpdate$ = new Subject();
-    update$ = new Subject();
+    update$ = new Subject<ListSourceRequestModel>();
 
     destroy$ = new Subject();
 
@@ -84,13 +86,14 @@ export class VirtualListComponent<T = any> implements OnInit, OnChanges, OnInit,
                 throttleTime(10),
                 takeUntil(this.destroy$)
             )
-            .subscribe(() => this.update$.next());
+            .subscribe(() => this.update$.next(this.getViewportRange()));
 
         this.update$
             .pipe(
+                distinctUntilChanged((x, y) => x && y && x.offset === y.offset && x.limit === y.limit),
                 takeUntil(this.destroy$)
             )
-            .subscribe(() => this.updateAll());
+            .subscribe(request => this.updateAll(request));
     }
 
     ngAfterViewInit(): void {
@@ -204,34 +207,38 @@ export class VirtualListComponent<T = any> implements OnInit, OnChanges, OnInit,
         this.realItemsHeight.clear();
         this.scrollPosPx = 0;
 
-        this.cachedSource = new CachedListSource(this.source, 500);
+        this.cachedSource = new CachedListSource(this.source, this.minRequestSize);
 
+        this.update$.next(null);
         this.needUpdate$.next();
     }
 
-    updateAll() {
-        const {offset, limit} = this.getViewportRange();
-
-        if (this.offsetIndex === offset && this.viewportItems.length === limit) {
+    updateAll(request: ListSourceRequestModel) {
+        if (!request) {
             return;
         }
 
+        console.log({request});
         this.loading = true;
-        this.cachedSource.getData({offset, limit})
+
+        this.cachedSource.getData(request)
             .pipe(
                 takeUntil(this.update$),
                 takeUntil(this.destroy$)
             )
             .subscribe(result => {
-                this.loading = false;
-                this.offsetIndex = offset;
+                console.log({request, result});
+                this.offsetIndex = request.offset;
                 this.sourceSize = result.count;
                 this.viewportItems = result.items;
 
                 this.cdr.detectChanges(); // нужно отрендерить элементы для корректного расчета высот элементов и расчета высот заполнения
 
+                this.loading = false;
                 this.updateVirtualHeights();
+
             }, null, () => {
+                console.log({request, complete: true});
                 this.loading = false;
             });
     }
