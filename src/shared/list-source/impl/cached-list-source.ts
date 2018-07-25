@@ -2,12 +2,13 @@ import {ListSource} from '../list-source';
 import {ListSourceResponseModel} from '../models/list-source-response.model';
 import {ListSourceRequestModel} from '../models/list-source-request.model';
 import {Observable, of} from 'rxjs';
-import {map, tap} from 'rxjs/operators';
+import {map, shareReplay, tap} from 'rxjs/operators';
 
 export class CachedListSource<T> implements ListSource<T> {
 
     private count: number;
     private cache = new Map<number, T>();
+    private activeRequests = new Map<ListSourceRequestModel, Observable<ListSourceResponseModel<T>>>();
 
     constructor(private listSource: ListSource<T>, private minRequestSize: number) {
         if (!this.listSource) {
@@ -21,13 +22,24 @@ export class CachedListSource<T> implements ListSource<T> {
             return of(fromCache);
         }
 
+        const activeRequest$ = this.getActiveRequest(request);
+        if (activeRequest$) {
+            return activeRequest$
+                .pipe(
+                    map(() => this.getFromCache(request))
+                );
+        }
+
         const correctedRequest = this.correctRequest(request);
 
-        return this.listSource.getData(correctedRequest)
+        const createdResponse$ = this.listSource.getData(correctedRequest)
             .pipe(
-                tap(response => this.toCache(correctedRequest, response)),
-                map(() => this.getFromCache(request))
+                tap(response => this.toCache(correctedRequest, response))
             );
+
+        this.activeRequests.set(correctedRequest, createdResponse$.pipe(shareReplay()));
+
+        return createdResponse$.pipe(map(() => this.getFromCache(request)));
     }
 
     private toCache(request: ListSourceRequestModel, response: ListSourceResponseModel<T>) {
@@ -38,6 +50,16 @@ export class CachedListSource<T> implements ListSource<T> {
                 this.cache.set(index, response.items[i]);
             }
         }
+    }
+
+    private getActiveRequest(request: ListSourceRequestModel): Observable<ListSourceResponseModel<T>> {
+        for (const [ar, obs] of this.activeRequests.entries()) {
+            if (ar.offset <= request.offset && ar.offset + ar.limit >= request.offset + request.limit) {
+                return obs;
+            }
+        }
+
+        return null;
     }
 
     private getFromCache(request: ListSourceRequestModel): ListSourceResponseModel<T> {

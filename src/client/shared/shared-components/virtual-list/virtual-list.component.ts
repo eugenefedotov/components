@@ -210,7 +210,6 @@ export class VirtualListComponent<T = any> implements OnInit, OnChanges, OnInit,
     }
 
     updateAll() {
-        this.cdr.detectChanges();
         const {offset, limit} = this.getViewportRange();
 
         if (this.offsetIndex === offset && this.viewportItems.length === limit) {
