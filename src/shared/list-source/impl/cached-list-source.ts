@@ -1,8 +1,8 @@
 import {ListSource} from '../list-source';
 import {ListSourceResponseModel} from '../models/list-source-response.model';
 import {ListSourceRequestModel} from '../models/list-source-request.model';
-import {Observable, of, Subject} from 'rxjs';
-import {map} from 'rxjs/operators';
+import {BehaviorSubject, Observable, of} from 'rxjs';
+import {debounceTime, filter, map, shareReplay, switchMap, tap} from 'rxjs/operators';
 
 
 export class CachedListSource<T> implements ListSource<T> {
@@ -12,9 +12,9 @@ export class CachedListSource<T> implements ListSource<T> {
 
     private activeRequests = new Map<ListSourceRequestModel, Observable<ListSourceResponseModel<T>>>();
 
-    private delayResponse: Subject<ListSourceResponseModel<T>>;
-    private delayRequest: ListSourceRequestModel;
-    private delayTimeout: any;
+    private delayedRequest$: BehaviorSubject<ListSourceRequestModel>;
+    private delayedResponse$: Observable<ListSourceResponseModel<T>>;
+
 
     constructor(private listSource: ListSource<T>, private minRequestSize: number) {
         if (!this.listSource) {
@@ -85,10 +85,50 @@ export class CachedListSource<T> implements ListSource<T> {
             return activeRequest;
         }
 
-        if (!this.delayTimeout) {
+        return this.getDelayedRequest(this.correctRequest(request));
+    }
 
+    private getDelayedRequest(request: ListSourceRequestModel): Observable<ListSourceResponseModel<T>> {
+        this.initDelayedRequest(request);
+
+        if (!this.isEntry(this.delayedRequest$.value, request)) {
+            this.delayedRequest$.next(this.mergeRequest(this.delayedRequest$.value, request));
         }
 
+        return this.delayedResponse$;
+    }
+
+    private initDelayedRequest(request: ListSourceRequestModel) {
+        if (this.delayedRequest$) {
+            return;
+        }
+
+
+        console.log('initDelayedRequest', request);
+
+        this.delayedRequest$ = new BehaviorSubject<ListSourceRequestModel>(request);
+        this.delayedResponse$ = this.delayedRequest$
+            .pipe(
+                filter(Boolean),
+                tap(req => console.log('before debounce', req)),
+                debounceTime(100),
+                tap(req => console.log('after debounce', req)),
+                tap((req) => {
+                    this.activeRequests.set(req, this.delayedResponse$);
+                    this.delayedRequest$ = null;
+                    this.delayedResponse$ = null;
+                }),
+                switchMap(req => this.listSource.getData(req)
+                    .pipe(
+                        tap((response) => {
+                            this.toCache(req, response);
+                            this.activeRequests.delete(req);
+                        })
+                    )),
+                tap(data => console.log('after getData', data)),
+                shareReplay(1),
+                tap(data => console.log('after shareReplay', data))
+            );
     }
 
     private isEntry(request: ListSourceRequestModel, entry: ListSourceRequestModel): boolean {
