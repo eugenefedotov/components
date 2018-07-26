@@ -1,14 +1,20 @@
 import {ListSource} from '../list-source';
 import {ListSourceResponseModel} from '../models/list-source-response.model';
 import {ListSourceRequestModel} from '../models/list-source-request.model';
-import {Observable, of} from 'rxjs';
-import {map, shareReplay, tap} from 'rxjs/operators';
+import {Observable, of, Subject} from 'rxjs';
+import {map} from 'rxjs/operators';
+
 
 export class CachedListSource<T> implements ListSource<T> {
 
     private count: number;
     private cache = new Map<number, T>();
+
     private activeRequests = new Map<ListSourceRequestModel, Observable<ListSourceResponseModel<T>>>();
+
+    private delayResponse: Subject<ListSourceResponseModel<T>>;
+    private delayRequest: ListSourceRequestModel;
+    private delayTimeout: any;
 
     constructor(private listSource: ListSource<T>, private minRequestSize: number) {
         if (!this.listSource) {
@@ -22,25 +28,10 @@ export class CachedListSource<T> implements ListSource<T> {
             return of(fromCache);
         }
 
-        const activeRequest$ = this.getActiveRequest(request);
-        if (activeRequest$) {
-            return activeRequest$
-                .pipe(
-                    map(() => this.getFromCache(request))
-                );
-        }
-
-        const correctedRequest = this.correctRequest(request);
-
-        const createdResponse$ = this.listSource.getData(correctedRequest)
+        return this.request(request)
             .pipe(
-                tap(response => this.toCache(correctedRequest, response))
+                map(() => this.getFromCache(request))
             );
-
-        this.activeRequests.set(correctedRequest, createdResponse$.pipe(shareReplay()));
-        createdResponse$.subscribe(null,  null, () => this.activeRequests.delete(correctedRequest));
-
-        return createdResponse$.pipe(map(() => this.getFromCache(request)));
     }
 
     private toCache(request: ListSourceRequestModel, response: ListSourceResponseModel<T>) {
@@ -59,7 +50,7 @@ export class CachedListSource<T> implements ListSource<T> {
         }
 
         for (const [ar, obs] of this.activeRequests.entries()) {
-            if (ar.offset <= request.offset && ar.offset + ar.limit >= request.offset + request.limit) {
+            if (this.isEntry(ar, request)) {
                 return obs;
             }
         }
@@ -85,6 +76,32 @@ export class CachedListSource<T> implements ListSource<T> {
         return {
             count: this.count,
             items: result
+        };
+    }
+
+    private request(request: ListSourceRequestModel): Observable<ListSourceResponseModel<T>> {
+        const activeRequest = this.getActiveRequest(request);
+        if (activeRequest) {
+            return activeRequest;
+        }
+
+        if (!this.delayTimeout) {
+
+        }
+
+    }
+
+    private isEntry(request: ListSourceRequestModel, entry: ListSourceRequestModel): boolean {
+        return request.offset <= entry.offset && request.offset + request.limit >= entry.offset + entry.limit;
+    }
+
+    private mergeRequest(request1: ListSourceRequestModel, request2: ListSourceRequestModel): ListSourceRequestModel {
+        const start = Math.min(request1.offset, request2.offset);
+        const end = Math.max(request1.offset + request1.limit, request2.offset + request2.limit);
+
+        return {
+            offset: start,
+            limit: end - start
         };
     }
 
