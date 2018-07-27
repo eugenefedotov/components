@@ -7,13 +7,21 @@
     <app-select-item class="select__item" (click)="onItemClick($event, item)" [item]="item" [selected]="selected"></app-select-item>
 </ng-template>
 <ng-container *ngIf="drop">
-    <app-virtual-list
-            #selectDrop
-            class="select__drop"
-            *appPopUp="selectElement; contentAlign: PopUpAlign.FitByRelative; contentPosition: PopUpPosition.Bottom;"
-            [source]="source"
-            [selectedItem]="selectedItem"
-            [comparator]="comparator"
-            [itemTemplate]="itemTemplate"
-    ></app-virtual-list>
+    <div #selectDrop
+         class="select__drop"
+         *appPopUp="selectElement; contentAlign: PopUpAlign.FitByRelative; contentPosition: PopUpPosition.Bottom;">
+
+        <app-input
+                class="select__drop-filter"
+                [formControl]="filterControl"></app-input>
+
+        <app-virtual-list
+                class="select__drop-list"
+                [source]="filteredSource$ | async"
+                [selectedItem]="selectedItem"
+                [comparator]="comparator"
+                [itemTemplate]="itemTemplate"
+        ></app-virtual-list>
+    </div>
+
 </ng-container>

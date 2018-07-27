@@ -1,7 +1,8 @@
 import {
     Component,
+    ElementRef,
     EventEmitter,
-    forwardRef, HostBinding,
+    forwardRef,
     HostListener,
     Input,
     OnChanges,
@@ -11,14 +12,15 @@ import {
     SimpleChanges,
     ViewChild
 } from '@angular/core';
-import {ControlValueAccessor, NG_VALUE_ACCESSOR} from '@angular/forms';
+import {ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR} from '@angular/forms';
 import {SelectSource} from '../../../../shared/select-source/select-source';
 import {SelectItemModel} from '../../../../shared/select-source/models/select-item.model';
-import {Subject} from 'rxjs';
+import {BehaviorSubject, combineLatest, merge, of, Subject} from 'rxjs';
 import {hasAnyChanges} from '../../../../functions/has-any-changes';
 import {PopUpAlign, PopUpPosition} from '../../shared-directives/pop-up/pop-up.directive';
 import {KeyComparator} from '../../../../shared/comparator/impl/key-comparator';
-import {VirtualListComponent} from '../virtual-list/virtual-list.component';
+import {debounceTime, map, takeUntil} from 'rxjs/operators';
+import {PersistentFilterSelectSource} from '../../../../shared/select-source/impl/persistent-filter-select-source';
 
 const SELECT_VALUE_ACCESSOR = {
     provide: NG_VALUE_ACCESSOR,
@@ -43,6 +45,10 @@ export class SelectComponent implements OnInit, OnChanges, OnDestroy, ControlVal
     @Input() selectedItem: SelectItemModel;
     @Output() selectedItemChange = new EventEmitter<SelectItemModel>();
 
+    source$ = new BehaviorSubject<SelectSource>(null);
+    filterControl = new FormControl('');
+    filteredSource$ = new BehaviorSubject<SelectSource>(null);
+
     value: any;
 
     destroy$ = new Subject();
@@ -53,7 +59,7 @@ export class SelectComponent implements OnInit, OnChanges, OnDestroy, ControlVal
     drop = false;
     disabled = false;
 
-    @ViewChild(VirtualListComponent) selectDrop: VirtualListComponent;
+    @ViewChild('selectDrop') selectDrop: ElementRef<HTMLElement>;
 
     comparator = new KeyComparator('value');
 
@@ -62,11 +68,23 @@ export class SelectComponent implements OnInit, OnChanges, OnDestroy, ControlVal
 
     ngOnChanges(changes: SimpleChanges): void {
         if (hasAnyChanges(changes, ['source'])) {
-            this.updateItem();
+            this.source$.next(this.source);
         }
     }
 
     ngOnInit() {
+        combineLatest(
+            this.source$,
+            merge(of(this.filterControl.value), this.filterControl.valueChanges)
+                .pipe(
+                    debounceTime(500)
+                )
+        )
+            .pipe(
+                takeUntil(this.destroy$),
+                map(([source, filter]) => filter ? new PersistentFilterSelectSource(source, filter) : source)
+            )
+            .subscribe(filteredSource => this.filteredSource$.next(filteredSource));
     }
 
     registerOnChange(fn: any): void {
@@ -135,7 +153,7 @@ export class SelectComponent implements OnInit, OnChanges, OnDestroy, ControlVal
             return;
         }
 
-        if (!this.selectDrop.viewElement.nativeElement.contains($event.target as Node)) {
+        if (!this.selectDrop.nativeElement.contains($event.target as Node)) {
             this.closeDrop();
         }
     }

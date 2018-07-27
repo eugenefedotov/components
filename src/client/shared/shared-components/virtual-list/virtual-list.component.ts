@@ -60,7 +60,7 @@ export class VirtualListComponent<T = any> implements OnInit, OnChanges, OnInit,
 
     destroy$ = new Subject();
 
-    loading = false;
+    loading = true;
     scrollPosPx = 0;
 
     @ViewChildren('viewItem') viewItemElements: QueryList<ElementRef<HTMLElement>>;
@@ -206,6 +206,11 @@ export class VirtualListComponent<T = any> implements OnInit, OnChanges, OnInit,
         this.viewportItems = [];
         this.realItemsHeight.clear();
         this.scrollPosPx = 0;
+        this.cachedSource = null;
+
+        if (!this.source) {
+            return;
+        }
 
         this.cachedSource = new CachedListSource(this.source, this.minRequestSize);
 
@@ -214,7 +219,7 @@ export class VirtualListComponent<T = any> implements OnInit, OnChanges, OnInit,
     }
 
     updateAll(request: ListSourceRequestModel) {
-        if (!request) {
+        if (!request || !this.cachedSource) {
             return;
         }
 
