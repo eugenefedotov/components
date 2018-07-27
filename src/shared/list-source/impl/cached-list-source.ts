@@ -60,7 +60,7 @@ export class CachedListSource<T> implements ListSource<T> {
 
     private getFromCache(request: ListSourceRequestModel): ListSourceResponseModel<T> {
         if (!request || !request.limit) {
-            return null;
+            return {count: this.count, items: []};
         }
 
         const result = [];
@@ -110,9 +110,7 @@ export class CachedListSource<T> implements ListSource<T> {
         this.delayedResponse$ = this.delayedRequest$
             .pipe(
                 filter(Boolean),
-                tap(req => console.log('before debounce', req)),
                 debounceTime(100),
-                tap(req => console.log('after debounce', req)),
                 tap((req) => {
                     this.activeRequests.set(req, this.delayedResponse$);
                     this.delayedRequest$ = null;
@@ -125,9 +123,7 @@ export class CachedListSource<T> implements ListSource<T> {
                             this.activeRequests.delete(req);
                         })
                     )),
-                tap(data => console.log('after getData', data)),
-                shareReplay(1),
-                tap(data => console.log('after shareReplay', data))
+                shareReplay(1)
             );
     }
 

@@ -218,16 +218,13 @@ export class VirtualListComponent<T = any> implements OnInit, OnChanges, OnInit,
             return;
         }
 
-        console.log({request});
         this.loading = true;
 
         this.cachedSource.getData(request)
             .pipe(
-                takeUntil(this.update$),
                 takeUntil(this.destroy$)
             )
             .subscribe(result => {
-                console.log({request, result});
                 this.offsetIndex = request.offset;
                 this.sourceSize = result.count;
                 this.viewportItems = result.items;
@@ -238,7 +235,6 @@ export class VirtualListComponent<T = any> implements OnInit, OnChanges, OnInit,
                 this.updateVirtualHeights();
 
             }, null, () => {
-                console.log({request, complete: true});
                 this.loading = false;
             });
     }
