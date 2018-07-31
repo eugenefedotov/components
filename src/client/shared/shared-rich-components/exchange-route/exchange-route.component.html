@@ -5,6 +5,7 @@
                 [formControlName]="'fromClient'"
                 [min]="exchangeRoute.fromMinAmount"
                 [max]="exchangeRoute.fromMaxAmount"
+                [step]="fromPaymentServiceCurrency.step"
                 [prefix]="fromPaymentServiceCurrency.currency.prefix"
                 [suffix]="fromPaymentServiceCurrency.currency.suffix"></app-input>
     </app-input-wrapper>
@@ -19,6 +20,7 @@
                        [formControlName]="'from'"
                        [min]="exchangeRoute.fromMinAmount"
                        [max]="exchangeRoute.fromMaxAmount"
+                       [step]="fromPaymentServiceCurrency.step"
                        [prefix]="fromPaymentServiceCurrency.currency.prefix"
                        [suffix]="fromPaymentServiceCurrency.currency.suffix"></app-input>
         </app-input-wrapper>
@@ -34,6 +36,7 @@
                        [formControlName]="'to'"
                        [min]="exchangeRoute.toMinAmount"
                        [max]="exchangeRoute.toMaxAmount"
+                       [step]="toPaymentServiceCurrency.step"
                        [prefix]="toPaymentServiceCurrency.currency.prefix"
                        [suffix]="toPaymentServiceCurrency.currency.suffix"></app-input>
         </app-input-wrapper>
@@ -48,6 +51,7 @@
                    [formControlName]="'toClient'"
                    [min]="exchangeRoute.toMinAmount"
                    [max]="exchangeRoute.toMaxAmount"
+                   [step]="toPaymentServiceCurrency.step"
                    [prefix]="toPaymentServiceCurrency.currency.prefix"
                    [suffix]="toPaymentServiceCurrency.currency.suffix"></app-input>
     </app-input-wrapper>
