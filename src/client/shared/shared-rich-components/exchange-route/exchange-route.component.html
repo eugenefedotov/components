@@ -10,9 +10,9 @@
                 [suffix]="fromPaymentServiceCurrency.currency.suffix"></app-input>
     </app-input-wrapper>
 
-    <ng-container *ngIf="form.get('fromFee').value">
+    <ng-container *ngIf="fromPaymentServiceCurrency.hasFee()">
         <app-value-wrapper [title]="'Комиссия платежной системы'">
-            {{form.get('fromFee').value}}
+            {{form.get('fromFee').value || 0}}
         </app-value-wrapper>
 
         <app-input-wrapper [title]="'Мы получаем'">
@@ -30,7 +30,7 @@
         {{exchangeRoute.fromAmount}}:{{exchangeRoute.toAmount}}
     </app-value-wrapper>
 
-    <ng-container *ngIf="form.get('toFee').value">
+    <ng-container *ngIf="toPaymentServiceCurrency.hasFee()">
         <app-input-wrapper [title]="'Мы отправляем'">
             <app-input [type]="'number'"
                        [formControlName]="'to'"
@@ -42,7 +42,7 @@
         </app-input-wrapper>
 
         <app-value-wrapper [title]="'Комиссия платежной системы'">
-            {{form.get('toFee').value}}
+            {{form.get('toFee').value || 0}}
         </app-value-wrapper>
     </ng-container>
 

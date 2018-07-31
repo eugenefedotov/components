@@ -64,6 +64,10 @@ export class PaymentServiceCurrencyEntity {
     @JoinTable({name: `payment_service_currency__requisite_types`})
     requisiteTypes: PaymentServiceRequisiteTypeEntity[];
 
+    hasFee(): boolean {
+        return !!(this.feeFixed || this.feePercent);
+    }
+
     calculateFee(sum: number, byTarget: boolean): number {
         let fee = new BigNumber(0);
 
