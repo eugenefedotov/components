@@ -25,8 +25,8 @@ export class ExchangeRoutesComponent implements OnInit {
     ngOnInit() {
         this.route.queryParamMap.pipe(
             filter(params =>
-                params.has('from') && (!this.fromPaymentServiceCurrency || this.fromPaymentServiceCurrency.code !== params.get('from'))
-                || params.has('to') && (!this.toPaymentServiceCurrency || this.toPaymentServiceCurrency.code !== params.get('to'))
+                !this.fromPaymentServiceCurrency || this.fromPaymentServiceCurrency.code !== params.get('from')
+                || !this.toPaymentServiceCurrency || this.toPaymentServiceCurrency.code !== params.get('to')
             ),
             switchMap(params => this.getPaymentServiceCurrencyByParams(params))
         )
