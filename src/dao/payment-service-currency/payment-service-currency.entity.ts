@@ -2,15 +2,18 @@ import {Column, Entity, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn
 import {PaymentServiceEntity} from '../payment-service/payment-service.entity';
 import {CurrencyEntity} from '../currency/currency.entity';
 import {PaymentServiceRequisiteTypeEntity} from '../payment-service-requisite-type/payment-service-requisite-type.entity';
+import {Type} from 'serializer.ts/Decorators';
 
 @Entity('payment_service_currency')
 export class PaymentServiceCurrencyEntity {
     @PrimaryGeneratedColumn({unsigned: true})
     id: number;
 
+    @Type(type => PaymentServiceEntity)
     @ManyToOne(type => PaymentServiceEntity, {eager: true})
     paymentService: PaymentServiceEntity;
 
+    @Type(type => CurrencyEntity)
     @ManyToOne(type => CurrencyEntity, {eager: true})
     currency: CurrencyEntity;
 
@@ -47,6 +50,7 @@ export class PaymentServiceCurrencyEntity {
     })
     code: string;
 
+    @Type(type => PaymentServiceRequisiteTypeEntity)
     @ManyToMany(type => PaymentServiceRequisiteTypeEntity)
     @JoinTable({name: `payment_service_currency__requisite_types`})
     requisiteTypes: PaymentServiceRequisiteTypeEntity[];

@@ -1,7 +1,6 @@
 import {ConverterService, OverrideMiddleware, Response, ResponseData, SendResponseMiddleware} from '@tsed/common';
 import * as Express from 'express';
-import {jsonIgnoreReplacer} from 'json-ignore';
-
+import {serialize} from 'serializer.ts/Serializer';
 
 @OverrideMiddleware(SendResponseMiddleware)
 export class ResponseMiddleware extends SendResponseMiddleware {
@@ -23,8 +22,7 @@ export class ResponseMiddleware extends SendResponseMiddleware {
             response.send(String(data));
         } else {
             response.setHeader('Content-Type', 'text/json');
-            const obj = JSON.parse(JSON.stringify(data, jsonIgnoreReplacer));
-            response.json(this._converterService.serialize(obj));
+            response.json(serialize(data));
         }
     }
 }

@@ -8,6 +8,6 @@ import {RestClientDataSource} from '../../../../shared/classes/data-source/impl/
 })
 export class CurrencyRestService extends RestClientDataSource<CurrencyEntity> {
     constructor(http: HttpClient) {
-        super(http, 'api/currency');
+        super(http, 'api/currency', CurrencyEntity);
     }
 }

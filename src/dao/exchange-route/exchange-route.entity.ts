@@ -1,5 +1,6 @@
 import {Column, Entity, Index, ManyToOne, PrimaryGeneratedColumn} from 'typeorm';
 import {PaymentServiceCurrencyEntity} from '../payment-service-currency/payment-service-currency.entity';
+import {Type} from 'serializer.ts/Decorators';
 
 @Entity('exchange_route')
 @Index('route', ['fromPaymentServiceCurrency', 'toPaymentServiceCurrency'], {unique: true})
@@ -11,6 +12,7 @@ export class ExchangeRouteEntity {
     @Column({default: false})
     isEnabled: boolean;
 
+    @Type(type => PaymentServiceCurrencyEntity)
     @ManyToOne(type => PaymentServiceCurrencyEntity, {nullable: false, eager: true})
     fromPaymentServiceCurrency: PaymentServiceCurrencyEntity;
 
@@ -23,6 +25,7 @@ export class ExchangeRouteEntity {
     @Column({unsigned: true, type: 'double', nullable: false})
     fromAmount: number;
 
+    @Type(type => PaymentServiceCurrencyEntity)
     @ManyToOne(type => PaymentServiceCurrencyEntity, {nullable: false, eager: true})
     toPaymentServiceCurrency: PaymentServiceCurrencyEntity;
 

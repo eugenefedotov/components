@@ -9,6 +9,6 @@ import {HttpClient} from '@angular/common/http';
 export class ExchangeRouteRestService extends RestClientDataSource<ExchangeRouteEntity> {
 
     constructor(http: HttpClient) {
-        super(http, '/api/exchange-route');
+        super(http, '/api/exchange-route', ExchangeRouteEntity);
     }
 }

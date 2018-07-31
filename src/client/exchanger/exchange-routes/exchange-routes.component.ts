@@ -3,7 +3,7 @@ import {PaymentServiceCurrencyEntity} from '../../../dao/payment-service-currenc
 import {ActivatedRoute, ParamMap, Router} from '@angular/router';
 import {PaymentServiceCurrencyRestService} from '../../shared/shared-rest-services/payment-service-currency-rest/payment-service-currency-rest.service';
 import {filter, map, switchMap} from 'rxjs/operators';
-import {Observable} from 'rxjs';
+import {Observable, of} from 'rxjs';
 import {DataSourceRequestFilterTypeEnum} from '../../../shared/classes/data-source/models/data-source-request-filter-type.enum';
 
 @Component({
@@ -31,8 +31,8 @@ export class ExchangeRoutesComponent implements OnInit {
             switchMap(params => this.getPaymentServiceCurrencyByParams(params))
         )
             .subscribe(result => {
-                this.fromPaymentServiceCurrency = result.from;
-                this.toPaymentServiceCurrency = result.to;
+                this.fromPaymentServiceCurrency = result && result.from;
+                this.toPaymentServiceCurrency = result && result.to;
             });
     }
 
@@ -46,6 +46,10 @@ export class ExchangeRoutesComponent implements OnInit {
     }
 
     private getPaymentServiceCurrencyByParams(params: ParamMap): Observable<{ from: PaymentServiceCurrencyEntity, to: PaymentServiceCurrencyEntity }> {
+        if (!params.has('from') && !params.has('to')) {
+            return of(null);
+        }
+
         return this.paymentServiceCurrencyRestService.getData({
             offset: 0,
             limit: 2,
