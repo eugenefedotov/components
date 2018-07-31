@@ -2,7 +2,7 @@ import {Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges} from '@an
 import {PaymentServiceCurrencyEntity} from '../../../../dao/payment-service-currency/payment-service-currency.entity';
 import {ExchangeRouteEntity} from '../../../../dao/exchange-route/exchange-route.entity';
 import {ExchangeRouteRestService} from '../../shared-rest-services/exchange-route-rest/exchange-route-rest.service';
-import {DataSourceRequestFilterTypeEnum} from '../../../../shared/data-source/models/data-source-request-filter-type.enum';
+import {DataSourceRequestFilterTypeEnum} from '../../../../shared/classes/data-source/models/data-source-request-filter-type.enum';
 import {hasAnyChanges} from '../../../../functions/has-any-changes';
 import {FormControl, FormGroup} from '@angular/forms';
 import {Subject} from 'rxjs';

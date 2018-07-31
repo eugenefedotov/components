@@ -2,7 +2,7 @@ import {DataSource} from '../data-source';
 import {DataSourceResponseModel} from '../models/data-source-response.model';
 import {DataSourceRequestModel} from '../models/data-source-request.model';
 import {HttpClient, HttpParams} from '@angular/common/http';
-import {environment} from '../../../environments/environment';
+import {environment} from '../../../../environments/environment';
 import {Observable} from 'rxjs';
 
 export class RestClientDataSource<T> implements DataSource<T> {

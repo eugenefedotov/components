@@ -17,14 +17,14 @@ import {
     ViewChild,
     ViewChildren
 } from '@angular/core';
-import {ListSource} from '../../../../shared/list-source/list-source';
-import {EqualsComparator} from '../../../../shared/comparator/impl/equals-comparator';
-import {Comparator} from '../../../../shared/comparator/comparator';
-import {CachedListSource} from '../../../../shared/list-source/impl/cached-list-source';
+import {ListSource} from '../../../../shared/classes/list-source/list-source';
+import {EqualsComparator} from '../../../../shared/classes/comparator/impl/equals-comparator';
+import {Comparator} from '../../../../shared/classes/comparator/comparator';
+import {CachedListSource} from '../../../../shared/classes/list-source/impl/cached-list-source';
 import {hasAnyChanges} from '../../../../functions/has-any-changes';
 import {Subject} from 'rxjs';
 import {distinctUntilChanged, takeUntil, throttleTime} from 'rxjs/operators';
-import {ListSourceRequestModel} from '../../../../shared/list-source/models/list-source-request.model';
+import {ListSourceRequestModel} from '../../../../shared/classes/list-source/models/list-source-request.model';
 
 @Component({
     selector: 'app-virtual-list',

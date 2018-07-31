@@ -1,20 +1,20 @@
 import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
 import {PaymentServiceCurrencyRestService} from '../../shared-rest-services/payment-service-currency-rest/payment-service-currency-rest.service';
-import {ListSource} from '../../../../shared/list-source/list-source';
+import {ListSource} from '../../../../shared/classes/list-source/list-source';
 import {PaymentServiceCurrencyEntity} from '../../../../dao/payment-service-currency/payment-service-currency.entity';
-import {DataSourceListSource} from '../../../../shared/list-source/impl/data-source-list-source';
+import {DataSourceListSource} from '../../../../shared/classes/list-source/impl/data-source-list-source';
 import {CurrencyEntity} from '../../../../dao/currency/currency.entity';
 import {PaymentServiceEntity} from '../../../../dao/payment-service/payment-service.entity';
-import {KeyComparator} from '../../../../shared/comparator/impl/key-comparator';
-import {DataSourceRequestFilterTypeEnum} from '../../../../shared/data-source/models/data-source-request-filter-type.enum';
-import {DataSourceRequestFilterItemModel} from '../../../../shared/data-source/models/data-source-request-filter-item.model';
+import {KeyComparator} from '../../../../shared/classes/comparator/impl/key-comparator';
+import {DataSourceRequestFilterTypeEnum} from '../../../../shared/classes/data-source/models/data-source-request-filter-type.enum';
+import {DataSourceRequestFilterItemModel} from '../../../../shared/classes/data-source/models/data-source-request-filter-item.model';
 import {hasAnyChanges} from '../../../../functions/has-any-changes';
 import {CurrencyRestService} from '../../shared-rest-services/currency-rest/currency-rest.service';
-import {SelectSource} from '../../../../shared/select-source/select-source';
-import {DataSourceSelectSource} from '../../../../shared/select-source/impl/data-source-select-source';
-import {SelectItemModel} from '../../../../shared/select-source/models/select-item.model';
+import {SelectSource} from '../../../../shared/classes/select-source/select-source';
+import {DataSourceSelectSource} from '../../../../shared/classes/select-source/impl/data-source-select-source';
+import {SelectItemModel} from '../../../../shared/classes/select-source/models/select-item.model';
 import {PaymentServiceRestService} from '../../shared-rest-services/payment-service-rest/payment-service-rest.service';
-import {PersistentFilterDataSource} from '../../../../shared/data-source/impl/persistent-filter-data-source';
+import {PersistentFilterDataSource} from '../../../../shared/classes/data-source/impl/persistent-filter-data-source';
 
 @Component({
     selector: 'app-payment-service-currency-list',

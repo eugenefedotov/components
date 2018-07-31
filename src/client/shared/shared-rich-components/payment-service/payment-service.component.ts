@@ -1,5 +1,5 @@
 import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
-import {DataSourceRequestFilterTypeEnum} from '../../../../shared/data-source/models/data-source-request-filter-type.enum';
+import {DataSourceRequestFilterTypeEnum} from '../../../../shared/classes/data-source/models/data-source-request-filter-type.enum';
 import {PaymentServiceEntity} from '../../../../dao/payment-service/payment-service.entity';
 import {PaymentServiceRestService} from '../../shared-rest-services/payment-service-rest/payment-service-rest.service';
 

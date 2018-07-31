@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {SelectItemModel} from '../../../../shared/select-source/models/select-item.model';
+import {SelectItemModel} from '../../../../shared/classes/select-source/models/select-item.model';
 
 @Component({
     selector: 'app-select-item',

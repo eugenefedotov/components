@@ -4,7 +4,6 @@ import {EXCHANGER_ROUTER_MODULE} from './exchanger.router-module';
 import {ExchangerComponent} from './exchanger.component';
 import {SharedModule} from '../shared/shared.module';
 import {ExchangeRoutesComponent} from './exchange-routes/exchange-routes.component';
-import {PaymentServiceCurrencyPairResolver} from './resolvers/payment-service-currency-pair/payment-service-currency-pair.resolver';
 
 @NgModule({
     imports: [
@@ -15,9 +14,6 @@ import {PaymentServiceCurrencyPairResolver} from './resolvers/payment-service-cu
     declarations: [
         ExchangerComponent,
         ExchangeRoutesComponent
-    ],
-    providers: [
-        PaymentServiceCurrencyPairResolver
     ]
 })
 export class ExchangerModule {

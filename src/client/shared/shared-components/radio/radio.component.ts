@@ -1,6 +1,6 @@
 import {Component, forwardRef, Input, OnInit} from '@angular/core';
 import {ControlValueAccessor, NG_VALUE_ACCESSOR} from '@angular/forms';
-import {SelectSource} from '../../../../shared/select-source/select-source';
+import {SelectSource} from '../../../../shared/classes/select-source/select-source';
 
 const RADIO_VALUE_ACCESSOR = {
     provide: NG_VALUE_ACCESSOR,

@@ -1,7 +1,10 @@
 import {Component, OnInit} from '@angular/core';
 import {PaymentServiceCurrencyEntity} from '../../../dao/payment-service-currency/payment-service-currency.entity';
-import {ActivatedRoute, Router} from '@angular/router';
-import {PaymentServiceCurrencyPairModel} from '../resolvers/payment-service-currency-pair/payment-service-currency-pair.model';
+import {ActivatedRoute, ParamMap, Router} from '@angular/router';
+import {PaymentServiceCurrencyRestService} from '../../shared/shared-rest-services/payment-service-currency-rest/payment-service-currency-rest.service';
+import {filter, map, switchMap} from 'rxjs/operators';
+import {Observable} from 'rxjs';
+import {DataSourceRequestFilterTypeEnum} from '../../../shared/classes/data-source/models/data-source-request-filter-type.enum';
 
 @Component({
     selector: 'app-exchange-routes',
@@ -13,28 +16,56 @@ export class ExchangeRoutesComponent implements OnInit {
     fromPaymentServiceCurrency: PaymentServiceCurrencyEntity;
     toPaymentServiceCurrency: PaymentServiceCurrencyEntity;
 
-    constructor(private router: Router, private route: ActivatedRoute) {
+    constructor(private router: Router,
+                private route: ActivatedRoute,
+                private paymentServiceCurrencyRestService: PaymentServiceCurrencyRestService
+    ) {
     }
 
     ngOnInit() {
-        this.route.data.subscribe((data: { pair: PaymentServiceCurrencyPairModel }) => {
-            if (data.pair) {
-                this.fromPaymentServiceCurrency = data.pair.from;
-                this.toPaymentServiceCurrency = data.pair.to;
-            }
+        this.route.queryParamMap.pipe(
+            filter(params =>
+                params.has('from') && (!this.fromPaymentServiceCurrency || this.fromPaymentServiceCurrency.code !== params.get('from'))
+                || params.has('to') && (!this.toPaymentServiceCurrency || this.toPaymentServiceCurrency.code !== params.get('to'))
+            ),
+            switchMap(params => this.getPaymentServiceCurrencyByParams(params))
+        )
+            .subscribe(result => {
+                this.fromPaymentServiceCurrency = result.from;
+                this.toPaymentServiceCurrency = result.to;
+            });
+    }
+
+    onPaymentServiceCurrencyChange(key: string, paymentServiceCurrency: PaymentServiceCurrencyEntity) {
+        this.router.navigate([], {
+            queryParams: {
+                [key]: paymentServiceCurrency.code
+            },
+            queryParamsHandling: 'merge'
         });
     }
 
-    onPaymentServiceCurrencyChange() {
-        if (!this.fromPaymentServiceCurrency || !this.toPaymentServiceCurrency) {
-            return;
-        }
+    private getPaymentServiceCurrencyByParams(params: ParamMap): Observable<{ from: PaymentServiceCurrencyEntity, to: PaymentServiceCurrencyEntity }> {
+        return this.paymentServiceCurrencyRestService.getData({
+            offset: 0,
+            limit: 2,
+            filter: [
+                {
+                    type: DataSourceRequestFilterTypeEnum.Equal,
+                    field: 'code',
+                    values: [params.get('from'), params.get('to')].filter(Boolean)
+                }
+            ]
+        })
+            .pipe(
+                map(result => {
+                    const getByCode = (code: string) => result.items.find(item => item.code === code);
 
-        this.router.navigate([], {
-            queryParams: {
-                from: this.fromPaymentServiceCurrency.code,
-                to: this.toPaymentServiceCurrency.code
-            }
-        });
+                    return {
+                        from: getByCode(params.get('from')),
+                        to: getByCode(params.get('to'))
+                    };
+                })
+            );
     }
 }
