@@ -39,6 +39,10 @@ fa {
   outline: none;
 }
 
+::placeholder {
+  color: $control-color-placeholder;
+}
+
 router-outlet {
   display: none;
 }

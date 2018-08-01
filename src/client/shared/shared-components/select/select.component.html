@@ -1,5 +1,5 @@
 <div class="select" [class.select_drop]="drop" [class.focus]="drop" #selectElement>
-    <div class="select__name">{{selectedItem?.name}}</div>
+    <div class="select__name" [class.select__name_placeholder]="placeholder && !selectedItem">{{selectedItem?.name || placeholder}}</div>
     <div class="select__icon-button" *ngIf="canClear && selectedItem" (click)="onClearClick($event)"><fa [name]="'times'"></fa></div>
     <div class="select__icon-button" (click)="onSelectClick($event)"><fa [name]="drop ? 'caret-up' : 'caret-down'"></fa></div>
 </div>

@@ -35,6 +35,7 @@ const SELECT_VALUE_ACCESSOR = {
     providers: [SELECT_VALUE_ACCESSOR]
 })
 export class SelectComponent implements OnInit, OnChanges, OnDestroy, ControlValueAccessor {
+    @Input() placeholder: string;
 
     PopUpPosition = PopUpPosition;
     PopUpAlign = PopUpAlign;

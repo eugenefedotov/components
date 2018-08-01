@@ -6,12 +6,14 @@
     <div class="payment-service-currency-list__filter">
         <app-select
                 class="payment-service-currency-list__filter-item"
+                [placeholder]="'Валюта'"
                 [source]="currencySelectSource"
                 [(selectedItem)]="currency"
                 (selectedItemChange)="onCurrencyChange($event)"
         ></app-select>
         <app-select
                 class="payment-service-currency-list__filter-item"
+                [placeholder]="'Платежный сервис'"
                 [source]="paymentServiceSelectSource"
                 [(selectedItem)]="paymentService"
                 (selectedItemChange)="onPaymentServiceChange($event)"

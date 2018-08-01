@@ -12,6 +12,7 @@
 
   align-items: center;
 
+
   @include control;
 
   &__name {
@@ -23,6 +24,10 @@
     text-overflow: ellipsis;
 
     padding: 0 1rem;
+
+    &_placeholder {
+      color: $control-color-placeholder;
+    }
   }
 
   &__icon-button {
