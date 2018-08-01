@@ -22,8 +22,7 @@ export class RestClientDataSource<T> implements DataSource<T> {
                 params: this.getFakeParams(request)
             })
             .pipe(
-                map(response => this.type ? this.deserializeResponse(response) : response),
-                tap(result => console.log('result', result))
+                map(response => this.type ? this.deserializeResponse(response) : response)
             );
     }
 

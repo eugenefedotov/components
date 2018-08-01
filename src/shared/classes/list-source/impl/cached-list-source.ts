@@ -103,9 +103,6 @@ export class CachedListSource<T> implements ListSource<T> {
             return;
         }
 
-
-        console.log('initDelayedRequest', request);
-
         this.delayedRequest$ = new BehaviorSubject<ListSourceRequestModel>(request);
         this.delayedResponse$ = this.delayedRequest$
             .pipe(
