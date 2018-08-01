@@ -12,7 +12,7 @@
 
     <ng-container *ngIf="fromPaymentServiceCurrency.hasFee()">
         <app-value-wrapper [title]="'Комиссия платежной системы'">
-            {{form.get('fromFee').value || 0}}
+            {{form.get('fromFee').value}}
         </app-value-wrapper>
 
         <app-input-wrapper [title]="'Мы получаем'">
@@ -42,7 +42,7 @@
         </app-input-wrapper>
 
         <app-value-wrapper [title]="'Комиссия платежной системы'">
-            {{form.get('toFee').value || 0}}
+            {{form.get('toFee').value}}
         </app-value-wrapper>
     </ng-container>
 

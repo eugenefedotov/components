@@ -25,12 +25,12 @@ export class ExchangeRouteComponent implements OnInit, OnChanges, OnDestroy {
     exchangeRoute: ExchangeRouteEntity;
 
     form = new FormGroup({
-        fromClient: new FormControl(),
-        fromFee: new FormControl(),
-        from: new FormControl(),
-        to: new FormControl(),
-        toFee: new FormControl(),
-        toClient: new FormControl()
+        fromClient: new FormControl(0),
+        fromFee: new FormControl(0),
+        from: new FormControl(0),
+        to: new FormControl(0),
+        toFee: new FormControl(0),
+        toClient: new FormControl(0)
     });
 
     destroy$ = new Subject();
