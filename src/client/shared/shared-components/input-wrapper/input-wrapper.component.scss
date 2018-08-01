@@ -1,9 +1,22 @@
+@import 'scss/variables';
+
 :host {
   display: flex;
   flex-direction: column;
 
+  border-top: 1px solid lighten($color-light, 5);
+  border-bottom: 1px solid darken($color-light, 5);
+
+  &:first-child {
+    border-top: none;
+  }
+
+  &:last-child {
+    border-bottom: none;
+  }
+
   .input-wrapper {
-    flex: 1 0 2rem;
+    flex: 1;
 
     display: flex;
     justify-content: space-between;
@@ -15,7 +28,7 @@
     }
 
     &__content {
-
+      padding: .5em;
     }
 
     &__error {

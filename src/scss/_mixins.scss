@@ -1,28 +1,43 @@
 @import "~scss/variables";
+@import "~scss/functions";
 
-@mixin convex($withHover) {
-  border: 1px solid rgba(0, 0, 0, .05);
-  border-top: 1px solid rgba(0, 0, 0, .025);
-  border-bottom: 1px solid rgba(0, 0, 0, .10);
-  box-shadow: inset 0 1px rgba(255, 255, 255, .5);
+@mixin convex($color, $withHover) {
+  border: 1px solid darken($color, 5);
+  border-top: 1px solid darken($color, 2.5);
+  border-bottom: 1px solid darken($color, 10);
+  box-shadow: inset 0 1px lighten($color, 5);
 
   @if $withHover == true {
     &:hover {
-      border: 1px solid rgba(0, 0, 0, .1);
-      border-top: 1px solid rgba(0, 0, 0, .05);
-      border-bottom: 1px solid rgba(0, 0, 0, .15);
-      box-shadow: inset 0 1px rgba(255, 255, 255, .9);
+      border: 1px solid darken($color, 10);
+      border-top: 1px solid darken($color, 5);
+      border-bottom: 1px solid darken($color, 20);
+      box-shadow: inset 0 1px lighten($color, 10);
     }
   }
 }
 
-@mixin pitted-text($withHover) {
-  color: lighten($color-dark, 33%);
-  text-shadow: 0 1px rgba(255, 255, 255, .9);
+@mixin pitted-text($color, $withHover) {
+  color: lighten($color, 33%);
+
+  @if lightness($color) > 40 {
+    text-shadow: 0 -1px rgba(0, 0, 0, .1);
+  }
+  @else {
+    text-shadow: 0 1px rgba(255, 255, 255, .1);
+  }
 
   @if $withHover == true {
     &:hover {
-      color: lighten($color-dark, 25%);
+      color: lighten($color, 25%);
+
+
+      @if lightness($color) > 40 {
+        text-shadow: 0 -1px rgba(0, 0, 0, .33);
+      }
+      @else {
+        text-shadow: 0 1px rgba(255, 255, 255, .33);
+      }
     }
   }
 }

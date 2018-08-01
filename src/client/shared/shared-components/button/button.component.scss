@@ -13,14 +13,19 @@
 
   cursor: pointer;
 
-  @include convex(true);
-
-  @include pitted-text(true);
   font-weight: bold;
-
 
   border-radius: $control-border-radius;
 
+  background-color: $color-light;
+  @include convex($color-light, true);
+  @include pitted-text($color-dark, true);
+
+  &.accent {
+    background-color: $color-dark-accent;
+    @include convex($color-dark-accent, true);
+    @include pitted-text($color-light-accent, true);
+  }
 
   .button {
     &__text {

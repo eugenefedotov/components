@@ -17,7 +17,7 @@
     color: $color-dark;
 
 
-    @include convex(false);
+    @include convex($color-light, false);
     box-shadow: 0 .5rem 1rem -.5rem rgba(0, 0, 0, 1);
     border-radius: multiply-px($control-border-radius, 2);
 
@@ -32,7 +32,7 @@
         flex: 1 1 auto;
 
         padding: 0 .5rem;
-        @include pitted-text(false);
+        @include pitted-text($color-dark, false);
       }
 
       &-close-button {
@@ -44,7 +44,7 @@
         align-items: center;
         justify-content: center;
 
-        @include pitted-text(true);
+        @include pitted-text($color-dark, true);
 
         cursor: pointer;
       }
