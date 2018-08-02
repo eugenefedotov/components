@@ -70,12 +70,16 @@ export class InputComponent implements OnInit, ControlValueAccessor, OnDestroy {
         if (this.onChange) {
             this.onChange(this.value);
         }
+
+        if (this.onTouched) {
+            this.onTouched();
+        }
     }
 
     setFocus(focus: boolean) {
         this.focus = focus;
 
-        if (this.focus && this.onTouched) {
+        if (!this.focus && this.onTouched) {
             this.onTouched();
         }
     }

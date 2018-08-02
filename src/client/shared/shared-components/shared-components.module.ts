@@ -8,7 +8,6 @@ import {ButtonComponent} from './button/button.component';
 import {Angular2FontawesomeModule} from 'angular2-fontawesome';
 import {RouterModule} from '@angular/router';
 import {WaiterComponent} from './waiter/waiter.component';
-import {InputWrapperComponent} from './input-wrapper/input-wrapper.component';
 import {SelectComponent} from './select/select.component';
 import {VirtualListComponent} from './virtual-list/virtual-list.component';
 import {SpinnerComponent} from './spinner/spinner.component';
@@ -42,7 +41,6 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
         DialogComponent,
         ButtonComponent,
         WaiterComponent,
-        InputWrapperComponent,
         SelectComponent,
         VirtualListComponent,
         SpinnerComponent,
@@ -64,7 +62,6 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
         WindowComponent,
         DialogComponent,
         ButtonComponent,
-        InputWrapperComponent,
         HeaderMenuComponent,
         VirtualListComponent,
         SelectComponent,

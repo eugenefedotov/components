@@ -4,7 +4,7 @@ import {ExchangeRouteEntity} from '../../../../dao/exchange-route/exchange-route
 import {ExchangeRouteRestService} from '../../shared-rest-services/exchange-route-rest/exchange-route-rest.service';
 import {DataSourceRequestFilterTypeEnum} from '../../../../shared/classes/data-source/models/data-source-request-filter-type.enum';
 import {hasAnyChanges} from '../../../../functions/has-any-changes';
-import {FormControl, FormGroup} from '@angular/forms';
+import {FormControl, FormGroup, ValidatorFn, Validators} from '@angular/forms';
 import {Subject} from 'rxjs';
 import {distinctUntilChanged, map, takeUntil} from 'rxjs/operators';
 import {BigNumber} from 'bignumber.js';
@@ -47,6 +47,7 @@ export class ExchangeRouteComponent implements OnInit, OnChanges, OnDestroy {
     ngOnChanges(changes: SimpleChanges): void {
         if (hasAnyChanges(changes, ['fromPaymentServiceCurrency', 'toPaymentServiceCurrency'])) {
             this.updateRoute();
+            this.updateValidators();
         }
         if (hasAnyChanges(changes, ['fromSum'])) {
             this.updateByFromClient(this.fromSum);
@@ -85,6 +86,7 @@ export class ExchangeRouteComponent implements OnInit, OnChanges, OnDestroy {
             distinctUntilChanged()
         )
             .subscribe((valid) => this.validChange.emit(valid));
+
     }
 
     updateByFromClient(val: number) {
@@ -154,7 +156,55 @@ export class ExchangeRouteComponent implements OnInit, OnChanges, OnDestroy {
             offset: 0,
             limit: 1
         })
-            .subscribe(value => this.exchangeRoute = value.items[0]);
+            .pipe(
+                takeUntil(this.destroy$)
+            )
+            .subscribe(value => this.setExchangeRoute(value.items[0]));
+    }
+
+    setExchangeRoute(exchangeRoute: ExchangeRouteEntity) {
+        this.exchangeRoute = exchangeRoute;
+        this.updateValidators();
+    }
+
+    updateValidators() {
+        const fromClientControl = this.form.get('fromClient') as FormControl;
+        const fromControl = this.form.get('from') as FormControl;
+        const toControl = this.form.get('to') as FormControl;
+        const toClientControl = this.form.get('toClient') as FormControl;
+
+        [fromClientControl, fromControl, toControl, toClientControl].forEach(cnt => cnt.clearValidators());
+
+        if (!this.exchangeRoute) {
+            return;
+        }
+
+        const fromControlWithValidation = this.exchangeRoute.fromPaymentServiceCurrency.hasFee() ? fromControl : fromClientControl;
+        const toControlWithValidation = this.exchangeRoute.toPaymentServiceCurrency.hasFee() ? toControl : toClientControl;
+
+        const nonZero: ValidatorFn = c => c.value === 0 ? {nonZero: true} : null;
+
+        const fromValidators: ValidatorFn[] = [Validators.required, nonZero];
+        const toValidators: ValidatorFn[] = [Validators.required, nonZero];
+
+        const minFrom = Math.max(0, this.exchangeRoute.fromMinAmount, this.exchangeRoute.fromPaymentServiceCurrency.minAmount);
+        fromValidators.push(Validators.min(minFrom));
+
+        const minTo = Math.max(0, this.exchangeRoute.toMinAmount, this.exchangeRoute.toPaymentServiceCurrency.minAmount);
+        toValidators.push(Validators.min(minTo));
+
+        if (this.exchangeRoute.fromMaxAmount || this.exchangeRoute.fromPaymentServiceCurrency.maxAmount) {
+            const maxFrom = Math.min(this.exchangeRoute.fromMaxAmount, this.exchangeRoute.fromPaymentServiceCurrency.maxAmount);
+            fromValidators.push(Validators.max(maxFrom));
+        }
+
+        if (this.exchangeRoute.toMaxAmount || this.exchangeRoute.toPaymentServiceCurrency.maxAmount) {
+            const maxTo = Math.min(this.exchangeRoute.toMaxAmount, this.exchangeRoute.toPaymentServiceCurrency.maxAmount);
+            toValidators.push(Validators.max(maxTo));
+        }
+
+        fromControlWithValidation.setValidators(fromValidators);
+        toControlWithValidation.setValidators(toValidators);
     }
 
     ngOnDestroy(): void {

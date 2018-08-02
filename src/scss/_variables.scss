@@ -14,6 +14,7 @@ $control-color-background-accent: #fff;
 
 $control-color-border: transparentize($color-dark, .66);
 $control-color-border-accent: transparentize($color-dark-accent, .66);
+$control-color-border-error: transparentize(#b50000, .5);
 
 $control-border-radius: 2px;
 

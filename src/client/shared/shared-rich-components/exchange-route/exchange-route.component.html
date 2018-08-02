@@ -1,5 +1,5 @@
 <div class="exchange-route" *ngIf="exchangeRoute" [formGroup]="form">
-    <app-input-wrapper [title]="'Вы отдаете'">
+    <app-value-wrapper [title]="'Вы отдаете'">
         <app-input
                 [type]="'number'"
                 [formControlName]="'fromClient'"
@@ -8,14 +8,14 @@
                 [step]="fromPaymentServiceCurrency.step"
                 [prefix]="fromPaymentServiceCurrency.currency.prefix"
                 [suffix]="fromPaymentServiceCurrency.currency.suffix"></app-input>
-    </app-input-wrapper>
+    </app-value-wrapper>
 
     <ng-container *ngIf="fromPaymentServiceCurrency.hasFee()">
         <app-value-wrapper [title]="'Комиссия платежной системы'">
             {{form.get('fromFee').value}}
         </app-value-wrapper>
 
-        <app-input-wrapper [title]="'Мы получаем'">
+        <app-value-wrapper [title]="'Мы получаем'">
             <app-input [type]="'number'"
                        [formControlName]="'from'"
                        [min]="exchangeRoute.fromMinAmount"
@@ -23,7 +23,7 @@
                        [step]="fromPaymentServiceCurrency.step"
                        [prefix]="fromPaymentServiceCurrency.currency.prefix"
                        [suffix]="fromPaymentServiceCurrency.currency.suffix"></app-input>
-        </app-input-wrapper>
+        </app-value-wrapper>
     </ng-container>
 
     <app-value-wrapper [title]="'Меняем по курсу'">
@@ -31,7 +31,7 @@
     </app-value-wrapper>
 
     <ng-container *ngIf="toPaymentServiceCurrency.hasFee()">
-        <app-input-wrapper [title]="'Мы отправляем'">
+        <app-value-wrapper [title]="'Мы отправляем'">
             <app-input [type]="'number'"
                        [formControlName]="'to'"
                        [min]="exchangeRoute.toMinAmount"
@@ -39,14 +39,14 @@
                        [step]="toPaymentServiceCurrency.step"
                        [prefix]="toPaymentServiceCurrency.currency.prefix"
                        [suffix]="toPaymentServiceCurrency.currency.suffix"></app-input>
-        </app-input-wrapper>
+        </app-value-wrapper>
 
         <app-value-wrapper [title]="'Комиссия платежной системы'">
             {{form.get('toFee').value}}
         </app-value-wrapper>
     </ng-container>
 
-    <app-input-wrapper [title]="'Вы получате'">
+    <app-value-wrapper [title]="'Вы получате'">
         <app-input [type]="'number'"
                    [formControlName]="'toClient'"
                    [min]="exchangeRoute.toMinAmount"
@@ -54,7 +54,7 @@
                    [step]="toPaymentServiceCurrency.step"
                    [prefix]="toPaymentServiceCurrency.currency.prefix"
                    [suffix]="toPaymentServiceCurrency.currency.suffix"></app-input>
-    </app-input-wrapper>
+    </app-value-wrapper>
 </div>
 
 

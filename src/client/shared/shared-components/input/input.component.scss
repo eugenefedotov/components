@@ -5,6 +5,8 @@
   display: flex;
   width: 200px;
 
+  @include control;
+
   .input {
     flex: 1;
     display: flex;
@@ -15,8 +17,6 @@
 
     overflow: hidden;
 
-    @include control;
-
     &__prefix, &__suffix {
       flex: none;
 
@@ -25,7 +25,7 @@
 
       margin: 0 .5em;
 
-      color: $control-color-border;
+      color: $control-color-placeholder;
     }
 
     &__field {
