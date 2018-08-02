@@ -1,4 +1,4 @@
-import {Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges} from '@angular/core';
+import {Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges} from '@angular/core';
 import {PaymentServiceCurrencyEntity} from '../../../../dao/payment-service-currency/payment-service-currency.entity';
 import {ExchangeRouteEntity} from '../../../../dao/exchange-route/exchange-route.entity';
 import {ExchangeRouteRestService} from '../../shared-rest-services/exchange-route-rest/exchange-route-rest.service';
@@ -6,7 +6,7 @@ import {DataSourceRequestFilterTypeEnum} from '../../../../shared/classes/data-s
 import {hasAnyChanges} from '../../../../functions/has-any-changes';
 import {FormControl, FormGroup} from '@angular/forms';
 import {Subject} from 'rxjs';
-import {distinctUntilChanged, takeUntil} from 'rxjs/operators';
+import {distinctUntilChanged, map, takeUntil} from 'rxjs/operators';
 import {BigNumber} from 'bignumber.js';
 
 @Component({
@@ -17,10 +17,16 @@ import {BigNumber} from 'bignumber.js';
 export class ExchangeRouteComponent implements OnInit, OnChanges, OnDestroy {
 
     @Input()
+    fromSum = 0;
+
+    @Input()
     fromPaymentServiceCurrency: PaymentServiceCurrencyEntity;
 
     @Input()
     toPaymentServiceCurrency: PaymentServiceCurrencyEntity;
+
+    @Output()
+    validChange = new EventEmitter<boolean>();
 
     exchangeRoute: ExchangeRouteEntity;
 
@@ -41,6 +47,9 @@ export class ExchangeRouteComponent implements OnInit, OnChanges, OnDestroy {
     ngOnChanges(changes: SimpleChanges): void {
         if (hasAnyChanges(changes, ['fromPaymentServiceCurrency', 'toPaymentServiceCurrency'])) {
             this.updateRoute();
+        }
+        if (hasAnyChanges(changes, ['fromSum'])) {
+            this.updateByFromClient(this.fromSum);
         }
     }
 
@@ -69,6 +78,13 @@ export class ExchangeRouteComponent implements OnInit, OnChanges, OnDestroy {
                 distinctUntilChanged()
             )
             .subscribe((val) => this.updateByToClient(val));
+
+        this.form.statusChanges.pipe(
+            takeUntil(this.destroy$),
+            map(() => this.form.valid),
+            distinctUntilChanged()
+        )
+            .subscribe((valid) => this.validChange.emit(valid));
     }
 
     updateByFromClient(val: number) {

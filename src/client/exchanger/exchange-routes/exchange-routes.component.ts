@@ -16,6 +16,8 @@ export class ExchangeRoutesComponent implements OnInit {
     fromPaymentServiceCurrency: PaymentServiceCurrencyEntity;
     toPaymentServiceCurrency: PaymentServiceCurrencyEntity;
 
+    valid = false;
+
     constructor(private router: Router,
                 private route: ActivatedRoute,
                 private paymentServiceCurrencyRestService: PaymentServiceCurrencyRestService
@@ -43,6 +45,10 @@ export class ExchangeRoutesComponent implements OnInit {
             },
             queryParamsHandling: 'merge'
         });
+    }
+
+    onValidChange($event: boolean) {
+        this.valid = $event;
     }
 
     private getPaymentServiceCurrencyByParams(params: ParamMap): Observable<{ from: PaymentServiceCurrencyEntity, to: PaymentServiceCurrencyEntity }> {

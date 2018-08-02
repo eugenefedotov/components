@@ -27,6 +27,14 @@
     @include pitted-text($color-light-accent, true);
   }
 
+  &[disabled] {
+    cursor: not-allowed;
+
+    background-color: transparentize($color-light, .5);
+    @include convex(transparentize($color-light, .5), false);
+    @include pitted-text(transparentize($color-dark, .5), false);
+  }
+
   .button {
     &__text {
       padding: 0 1rem;

@@ -1,0 +1,30 @@
+:host {
+  flex: 1;
+
+  display: flex;
+  flex-direction: column;
+
+  .exchange-init {
+    flex: 1;
+
+    display: flex;
+    flex-direction: row;
+
+    &__info {
+      flex: 0 1 400px;
+
+      display: flex;
+      flex-direction: column;
+    }
+
+    &__requisites {
+      flex: 1;
+      display: flex;
+    }
+  }
+
+  app-block-wrapper {
+    margin: .25rem;
+  }
+
+}
