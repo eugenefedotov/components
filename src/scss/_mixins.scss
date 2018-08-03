@@ -54,7 +54,7 @@
     background-color: $control-color-background-accent;
   }
 
-  &.ng-invalid.ng-pristine {
+  &.ng-invalid {
     border-color: $control-color-border-error;
   }
 }

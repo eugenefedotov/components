@@ -13,6 +13,8 @@ import {DataSourceRequestFilterTypeEnum} from '../../../shared/classes/data-sour
 })
 export class ExchangeRoutesComponent implements OnInit {
 
+    fromSum = 0;
+
     fromPaymentServiceCurrency: PaymentServiceCurrencyEntity;
     toPaymentServiceCurrency: PaymentServiceCurrencyEntity;
 
@@ -25,6 +27,15 @@ export class ExchangeRoutesComponent implements OnInit {
     }
 
     ngOnInit() {
+        this.route.queryParamMap
+            .pipe(
+                filter(params => params.has('fromSum')),
+                map(params => params.get('fromSum')),
+                map(fromSum => Number(fromSum)),
+                filter(fromSum => !isNaN(fromSum))
+            )
+            .subscribe((fromSum) => this.fromSum = fromSum);
+
         this.route.queryParamMap.pipe(
             filter(params =>
                 !this.fromPaymentServiceCurrency || this.fromPaymentServiceCurrency.code !== params.get('from')
@@ -49,6 +60,24 @@ export class ExchangeRoutesComponent implements OnInit {
 
     onValidChange($event: boolean) {
         this.valid = $event;
+    }
+
+    onExchangeClick() {
+        this.router.navigate(['exchange-init', this.fromPaymentServiceCurrency.code, this.toPaymentServiceCurrency.code], {
+            relativeTo: this.route,
+            queryParams: {
+                fromSum: this.fromSum
+            }
+        });
+    }
+
+    onFromSumChange() {
+        this.router.navigate([], {
+            queryParams: {
+                fromSum: this.fromSum
+            },
+            queryParamsHandling: 'merge'
+        });
     }
 
     private getPaymentServiceCurrencyByParams(params: ParamMap): Observable<{ from: PaymentServiceCurrencyEntity, to: PaymentServiceCurrencyEntity }> {

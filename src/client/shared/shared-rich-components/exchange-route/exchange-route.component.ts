@@ -28,6 +28,9 @@ export class ExchangeRouteComponent implements OnInit, OnChanges, OnDestroy {
     @Output()
     validChange = new EventEmitter<boolean>();
 
+    @Output()
+    fromSumChange = new EventEmitter<number>();
+
     exchangeRoute: ExchangeRouteEntity;
 
     form = new FormGroup({
@@ -50,7 +53,7 @@ export class ExchangeRouteComponent implements OnInit, OnChanges, OnDestroy {
             this.updateValidators();
         }
         if (hasAnyChanges(changes, ['fromSum'])) {
-            this.updateByFromClient(this.fromSum);
+            this.form.get('fromClient').setValue(this.fromSum);
         }
     }
 
@@ -60,7 +63,11 @@ export class ExchangeRouteComponent implements OnInit, OnChanges, OnDestroy {
                 takeUntil(this.destroy$),
                 distinctUntilChanged()
             )
-            .subscribe((val) => this.updateByFromClient(val));
+            .subscribe((val) => {
+                this.fromSum = val;
+                this.fromSumChange.emit(val);
+                this.updateByFromClient(val);
+            });
         this.form.get('from').valueChanges
             .pipe(
                 takeUntil(this.destroy$),
@@ -90,24 +97,39 @@ export class ExchangeRouteComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     updateByFromClient(val: number) {
+        if (!this.fromPaymentServiceCurrency) {
+            return;
+        }
+
         this.form.get('from').setValue(this.fromPaymentServiceCurrency.calculateTargetSum(val), {emitEvent: false});
         this.updateToByFrom();
         this.updateFee();
     }
 
     updateByFrom(val: number) {
+        if (!this.fromPaymentServiceCurrency) {
+            return;
+        }
+
         this.form.get('fromClient').setValue(this.fromPaymentServiceCurrency.calculateSourceSum(val), {emitEvent: false});
         this.updateToByFrom();
         this.updateFee();
     }
 
     updateByTo(val: number) {
+        if (!this.toPaymentServiceCurrency) {
+            return;
+        }
         this.form.get('toClient').setValue(this.toPaymentServiceCurrency.calculateTargetSum(val), {emitEvent: false});
         this.updateFromByTo();
         this.updateFee();
     }
 
     updateByToClient(val: number) {
+        if (!this.toPaymentServiceCurrency) {
+            return;
+        }
+
         this.form.get('to').setValue(this.toPaymentServiceCurrency.calculateSourceSum(val), {emitEvent: false});
         this.updateFromByTo();
         this.updateFee();
@@ -165,6 +187,10 @@ export class ExchangeRouteComponent implements OnInit, OnChanges, OnDestroy {
     setExchangeRoute(exchangeRoute: ExchangeRouteEntity) {
         this.exchangeRoute = exchangeRoute;
         this.updateValidators();
+
+        if (this.fromSum) {
+            this.updateByFromClient(this.fromSum);
+        }
     }
 
     updateValidators() {
