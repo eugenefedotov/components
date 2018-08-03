@@ -1,4 +1,4 @@
-import {Component, forwardRef, Input, OnDestroy, OnInit} from '@angular/core';
+import {Component, forwardRef, HostBinding, Input, OnDestroy, OnInit} from '@angular/core';
 import {ControlValueAccessor, NG_VALUE_ACCESSOR} from '@angular/forms';
 import {Subject} from 'rxjs';
 
@@ -34,6 +34,7 @@ export class InputComponent implements OnInit, ControlValueAccessor, OnDestroy {
     @Input()
     step: number;
 
+    @HostBinding('class.focus')
     focus: boolean;
     value: any;
 
