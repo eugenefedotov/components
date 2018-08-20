@@ -1,5 +1,5 @@
 <ul class="breadcrumbs">
   <li class="breadcrumbs__item" *ngFor="let item of items;">
-      <a [routerLink]="item.routerLink"></a>
+      <a [routerLink]="item.routerLink">{{item.title}}</a>
   </li>
 </ul>
