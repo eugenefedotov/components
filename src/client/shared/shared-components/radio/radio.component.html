@@ -1,3 +1,11 @@
-<p>
-  radio works!
-</p>
+<div class="radio">
+    <label *ngFor="let item of items">
+        <input type="radio"
+               [value]="item.value"
+               [(ngModel)]="value"
+               (ngModelChange)="onValueChanged()"
+               [disabled]="isDisabled"
+        />
+        {{item.name}}
+    </label>
+</div>
