@@ -56,7 +56,16 @@ export class PaymentServiceRequisiteTypeEntity {
     }
 
     isValidAndComplete(value: string): boolean {
-        // todo
-        return null;
+        for (const patternItem of this.patternItems) {
+            const regExp = patternItem.getRegExp(true);
+
+            if (!regExp.test(value)) {
+                return false;
+            }
+
+            value = value.replace(regExp, '');
+        }
+
+        return !value.length;
     }
 }
