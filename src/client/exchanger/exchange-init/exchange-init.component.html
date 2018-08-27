@@ -9,8 +9,17 @@
         </app-block-wrapper>
     </div>
     <div class="exchange-init__requisites">
-        <app-block-wrapper [title]="'Реквизиты'">
+        <app-block-wrapper [title]="'Реквизит для зачисления ' + toPaymentServiceCurrency.code">
+            <app-value-wrapper [title]="'Тип реквизита'">
 
+            </app-value-wrapper>
+            <app-value-wrapper [title]="'Значение реквизита'">
+
+            </app-value-wrapper>
+
+            <app-value-wrapper [title]="''">
+                <app-button [text]="'Обменять'"></app-button>
+            </app-value-wrapper>
         </app-block-wrapper>
     </div>
 </div>

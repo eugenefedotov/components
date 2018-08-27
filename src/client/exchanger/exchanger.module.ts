@@ -7,6 +7,8 @@ import {ExchangeRoutesComponent} from './exchange-routes/exchange-routes.compone
 import {ExchangeInitComponent} from './exchange-init/exchange-init.component';
 import {ExchangeInitResolverService} from './exchange-init/exchange-init-resolver/exchange-init-resolver.service';
 import {FormsModule} from '@angular/forms';
+import { ExchangeStatusComponent } from './exchange-status/exchange-status.component';
+import {ExchangeStatusResolverService} from './exchange-status/exchange-status-resolver/exchange-status-resolver.service';
 
 @NgModule({
     imports: [
@@ -19,9 +21,11 @@ import {FormsModule} from '@angular/forms';
         ExchangerComponent,
         ExchangeRoutesComponent,
         ExchangeInitComponent,
+        ExchangeStatusComponent,
     ],
     providers: [
-        ExchangeInitResolverService
+        ExchangeInitResolverService,
+        ExchangeStatusResolverService
     ]
 })
 export class ExchangerModule {
