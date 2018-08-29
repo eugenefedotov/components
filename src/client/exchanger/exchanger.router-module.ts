@@ -35,7 +35,7 @@ export const EXCHANGER_ROUTER_MODULE = RouterModule.forChild([
                 path: 'exchange-status/:uuid',
                 component: ExchangeStatusComponent,
                 resolve: {
-                    params: ExchangeStatusResolverService
+                    exchange: ExchangeStatusResolverService
                 }
             }
         ]
