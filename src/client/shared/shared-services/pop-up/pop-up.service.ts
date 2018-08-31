@@ -1,7 +1,7 @@
 import {ComponentRef, Injectable, ViewContainerRef} from '@angular/core';
 import {Observable} from 'rxjs/internal/Observable';
 import {BehaviorSubject} from 'rxjs/internal/BehaviorSubject';
-import {distinct, map, share} from 'rxjs/operators';
+import {distinct, map, shareReplay} from 'rxjs/operators';
 
 @Injectable({
     providedIn: 'root'
@@ -10,14 +10,13 @@ export class PopUpService {
     private viewContainerRef: ViewContainerRef;
     private lockComponents$ = new BehaviorSubject<ComponentRef<any>[]>([]);
 
-    constructor() {
-    }
+    readonly lock$: Observable<boolean>;
 
-    get lock$(): Observable<boolean> {
-        return this.lockComponents$.pipe(
+    constructor() {
+        this.lock$ = this.lockComponents$.pipe(
             map(components => !!components.length),
             distinct(),
-            share()
+            shareReplay(1)
         );
     }
 

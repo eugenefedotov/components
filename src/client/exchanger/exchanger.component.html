@@ -1,8 +1,11 @@
 <div class="app" [class.app_lock]="popUpService.lock$ | async">
-  <div class="app__header">
-    <router-outlet name="header"></router-outlet>
-  </div>
-  <div class="app__content global-width">
-    <router-outlet></router-outlet>
-  </div>
+    <div class="app__header">
+        <router-outlet name="header"></router-outlet>
+    </div>
+    <div class="app__breadcrumbs">
+        <app-breadcrumbs [items]="breadcrumbsService.items$ | async"></app-breadcrumbs>
+    </div>
+    <div class="app__content global-width">
+        <router-outlet></router-outlet>
+    </div>
 </div>

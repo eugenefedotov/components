@@ -23,7 +23,7 @@
       transform: scale(.9);
     }
 
-    &__header {
+    &__header, &__breadcrumbs {
       flex: 0 0 auto;
 
       display: flex;

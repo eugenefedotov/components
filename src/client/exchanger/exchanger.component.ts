@@ -1,5 +1,6 @@
 import {Component, OnInit, ViewContainerRef} from '@angular/core';
 import {PopUpService} from '../shared/shared-services/pop-up/pop-up.service';
+import {BreadcrumbsService} from '../shared/shared-services/breadcrumbs/breadcrumbs.service';
 
 @Component({
     selector: 'app-app',
@@ -9,7 +10,8 @@ import {PopUpService} from '../shared/shared-services/pop-up/pop-up.service';
 export class ExchangerComponent implements OnInit {
 
     constructor(public viewContainerRef: ViewContainerRef,
-                public popUpService: PopUpService) {
+                public popUpService: PopUpService,
+                public breadcrumbsService: BreadcrumbsService) {
     }
 
     ngOnInit(): void {

@@ -1,5 +1,5 @@
-import {Component, OnInit} from '@angular/core';
-import {BreadcrumbModel} from './breadcrumb.model';
+import {Component, Input, OnInit} from '@angular/core';
+import {BreadcrumbModel} from '../../shared-models/breadcrumb.model';
 
 @Component({
     selector: 'app-breadcrumbs',
@@ -8,6 +8,7 @@ import {BreadcrumbModel} from './breadcrumb.model';
 })
 export class BreadcrumbsComponent implements OnInit {
 
+    @Input()
     items: BreadcrumbModel[];
 
     constructor() {
