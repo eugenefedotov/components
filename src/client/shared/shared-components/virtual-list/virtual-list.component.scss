@@ -20,25 +20,7 @@
   &__view {
 
     &-item {
-      &_selected {
-
-      }
-    }
-
-    &_selectable &-item {
-      cursor: pointer;
-
-      &:hover {
-        background-color: $color-light-accent;
-        color: $color-dark-accent;
-      }
-
-      &_selected, &_selected:hover {
-        background-color: $color-dark-accent;
-        color: $color-light-accent;
-
-        cursor: default;
-      }
+      overflow: hidden;
     }
   }
 

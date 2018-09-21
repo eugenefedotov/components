@@ -1,20 +1,14 @@
 <app-scroll-box class="virtual-list"
-                [class.virtual-list_spinner]="loading"
-                [wheelSize]="getAvgHeight() * 2"
-                [verticalAbsoluteScrollPosition]="scrollPosPx"
-                (verticalAbsoluteScrollPositionChange)="onScrollPosChange($event)"
-                (verticalRelativeScrollSizeChange)="onScrollSizeChange($event)"
+        [class.virtual-list_spinner]="loading"
+        [wheelSize]="getAvgHeight() * 2"
+        [verticalAbsoluteScrollPosition]="scrollPosPx"
+        (verticalAbsoluteScrollPositionChange)="onScrollPosChange($event)"
+        (verticalRelativeScrollSizeChange)="onScrollSizeChange($event)"
 >
     <div class="virtual-list__top" [style.height.px]="topVirtualHeightPx"></div>
-    <div class="virtual-list__view" #viewport
-         [class.virtual-list__view_selectable]="selectable"
-    >
-        <div class="virtual-list__view-item"
-             [class.virtual-list__view-item_selected]="comparator.equals(selectedItem, item)"
-             #viewItem *ngFor="let item of viewportItems; let i = index"
-             (click)="onItemClick(item)"
-        >
-            <ng-container *ngTemplateOutlet="itemTemplate; context: {item: item, selected: comparator.equals(selectedItem, item)}"></ng-container>
+    <div class="virtual-list__view" #viewport>
+        <div class="virtual-list__view-item" #viewItem *ngFor="let item of viewportItems; let i = index;">
+            <ng-container *ngTemplateOutlet="itemTemplate; context: {item: item, index: i}"></ng-container>
         </div>
     </div>
     <div class="virtual-list__bottom" [style.height.px]="bottomVirtualHeightPx"></div>

@@ -5,12 +5,10 @@ import {
     ChangeDetectorRef,
     Component,
     ElementRef,
-    EventEmitter,
     Input,
     OnChanges,
     OnDestroy,
     OnInit,
-    Output,
     QueryList,
     SimpleChanges,
     TemplateRef,
@@ -18,8 +16,6 @@ import {
     ViewChildren
 } from '@angular/core';
 import {ListSource} from '../../../../shared/classes/list-source/list-source';
-import {EqualsComparator} from '../../../../shared/classes/comparator/impl/equals-comparator';
-import {Comparator} from '../../../../shared/classes/comparator/comparator';
 import {CachedListSource} from '../../../../shared/classes/list-source/impl/cached-list-source';
 import {hasAnyChanges} from '../../../../functions/has-any-changes';
 import {Subject} from 'rxjs';
@@ -33,16 +29,6 @@ import {ListSourceRequestModel} from '../../../../shared/classes/list-source/mod
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class VirtualListComponent<T = any> implements OnInit, OnChanges, OnInit, AfterViewInit, AfterContentChecked, OnDestroy {
-
-    @Input() selectable = true;
-    @Input() deselectable = false;
-    @Input() selectedItem: T;
-    @Output() selectedItemChange = new EventEmitter<T>();
-
-    @Output() itemClick = new EventEmitter<T>();
-
-    @Input() comparator: Comparator<T> = new EqualsComparator();
-
     @Input() source: ListSource<T>;
     @Input() itemTemplate: TemplateRef<any>;
     @Input() expectItemHeight = 32;
@@ -102,25 +88,6 @@ export class VirtualListComponent<T = any> implements OnInit, OnChanges, OnInit,
                 takeUntil(this.destroy$)
             )
             .subscribe(() => this.onItemsChange());
-    }
-
-    onItemClick(item: T) {
-        if (this.selectable) {
-            this.selectItem(item);
-        }
-
-        this.itemClick.emit(item);
-    }
-
-    selectItem(item: T) {
-        if (this.deselectable && this.selectedItem === item) {
-            this.selectedItem = null;
-            this.selectedItemChange.emit(this.selectedItem);
-        }
-        if (this.selectable && this.selectedItem !== item) {
-            this.selectedItem = item;
-            this.selectedItemChange.emit(this.selectedItem);
-        }
     }
 
     getAvgHeight(): number {

@@ -21,9 +21,7 @@
     </div>
     <app-virtual-list
             class="payment-service-currency-list__list"
-            [(selectedItem)]="paymentServiceCurrency"
             (selectedItemChange)="onPaymentServiceCurrencyChange($event)"
             [source]="listSource"
-            [itemTemplate]="itemTemplate"
-            [comparator]="paymentServiceCurrencyComparator"></app-virtual-list>
+            [itemTemplate]="itemTemplate"></app-virtual-list>
 </div>
