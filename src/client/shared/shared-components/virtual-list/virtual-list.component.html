@@ -1,6 +1,6 @@
 <app-scroll-box class="virtual-list"
         [class.virtual-list_spinner]="loading"
-        [wheelSize]="getAvgHeight() * 2"
+        [wheelSize]="getMinItemHeight() * 2"
         [verticalAbsoluteScrollPosition]="scrollPosPx"
         (verticalAbsoluteScrollPositionChange)="onScrollPosChange($event)"
         (verticalRelativeScrollSizeChange)="onScrollSizeChange($event)"

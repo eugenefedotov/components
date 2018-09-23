@@ -1,5 +1,5 @@
 import {
-    AfterContentChecked,
+    AfterViewChecked,
     AfterViewInit,
     ChangeDetectionStrategy,
     ChangeDetectorRef,
@@ -15,12 +15,20 @@ import {
     ViewChild,
     ViewChildren
 } from '@angular/core';
+import {distinctUntilChanged, takeUntil} from 'rxjs/operators';
+import {BehaviorSubject, combineLatest, Subject} from 'rxjs';
 import {ListSource} from '../../../../shared/classes/list-source/list-source';
 import {CachedListSource} from '../../../../shared/classes/list-source/impl/cached-list-source';
-import {hasAnyChanges} from '../../../../functions/has-any-changes';
-import {Subject} from 'rxjs';
-import {distinctUntilChanged, takeUntil, throttleTime} from 'rxjs/operators';
-import {ListSourceRequestModel} from '../../../../shared/classes/list-source/models/list-source-request.model';
+
+interface Range {
+    offset: number;
+    limit: number;
+}
+
+interface Size {
+    width: number;
+    height: number;
+}
 
 @Component({
     selector: 'app-virtual-list',
@@ -28,199 +36,199 @@ import {ListSourceRequestModel} from '../../../../shared/classes/list-source/mod
     styleUrls: ['./virtual-list.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class VirtualListComponent<T = any> implements OnInit, OnChanges, OnInit, AfterViewInit, AfterContentChecked, OnDestroy {
+export class VirtualListComponent<T = any> implements OnInit, OnChanges, OnInit, AfterViewInit, AfterViewChecked, OnDestroy {
+
     @Input() source: ListSource<T>;
     @Input() itemTemplate: TemplateRef<any>;
-    @Input() expectItemHeight = 32;
-    @Input() minRequestSize = 500;
+    @Input() minItemHeight = 29;
+
+    @ViewChild('virtualList') virtualListElement: ElementRef;
+    @ViewChild('viewport') viewElement: ElementRef;
+    @ViewChildren('viewItem') viewItemElements: QueryList<ElementRef>;
 
     realItemsHeight = new Map<number, number>();
-    cachedSource: CachedListSource<T>;
-    sourceSize: number;
-
-    offsetIndex: number;
-    viewportItems: T[] = [];
-
-    needUpdate$ = new Subject();
-    update$ = new Subject<ListSourceRequestModel>();
-
-    destroy$ = new Subject();
-
-    loading = true;
-    scrollPosPx = 0;
-
-    @ViewChildren('viewItem') viewItemElements: QueryList<ElementRef<HTMLElement>>;
-    @ViewChild('viewport') viewElement: ElementRef<HTMLElement>;
-
     topVirtualHeightPx: number;
     bottomVirtualHeightPx: number;
 
-    constructor(private hostElement: ElementRef<HTMLElement>,
-                private cdr: ChangeDetectorRef
-    ) {
+    source$ = new BehaviorSubject<CachedListSource<T>>(null);
+    scrollTop$ = new BehaviorSubject<number>(0);
+    viewItems$ = new Subject<T[]>();
+    size$ = new Subject<Size>();
+    range$ = new Subject<Range>();
+
+    destroy$ = new Subject();
+
+    constructor(private cdr: ChangeDetectorRef) {
+
     }
 
-    ngOnChanges(changes: SimpleChanges): void {
-        if (hasAnyChanges(changes, ['source'])) {
-            this.updateCachedSource();
-        }
-    }
+    ngOnInit(): void {
+        const scrollTop$ = this.scrollTop$.pipe(distinctUntilChanged());
+        const size$ = this.size$.pipe(distinctUntilChanged((x, y) => x.width === y.width && x.height === y.height));
+        const range$ = this.range$.pipe(distinctUntilChanged((x, y) => x.offset === y.offset && x.limit === y.limit));
 
-    ngOnInit() {
-        this.needUpdate$
+        this.source$
             .pipe(
-                throttleTime(10),
                 takeUntil(this.destroy$)
             )
-            .subscribe(() => this.update$.next(this.getViewportRange()));
+            .subscribe(() => {
+                this.realItemsHeight.clear();
+            });
 
-        this.update$
+        combineLatest(
+            this.source$,
+            scrollTop$,
+            size$
+        )
             .pipe(
-                distinctUntilChanged((x, y) => x && y && x.offset === y.offset && x.limit === y.limit),
                 takeUntil(this.destroy$)
             )
-            .subscribe(request => this.updateAll(request));
+            .subscribe(([source, scrollTop, size]) => {
+                const range = this.getRange(scrollTop, size);
+                let end = range.offset + range.limit;
+
+                end = Math.min(items.length, end + 2);
+
+                range.limit = end - range.offset;
+
+                this.range$.next(range);
+            });
+
+        combineLatest(
+            this.source$,
+            range$
+        )
+            .pipe(
+                takeUntil(this.destroy$)
+            )
+            .subscribe(([source, range]) => {
+                this.viewItems$.next(this.getViewItems(items, range));
+
+                if (range.offset + range.limit === items.length) {
+                    this.end.emit({end: range.offset + range.limit});
+                }
+
+                this.cdr.detectChanges();
+            });
+
+        combineLatest(
+            this.viewItems$,
+            range$,
+            this.source$
+        )
+            .pipe(
+                takeUntil(this.destroy$)
+            )
+            .subscribe(([viewItems, range, source]) => {
+                this.updateVirtualHeights(viewItems, range, items);
+
+                this.cdr.detectChanges();
+            });
     }
 
     ngAfterViewInit(): void {
-        this.viewItemElements.changes
+        const range$ = this.range$.pipe(distinctUntilChanged((x, y) => x.offset === y.offset && x.limit === y.limit));
+
+        combineLatest(
+            this.viewItemElements.changes,
+            range$
+        )
             .pipe(
                 takeUntil(this.destroy$)
             )
-            .subscribe(() => this.onItemsChange());
+            .subscribe(([changes, range]) => {
+                this.saveViewItemsHeight(changes, range);
+            });
     }
 
-    getAvgHeight(): number {
+    ngAfterViewChecked(): void {
+        this.size$.next({
+            width: this.virtualListElement.nativeElement.offsetWidth,
+            height: this.virtualListElement.nativeElement.offsetHeight
+        });
+    }
+
+    ngOnChanges(changes: SimpleChanges): void {
+        if (changes.hasOwnProperty('source')) {
+            this.source$.next(new CachedListSource(this.source, 100));
+        }
+    }
+
+    onScroll($event: WheelEvent) {
+        this.scrollTop$.next(this.virtualListElement.nativeElement.scrollTop);
+    }
+
+    getMinItemHeight(): number {
         if (this.realItemsHeight.size) {
-            return [...this.realItemsHeight.values()].reduce((p, c) => p + c) / this.realItemsHeight.size;
+            return Math.min(...this.realItemsHeight.values());
         } else {
-            return this.expectItemHeight;
+            return this.minItemHeight;
         }
     }
 
     getRangeHeight(offset: number, end: number): number {
         let height = 0;
-        let _avgHeight;
-        const avgHeight = () => _avgHeight || (_avgHeight = this.getAvgHeight());
+        let _minHeight;
+        const minHeight = () => _minHeight || (_minHeight = this.getMinItemHeight());
 
         for (let i = offset; i <= end; i++) {
             if (this.realItemsHeight.has(i)) {
                 height += this.realItemsHeight.get(i);
             } else {
-                height += avgHeight();
+                height += minHeight();
             }
         }
 
         return height;
     }
 
-    getViewportLimitIndex(): number {
-        const height = this.hostElement.nativeElement.offsetHeight;
-        return Math.ceil(height / this.getAvgHeight());
-    }
+    getIndexByOffsetAndTop(offsetIndex: number, top: number) {
+        let heightSum = 0;
+        const minHeight = this.getMinItemHeight();
 
-    getScrollOffsetTopPx(): number {
-        return this.scrollPosPx;
-    }
+        while (true) {
+            if (this.realItemsHeight.has(offsetIndex)) {
+                heightSum += this.realItemsHeight.get(offsetIndex);
+            } else {
+                heightSum += minHeight;
+            }
 
-    getViewportOffsetIndex(): number {
-        const offsetTop = this.getScrollOffsetTopPx();
-        return Math.floor(offsetTop / this.getAvgHeight());
-    }
-
-    getViewportRange(): { offset: number, limit: number } {
-        const offset = this.getViewportOffsetIndex();
-        let limit = this.getViewportLimitIndex();
-
-        if (this.sourceSize) {
-            limit = Math.min(limit, this.sourceSize - offset);
+            if (heightSum < top) {
+                offsetIndex++;
+            } else {
+                break;
+            }
         }
 
-        return {offset, limit};
+        return offsetIndex;
     }
 
-    ngAfterContentChecked(): void {
-        this.updateVirtualHeights();
-
-        this.needUpdate$.next();
+    updateVirtualHeights(viewItems: T[], range: Range, items: T[]) {
+        this.topVirtualHeightPx = this.getRangeHeight(0, range.offset - 1);
+        this.bottomVirtualHeightPx = this.getRangeHeight(range.offset + viewItems.length, items.length - 1);
     }
 
-    onScrollPosChange(pos: number) {
-        this.scrollPosPx = pos;
-        this.needUpdate$.next();
-    }
-
-    onScrollSizeChange($event: number) {
-        this.needUpdate$.next();
-    }
-
-    onItemsChange() {
-        this.saveViewItemsHeight();
-        this.needUpdate$.next();
-    }
-
-    saveViewItemsHeight() {
+    saveViewItemsHeight(changes, range: Range) {
         if (this.viewItemElements) {
             this.viewItemElements.forEach((item, index) => {
-                this.realItemsHeight.set(this.offsetIndex + index, item.nativeElement.offsetHeight);
+                this.realItemsHeight.set(range.offset + index, item.nativeElement.offsetHeight);
             });
         }
     }
 
-    updateCachedSource() {
-        this.offsetIndex = 0;
-        this.sourceSize = 0;
-        this.viewportItems = [];
-        this.realItemsHeight.clear();
-        this.scrollPosPx = 0;
-        this.cachedSource = null;
-
-        if (!this.source) {
-            return;
-        }
-
-        this.cachedSource = new CachedListSource(this.source, this.minRequestSize);
-
-        this.update$.next(null);
-        this.needUpdate$.next();
-    }
-
-    updateAll(request: ListSourceRequestModel) {
-        if (!request || !this.cachedSource) {
-            return;
-        }
-
-        this.loading = true;
-
-        this.cachedSource.getData(request)
-            .pipe(
-                takeUntil(this.destroy$)
-            )
-            .subscribe(result => {
-                this.offsetIndex = request.offset;
-                this.sourceSize = result.count;
-                this.viewportItems = result.items;
-
-                this.cdr.detectChanges(); // нужно отрендерить элементы для корректного расчета высот элементов и расчета высот заполнения
-
-                this.loading = false;
-                this.updateVirtualHeights();
-
-            }, null, () => {
-                this.loading = false;
-            });
-    }
-
-    updateVirtualHeights() {
-        this.topVirtualHeightPx = this.getRangeHeight(0, this.offsetIndex - 1);
-        this.bottomVirtualHeightPx = this.getRangeHeight(this.offsetIndex + this.viewportItems.length + 1, this.sourceSize);
-
-        this.cdr.detectChanges(); // рендерим заполнения и сообщаем скроллбоксу об изменениях высот заполнения элементов
-    }
-
-    ngOnDestroy() {
+    ngOnDestroy(): void {
         this.destroy$.next();
         this.destroy$.complete();
     }
 
+    private getViewItems(items: T[], range: Range): T[] {
+        return items.slice(range.offset, range.offset + range.limit);
+    }
+
+    private getRange(scrollTop: number, size: Size): Range {
+        const offset = this.getIndexByOffsetAndTop(0, scrollTop);
+        const limit = this.getIndexByOffsetAndTop(offset, size.height) - offset + 1;
+
+        return {offset, limit};
+    }
 }
