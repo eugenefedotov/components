@@ -1,9 +1,8 @@
 <app-scroll-box class="virtual-list"
-        [class.virtual-list_spinner]="loading"
+        [class.virtual-list_spinner]="loading$ | async"
         [wheelSize]="getMinItemHeight() * 2"
-        [verticalAbsoluteScrollPosition]="scrollPosPx"
+        [verticalAbsoluteScrollPosition]="scrollTop$ | async"
         (verticalAbsoluteScrollPositionChange)="onScrollPosChange($event)"
-        (verticalRelativeScrollSizeChange)="onScrollSizeChange($event)"
 >
     <div class="virtual-list__top" [style.height.px]="topVirtualHeightPx"></div>
     <div class="virtual-list__view" #viewport>

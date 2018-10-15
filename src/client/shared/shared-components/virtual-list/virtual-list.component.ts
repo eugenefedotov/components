@@ -15,7 +15,7 @@ import {
     ViewChild,
     ViewChildren
 } from '@angular/core';
-import {distinctUntilChanged, takeUntil} from 'rxjs/operators';
+import {distinctUntilChanged, takeUntil, withLatestFrom} from 'rxjs/operators';
 import {BehaviorSubject, combineLatest, Subject} from 'rxjs';
 import {ListSource} from '../../../../shared/classes/list-source/list-source';
 import {CachedListSource} from '../../../../shared/classes/list-source/impl/cached-list-source';
@@ -40,7 +40,7 @@ export class VirtualListComponent<T = any> implements OnInit, OnChanges, OnInit,
 
     @Input() source: ListSource<T>;
     @Input() itemTemplate: TemplateRef<any>;
-    @Input() minItemHeight = 29;
+    @Input() minItemHeight = 32;
 
     @ViewChild('virtualList') virtualListElement: ElementRef;
     @ViewChild('viewport') viewElement: ElementRef;
@@ -51,18 +51,20 @@ export class VirtualListComponent<T = any> implements OnInit, OnChanges, OnInit,
     bottomVirtualHeightPx: number;
 
     source$ = new BehaviorSubject<CachedListSource<T>>(null);
+    sourceSize$ = new BehaviorSubject<number>(null);
     scrollTop$ = new BehaviorSubject<number>(0);
     viewItems$ = new Subject<T[]>();
     size$ = new Subject<Size>();
     range$ = new Subject<Range>();
-
     destroy$ = new Subject();
+    loading$ = new BehaviorSubject(false);
 
     constructor(private cdr: ChangeDetectorRef) {
 
     }
 
     ngOnInit(): void {
+        const sourceSize$ = this.sourceSize$.pipe(distinctUntilChanged());
         const scrollTop$ = this.scrollTop$.pipe(distinctUntilChanged());
         const size$ = this.size$.pipe(distinctUntilChanged((x, y) => x.width === y.width && x.height === y.height));
         const range$ = this.range$.pipe(distinctUntilChanged((x, y) => x.offset === y.offset && x.limit === y.limit));
@@ -77,17 +79,20 @@ export class VirtualListComponent<T = any> implements OnInit, OnChanges, OnInit,
 
         combineLatest(
             this.source$,
+            sourceSize$,
             scrollTop$,
             size$
         )
             .pipe(
                 takeUntil(this.destroy$)
             )
-            .subscribe(([source, scrollTop, size]) => {
+            .subscribe(([source, sourceSize, scrollTop, size]) => {
                 const range = this.getRange(scrollTop, size);
                 let end = range.offset + range.limit;
 
-                end = Math.min(items.length, end + 2);
+                if (sourceSize) {
+                    end = Math.min(sourceSize, end + 2);
+                }
 
                 range.limit = end - range.offset;
 
@@ -99,9 +104,10 @@ export class VirtualListComponent<T = any> implements OnInit, OnChanges, OnInit,
             range$
         )
             .pipe(
+                withLatestFrom(([source, range]) => source.getData(range)),
                 takeUntil(this.destroy$)
             )
-            .subscribe(([source, range]) => {
+            .subscribe(([source, range, items]) => {
                 this.viewItems$.next(this.getViewItems(items, range));
 
                 if (range.offset + range.limit === items.length) {
@@ -154,8 +160,8 @@ export class VirtualListComponent<T = any> implements OnInit, OnChanges, OnInit,
         }
     }
 
-    onScroll($event: WheelEvent) {
-        this.scrollTop$.next(this.virtualListElement.nativeElement.scrollTop);
+    onScrollPosChange(scrollTopPx: number) {
+        this.scrollTop$.next(scrollTopPx);
     }
 
     getMinItemHeight(): number {
