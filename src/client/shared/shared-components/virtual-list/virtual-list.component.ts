@@ -15,7 +15,7 @@ import {
     ViewChild,
     ViewChildren
 } from '@angular/core';
-import {distinctUntilChanged, takeUntil, withLatestFrom} from 'rxjs/operators';
+import {distinctUntilChanged, map, switchMap, takeUntil} from 'rxjs/operators';
 import {BehaviorSubject, combineLatest, Subject} from 'rxjs';
 import {ListSource} from '../../../../shared/classes/list-source/list-source';
 import {CachedListSource} from '../../../../shared/classes/list-source/impl/cached-list-source';
@@ -104,29 +104,27 @@ export class VirtualListComponent<T = any> implements OnInit, OnChanges, OnInit,
             range$
         )
             .pipe(
-                withLatestFrom(([source, range]) => source.getData(range)),
+                switchMap(([source, range]) => source.getData(range)
+                    .pipe(
+                        map(response => ({source, range, response}))
+                    )),
                 takeUntil(this.destroy$)
             )
-            .subscribe(([source, range, items]) => {
-                this.viewItems$.next(this.getViewItems(items, range));
-
-                if (range.offset + range.limit === items.length) {
-                    this.end.emit({end: range.offset + range.limit});
-                }
-
+            .subscribe(({source, range, response}) => {
+                this.viewItems$.next(this.getViewItems(response.items, range));
                 this.cdr.detectChanges();
             });
 
         combineLatest(
             this.viewItems$,
             range$,
-            this.source$
+            sourceSize$
         )
             .pipe(
                 takeUntil(this.destroy$)
             )
-            .subscribe(([viewItems, range, source]) => {
-                this.updateVirtualHeights(viewItems, range, items);
+            .subscribe(([viewItems, range, sourceSize]) => {
+                this.updateVirtualHeights(viewItems, range, sourceSize);
 
                 this.cdr.detectChanges();
             });
@@ -209,9 +207,9 @@ export class VirtualListComponent<T = any> implements OnInit, OnChanges, OnInit,
         return offsetIndex;
     }
 
-    updateVirtualHeights(viewItems: T[], range: Range, items: T[]) {
+    updateVirtualHeights(viewItems: T[], range: Range, sourceSize: number) {
         this.topVirtualHeightPx = this.getRangeHeight(0, range.offset - 1);
-        this.bottomVirtualHeightPx = this.getRangeHeight(range.offset + viewItems.length, items.length - 1);
+        this.bottomVirtualHeightPx = this.getRangeHeight(range.offset + viewItems.length, sourceSize - 1);
     }
 
     saveViewItemsHeight(changes, range: Range) {
