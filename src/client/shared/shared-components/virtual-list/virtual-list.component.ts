@@ -15,7 +15,7 @@ import {
     ViewChild,
     ViewChildren
 } from '@angular/core';
-import {distinctUntilChanged, map, switchMap, takeUntil} from 'rxjs/operators';
+import {distinctUntilChanged, map, switchMap, takeUntil, tap} from 'rxjs/operators';
 import {BehaviorSubject, combineLatest, Subject} from 'rxjs';
 import {ListSource} from '../../../../shared/classes/list-source/list-source';
 import {CachedListSource} from '../../../../shared/classes/list-source/impl/cached-list-source';
@@ -42,7 +42,6 @@ export class VirtualListComponent<T = any> implements OnInit, OnChanges, OnInit,
     @Input() itemTemplate: TemplateRef<any>;
     @Input() minItemHeight = 32;
 
-    @ViewChild('virtualList') virtualListElement: ElementRef;
     @ViewChild('viewport') viewElement: ElementRef;
     @ViewChildren('viewItem') viewItemElements: QueryList<ElementRef>;
 
@@ -59,7 +58,7 @@ export class VirtualListComponent<T = any> implements OnInit, OnChanges, OnInit,
     destroy$ = new Subject();
     loading$ = new BehaviorSubject(false);
 
-    constructor(private cdr: ChangeDetectorRef) {
+    constructor(private cdr: ChangeDetectorRef, private elRef: ElementRef) {
 
     }
 
@@ -147,8 +146,8 @@ export class VirtualListComponent<T = any> implements OnInit, OnChanges, OnInit,
 
     ngAfterViewChecked(): void {
         this.size$.next({
-            width: this.virtualListElement.nativeElement.offsetWidth,
-            height: this.virtualListElement.nativeElement.offsetHeight
+            width: this.elRef.nativeElement.offsetWidth,
+            height: this.elRef.nativeElement.offsetHeight
         });
     }
 
