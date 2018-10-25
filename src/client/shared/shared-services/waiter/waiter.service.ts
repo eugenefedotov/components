@@ -12,7 +12,7 @@ export function Waiter(lock = false): MethodDecorator {
         const originalMethod = descriptor.value;
 
         descriptor.value = function (...args) {
-            const token = `Waiter_decorator_for_${key}_${counter++}`;
+            const token = `Waiter_decorator_for_${String(key)}_${counter++}`;
 
             WaiterServicePrivate.show(token);
             const terminate = () => WaiterServicePrivate.hide(token);

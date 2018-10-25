@@ -47,8 +47,8 @@ export class RepositoryDataSource<T> implements DataSource<T> {
         qb.select(this.primaryFields);
 
         if (request.fields) {
-            request.fields.forEach(field => {
-                if (!this.fields.includes(field)) {
+            request.fields.forEach((field) => {
+                if (!this.fields.includes(field as string)) {
                     throw new Error(`field ${field} non exists`);
                 }
             });

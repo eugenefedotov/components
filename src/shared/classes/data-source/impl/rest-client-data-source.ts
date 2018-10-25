@@ -34,7 +34,7 @@ export class RestClientDataSource<T> implements DataSource<T> {
 
             if (request.filter && request.filter.length) {
                 request.filter.forEach(filter => {
-                    params = params.append(filter.field, filter.values.join(','));
+                    params = params.append(filter.field as string, filter.values.join(','));
                 });
             }
         }
@@ -45,7 +45,7 @@ export class RestClientDataSource<T> implements DataSource<T> {
     private deserializeResponse(response: DataSourceResponseModel<T>): DataSourceResponseModel<T> {
         return {
             ...response,
-            items: deserialize(this.type, response.items)
+            items: deserialize(this.type as Function, response.items)
         };
     }
 }
