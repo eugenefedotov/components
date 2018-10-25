@@ -56,7 +56,6 @@ export class VirtualListComponent<T = any> implements OnInit, OnChanges, OnInit,
     size$ = new Subject<Size>();
     range$ = new Subject<Range>();
     destroy$ = new Subject();
-    loading$ = new BehaviorSubject(false);
 
     constructor(private cdr: ChangeDetectorRef, private elRef: ElementRef) {
 
@@ -67,6 +66,11 @@ export class VirtualListComponent<T = any> implements OnInit, OnChanges, OnInit,
         const scrollTop$ = this.scrollTop$.pipe(distinctUntilChanged());
         const size$ = this.size$.pipe(distinctUntilChanged((x, y) => x.width === y.width && x.height === y.height));
         const range$ = this.range$.pipe(distinctUntilChanged((x, y) => x.offset === y.offset && x.limit === y.limit));
+
+        sourceSize$.pipe(takeUntil(this.destroy$)).subscribe((val) => console.log('sourceSize$', val));
+        scrollTop$.pipe(takeUntil(this.destroy$)).subscribe((val) => console.log('scrollTop$', val));
+        size$.pipe(takeUntil(this.destroy$)).subscribe((val) => console.log('size$', val));
+        range$.pipe(takeUntil(this.destroy$)).subscribe((val) => console.log('range$', val));
 
         this.source$
             .pipe(
@@ -86,16 +90,7 @@ export class VirtualListComponent<T = any> implements OnInit, OnChanges, OnInit,
                 takeUntil(this.destroy$)
             )
             .subscribe(([source, sourceSize, scrollTop, size]) => {
-                const range = this.getRange(scrollTop, size);
-                let end = range.offset + range.limit;
-
-                if (sourceSize) {
-                    end = Math.min(sourceSize, end + 2);
-                }
-
-                range.limit = end - range.offset;
-
-                this.range$.next(range);
+                this.range$.next(this.getRange(scrollTop, size));
             });
 
         combineLatest(
@@ -110,6 +105,7 @@ export class VirtualListComponent<T = any> implements OnInit, OnChanges, OnInit,
                 takeUntil(this.destroy$)
             )
             .subscribe(({source, range, response}) => {
+                this.sourceSize$.next(response.count);
                 this.viewItems$.next(this.getViewItems(response.items, range));
                 this.cdr.detectChanges();
             });
