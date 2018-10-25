@@ -3,8 +3,8 @@
     <div class="select__icon-button" *ngIf="canClear && selectedItem" (click)="onClearClick($event)"><fa [name]="'times'"></fa></div>
     <div class="select__icon-button" (click)="onSelectClick($event)"><fa [name]="drop ? 'caret-up' : 'caret-down'"></fa></div>
 </div>
-<ng-template #itemTemplate let-item="item" let-selected="selected">
-    <app-select-item class="select__item" (click)="onItemClick($event, item)" [item]="item" [selected]="selected"></app-select-item>
+<ng-template #itemTemplate let-item="item">
+    <app-select-item class="select__item" (click)="onItemClick($event, item)" [item]="item" [selected]="comparator.equals(item, selectedItem)"></app-select-item>
 </ng-template>
 <ng-container *ngIf="drop">
     <div #selectDrop
