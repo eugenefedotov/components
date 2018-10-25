@@ -1,5 +1,9 @@
-<ng-template #itemTemplate let-item="item" let-selected="selected">
-    <app-payment-service-currency [item]="item" [selected]="selected"></app-payment-service-currency>
+<ng-template #itemTemplate let-item="item">
+    <app-payment-service-currency
+            [item]="item"
+            [selected]="paymentServiceCurrencyComparator.equals(item, paymentServiceCurrency)"
+            (click)="onPaymentServiceCurrencyClick(item)"
+    ></app-payment-service-currency>
 </ng-template>
 
 <div class="payment-service-currency-list">
@@ -21,7 +25,6 @@
     </div>
     <app-virtual-list
             class="payment-service-currency-list__list"
-            (selectedItemChange)="onPaymentServiceCurrencyChange($event)"
             [source]="listSource"
             [itemTemplate]="itemTemplate"></app-virtual-list>
 </div>
