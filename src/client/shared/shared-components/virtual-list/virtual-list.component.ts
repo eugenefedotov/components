@@ -15,15 +15,12 @@ import {
     ViewChild,
     ViewChildren
 } from '@angular/core';
-import {distinctUntilChanged, map, switchMap, takeUntil, tap} from 'rxjs/operators';
+import {distinctUntilChanged, map, switchMap, takeUntil} from 'rxjs/operators';
 import {BehaviorSubject, combineLatest, Subject} from 'rxjs';
 import {ListSource} from '../../../../shared/classes/list-source/list-source';
 import {CachedListSource} from '../../../../shared/classes/list-source/impl/cached-list-source';
-
-interface Range {
-    offset: number;
-    limit: number;
-}
+import {VirtualListItemModel} from './models/virtual-list-item.model';
+import {VirtualListViewportRangeModel} from './models/virtual-list-viewport-range.model';
 
 interface Size {
     width: number;
@@ -39,6 +36,7 @@ interface Size {
 export class VirtualListComponent<T = any> implements OnInit, OnChanges, OnInit, AfterViewInit, AfterViewChecked, OnDestroy {
 
     @Input() source: ListSource<T>;
+    @Input() itemPlaceholderTemplate: TemplateRef<any>;
     @Input() itemTemplate: TemplateRef<any>;
     @Input() minItemHeight = 32;
 
@@ -52,9 +50,9 @@ export class VirtualListComponent<T = any> implements OnInit, OnChanges, OnInit,
     source$ = new BehaviorSubject<CachedListSource<T>>(null);
     sourceSize$ = new BehaviorSubject<number>(null);
     scrollTop$ = new BehaviorSubject<number>(0);
-    viewItems$ = new Subject<T[]>();
+    viewItems$ = new Subject<VirtualListItemModel<T>[]>();
     size$ = new Subject<Size>();
-    range$ = new Subject<Range>();
+    range$ = new Subject<VirtualListViewportRangeModel>();
     destroy$ = new Subject();
 
     constructor(private cdr: ChangeDetectorRef, private elRef: ElementRef) {
@@ -65,7 +63,7 @@ export class VirtualListComponent<T = any> implements OnInit, OnChanges, OnInit,
         const sourceSize$ = this.sourceSize$.pipe(distinctUntilChanged());
         const scrollTop$ = this.scrollTop$.pipe(distinctUntilChanged());
         const size$ = this.size$.pipe(distinctUntilChanged((x, y) => x.width === y.width && x.height === y.height));
-        const range$ = this.range$.pipe(distinctUntilChanged((x, y) => x.offset === y.offset && x.limit === y.limit));
+        const range$ = this.range$.pipe(distinctUntilChanged((x, y) => x.start === y.start && x.end === y.end));
 
         sourceSize$.pipe(takeUntil(this.destroy$)).subscribe((val) => console.log('sourceSize$', val));
         scrollTop$.pipe(takeUntil(this.destroy$)).subscribe((val) => console.log('scrollTop$', val));
@@ -98,7 +96,10 @@ export class VirtualListComponent<T = any> implements OnInit, OnChanges, OnInit,
             range$
         )
             .pipe(
-                switchMap(([source, range]) => source.getData(range)
+                switchMap(([source, range]) => source.getData({
+                    offset: range.start,
+                    limit: range.end - range.start
+                })
                     .pipe(
                         map(response => ({source, range, response}))
                     )),
@@ -126,7 +127,7 @@ export class VirtualListComponent<T = any> implements OnInit, OnChanges, OnInit,
     }
 
     ngAfterViewInit(): void {
-        const range$ = this.range$.pipe(distinctUntilChanged((x, y) => x.offset === y.offset && x.limit === y.limit));
+        const range$ = this.range$.pipe(distinctUntilChanged((x, y) => x.start === y.start && x.end === y.end));
 
         combineLatest(
             this.viewItemElements.changes,
@@ -202,15 +203,15 @@ export class VirtualListComponent<T = any> implements OnInit, OnChanges, OnInit,
         return offsetIndex;
     }
 
-    updateVirtualHeights(viewItems: T[], range: Range, sourceSize: number) {
-        this.topVirtualHeightPx = this.getRangeHeight(0, range.offset - 1);
-        this.bottomVirtualHeightPx = this.getRangeHeight(range.offset + viewItems.length, sourceSize - 1);
+    updateVirtualHeights(viewItems: T[], range: VirtualListViewportRangeModel, sourceSize: number) {
+        this.topVirtualHeightPx = this.getRangeHeight(0, range.start - 1);
+        this.bottomVirtualHeightPx = this.getRangeHeight(range.end, sourceSize - 1);
     }
 
-    saveViewItemsHeight(changes, range: Range) {
+    saveViewItemsHeight(changes, range: VirtualListViewportRangeModel) {
         if (this.viewItemElements) {
             this.viewItemElements.forEach((item, index) => {
-                this.realItemsHeight.set(range.offset + index, item.nativeElement.offsetHeight);
+                this.realItemsHeight.set(range.start + index, item.nativeElement.offsetHeight);
             });
         }
     }
@@ -220,14 +221,14 @@ export class VirtualListComponent<T = any> implements OnInit, OnChanges, OnInit,
         this.destroy$.complete();
     }
 
-    private getViewItems(items: T[], range: Range): T[] {
-        return items.slice(range.offset, range.offset + range.limit);
+    private getViewItems(items: T[], range: VirtualListViewportRangeModel): T[] {
+        return items.slice(range.start, range.end);
     }
 
-    private getRange(scrollTop: number, size: Size): Range {
-        const offset = this.getIndexByOffsetAndTop(0, scrollTop);
-        const limit = this.getIndexByOffsetAndTop(offset, size.height) - offset + 1;
+    private getRange(scrollTop: number, size: Size): VirtualListViewportRangeModel {
+        const start = this.getIndexByOffsetAndTop(0, scrollTop);
+        const end = this.getIndexByOffsetAndTop(start, size.height);
 
-        return {offset, limit};
+        return {start, end};
     }
 }
