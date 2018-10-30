@@ -1,8 +1,10 @@
-import {ListSource} from '../list-source';
-import {ListSourceResponseModel} from '../models/list-source-response.model';
-import {ListSourceRequestModel} from '../models/list-source-request.model';
-import {BehaviorSubject, Observable, of} from 'rxjs';
-import {debounceTime, filter, map, shareReplay, switchMap, tap} from 'rxjs/operators';
+import {ListSource} from '../../list-source';
+import {ListSourceResponseModel} from '../../models/list-source-response.model';
+import {ListSourceRequestModel} from '../../models/list-source-request.model';
+import {BehaviorSubject, Observable, Subscription} from 'rxjs';
+import {debounceTime, filter, shareReplay, switchMap, tap} from 'rxjs/operators';
+import {CachedListSourceResponseModel} from './cached-list-source-response.model';
+import {CachedListSourceRequestModel} from './cached-list-source-request.model';
 
 
 export class CachedListSource<T> implements ListSource<T> {
@@ -22,16 +24,29 @@ export class CachedListSource<T> implements ListSource<T> {
         }
     }
 
-    getData(request: ListSourceRequestModel): Observable<ListSourceResponseModel<T>> {
-        const fromCache = this.getFromCache(request);
-        if (fromCache) {
-            return of(fromCache);
-        }
+    getData(request: CachedListSourceRequestModel): Observable<CachedListSourceResponseModel<T>> {
+        return new Observable(subscriber => {
+            const subscriptions = new Subscription();
 
-        return this.request(request)
-            .pipe(
-                map(() => this.getFromCache(request))
-            );
+            const fromCache = this.getFromCache(request);
+            if (fromCache) {
+                subscriber.next(fromCache);
+            }
+
+            if (fromCache && !fromCache.partial) {
+                subscriber.complete();
+            } else {
+                subscriptions.add(
+                    this.request(request)
+                        .subscribe(() => {
+                            subscriber.next(this.getFromCache(request));
+                            subscriber.complete();
+                        })
+                );
+            }
+
+            return () => subscriptions.unsubscribe();
+        });
     }
 
     private toCache(request: ListSourceRequestModel, response: ListSourceResponseModel<T>) {
@@ -58,24 +73,31 @@ export class CachedListSource<T> implements ListSource<T> {
         return null;
     }
 
-    private getFromCache(request: ListSourceRequestModel): ListSourceResponseModel<T> {
+    private getFromCache(request: CachedListSourceRequestModel): CachedListSourceResponseModel<T> {
         if (!request || !request.limit) {
-            return {count: this.count, items: []};
+            return {count: this.count, items: [], partial: false};
         }
 
         const result = [];
+        let partial = false;
 
         for (let i = 0; i < request.limit; i++) {
             const index = i + request.offset;
             if (!this.cache.has(index)) {
-                return null;
+                if (!request.acceptPartialResponse) {
+                    return null;
+                } else {
+                    partial = true;
+                    result.push(null);
+                }
             }
             result.push(this.cache.get(index));
         }
 
         return {
             count: this.count,
-            items: result
+            items: result,
+            partial
         };
     }
 

@@ -18,14 +18,10 @@ import {
 import {distinctUntilChanged, map, switchMap, takeUntil} from 'rxjs/operators';
 import {BehaviorSubject, combineLatest, Subject} from 'rxjs';
 import {ListSource} from '../../../../shared/classes/list-source/list-source';
-import {CachedListSource} from '../../../../shared/classes/list-source/impl/cached-list-source';
+import {CachedListSource} from '../../../../shared/classes/list-source/impl/cached-list-source/cached-list-source';
 import {VirtualListItemModel} from './models/virtual-list-item.model';
 import {VirtualListViewportRangeModel} from './models/virtual-list-viewport-range.model';
 
-interface Size {
-    width: number;
-    height: number;
-}
 
 @Component({
     selector: 'app-virtual-list',
@@ -46,12 +42,12 @@ export class VirtualListComponent<T = any> implements OnInit, OnChanges, OnInit,
     realItemsHeight = new Map<number, number>();
     topVirtualHeightPx: number;
     bottomVirtualHeightPx: number;
+    viewItems: VirtualListItemModel<T>[];
 
     source$ = new BehaviorSubject<CachedListSource<T>>(null);
     sourceSize$ = new BehaviorSubject<number>(null);
     scrollTop$ = new BehaviorSubject<number>(0);
-    viewItems$ = new Subject<VirtualListItemModel<T>[]>();
-    size$ = new Subject<Size>();
+    height$ = new Subject<number>();
     range$ = new Subject<VirtualListViewportRangeModel>();
     destroy$ = new Subject();
 
@@ -62,12 +58,12 @@ export class VirtualListComponent<T = any> implements OnInit, OnChanges, OnInit,
     ngOnInit(): void {
         const sourceSize$ = this.sourceSize$.pipe(distinctUntilChanged());
         const scrollTop$ = this.scrollTop$.pipe(distinctUntilChanged());
-        const size$ = this.size$.pipe(distinctUntilChanged((x, y) => x.width === y.width && x.height === y.height));
+        const height$ = this.height$.pipe(distinctUntilChanged());
         const range$ = this.range$.pipe(distinctUntilChanged((x, y) => x.start === y.start && x.end === y.end));
 
         sourceSize$.pipe(takeUntil(this.destroy$)).subscribe((val) => console.log('sourceSize$', val));
         scrollTop$.pipe(takeUntil(this.destroy$)).subscribe((val) => console.log('scrollTop$', val));
-        size$.pipe(takeUntil(this.destroy$)).subscribe((val) => console.log('size$', val));
+        height$.pipe(takeUntil(this.destroy$)).subscribe((val) => console.log('height$', val));
         range$.pipe(takeUntil(this.destroy$)).subscribe((val) => console.log('range$', val));
 
         this.source$
@@ -82,7 +78,7 @@ export class VirtualListComponent<T = any> implements OnInit, OnChanges, OnInit,
             this.source$,
             sourceSize$,
             scrollTop$,
-            size$
+            height$
         )
             .pipe(
                 takeUntil(this.destroy$)
@@ -106,8 +102,8 @@ export class VirtualListComponent<T = any> implements OnInit, OnChanges, OnInit,
                 takeUntil(this.destroy$)
             )
             .subscribe(({source, range, response}) => {
+                this.viewItems = response.items;
                 this.sourceSize$.next(response.count);
-                this.viewItems$.next(this.getViewItems(response.items, range));
                 this.cdr.detectChanges();
             });
 
@@ -142,10 +138,7 @@ export class VirtualListComponent<T = any> implements OnInit, OnChanges, OnInit,
     }
 
     ngAfterViewChecked(): void {
-        this.size$.next({
-            width: this.elRef.nativeElement.offsetWidth,
-            height: this.elRef.nativeElement.offsetHeight
-        });
+        this.height$.next(this.elRef.nativeElement.offsetHeight);
     }
 
     ngOnChanges(changes: SimpleChanges): void {
@@ -225,9 +218,9 @@ export class VirtualListComponent<T = any> implements OnInit, OnChanges, OnInit,
         return items.slice(range.start, range.end);
     }
 
-    private getRange(scrollTop: number, size: Size): VirtualListViewportRangeModel {
+    private getRange(scrollTop: number, height: number): VirtualListViewportRangeModel {
         const start = this.getIndexByOffsetAndTop(0, scrollTop);
-        const end = this.getIndexByOffsetAndTop(start, size.height);
+        const end = this.getIndexByOffsetAndTop(start, height);
 
         return {start, end};
     }
