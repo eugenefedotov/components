@@ -5,9 +5,12 @@ import * as bodyParser from 'body-parser';
 import * as compress from 'compression';
 import * as methodOverride from 'method-override';
 import {createConnection} from 'typeorm';
+import '@tsed/servestatic';
+import {NotFoundMiddleware} from './server/middlewares/not-found.middleware';
+import * as Path from 'path';
 
 @ServerSettings({
-    rootDir: './src/server',
+    rootDir: Path.resolve(__dirname, 'server'),
     mount: {
         '/api': '${rootDir}/controllers/api/**/*.ts'
     },
@@ -16,6 +19,9 @@ import {createConnection} from 'typeorm';
         '${rootDir}/services/**/*.ts',
         '${rootDir}/converters/**/*.ts'
     ],
+    serveStatic: {
+        '/': '${rootDir}/static'
+    },
     acceptMimes: ['application/json'],
     httpPort: 8081
 })
@@ -44,6 +50,10 @@ class Server extends ServerLoader {
 
     public $onReady() {
         console.log('Server started...');
+    }
+
+    public $afterRoutesInit() {
+        // this.use(NotFoundMiddleware);
     }
 
     public $onServerInitError(err) {

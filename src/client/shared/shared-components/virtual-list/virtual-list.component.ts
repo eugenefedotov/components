@@ -19,9 +19,7 @@ import {distinctUntilChanged, map, switchMap, takeUntil} from 'rxjs/operators';
 import {BehaviorSubject, combineLatest, Subject} from 'rxjs';
 import {ListSource} from '../../../../shared/classes/list-source/list-source';
 import {CachedListSource} from '../../../../shared/classes/list-source/impl/cached-list-source/cached-list-source';
-import {VirtualListItemModel} from './models/virtual-list-item.model';
 import {VirtualListViewportRangeModel} from './models/virtual-list-viewport-range.model';
-
 
 @Component({
     selector: 'app-virtual-list',
@@ -42,8 +40,8 @@ export class VirtualListComponent<T = any> implements OnInit, OnChanges, OnInit,
     realItemsHeight = new Map<number, number>();
     topVirtualHeightPx: number;
     bottomVirtualHeightPx: number;
-    viewItems: VirtualListItemModel<T>[];
 
+    viewItems$ = new BehaviorSubject<T[]>([]);
     source$ = new BehaviorSubject<CachedListSource<T>>(null);
     sourceSize$ = new BehaviorSubject<number>(null);
     scrollTop$ = new BehaviorSubject<number>(0);
@@ -102,7 +100,7 @@ export class VirtualListComponent<T = any> implements OnInit, OnChanges, OnInit,
                 takeUntil(this.destroy$)
             )
             .subscribe(({source, range, response}) => {
-                this.viewItems = response.items;
+                this.viewItems$.next(response.items);
                 this.sourceSize$.next(response.count);
                 this.cdr.detectChanges();
             });
@@ -212,10 +210,6 @@ export class VirtualListComponent<T = any> implements OnInit, OnChanges, OnInit,
     ngOnDestroy(): void {
         this.destroy$.next();
         this.destroy$.complete();
-    }
-
-    private getViewItems(items: T[], range: VirtualListViewportRangeModel): T[] {
-        return items.slice(range.start, range.end);
     }
 
     private getRange(scrollTop: number, height: number): VirtualListViewportRangeModel {

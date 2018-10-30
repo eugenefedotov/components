@@ -12,7 +12,8 @@
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
             "showCircularDependencies": false,
-            "outputPath": "dist",
+            "outputPath": "src/server/static",
+            "deleteOutputPath": false,
             "index": "src/index.html",
             "main": "src/client.ts",
             "tsConfig": "src/tsconfig.client.json",

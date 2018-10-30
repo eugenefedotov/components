@@ -5,14 +5,14 @@
 >
     <div class="virtual-list__top" [style.height.px]="topVirtualHeightPx"></div>
     <div class="virtual-list__view" #viewport>
-        <div class="virtual-list__view-item" #viewItem *ngFor="let item of viewItems; let i = index;">
-            <ng-container *ngIf="item.loaded">
-                <ng-container *ngTemplateOutlet="itemTemplate; context: {item: item.item, index: i}"></ng-container>
+        <div class="virtual-list__view-item" #viewItem *ngFor="let item of viewItems$.value; let i = index;">
+            <ng-container *ngIf="item">
+                <ng-container *ngTemplateOutlet="itemTemplate; context: {item: item, index: i}"></ng-container>
             </ng-container>
-            <ng-container *ngIf="!item.loaded && itemPlaceholderTemplate">
+            <ng-container *ngIf="!item && itemPlaceholderTemplate">
                 <ng-container *ngTemplateOutlet="itemPlaceholderTemplate; context: {index: i}"></ng-container>
             </ng-container>
-            <ng-container *ngIf="!item.loaded && !itemPlaceholderTemplate">
+            <ng-container *ngIf="!item && !itemPlaceholderTemplate">
                 <ng-container *ngTemplateOutlet="defaultItemTemplate; context: {index: i}"></ng-container>
             </ng-container>
         </div>
