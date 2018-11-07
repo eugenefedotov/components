@@ -1,19 +1,19 @@
 import {Column, Entity, ManyToOne, PrimaryGeneratedColumn} from 'typeorm';
-import {PaymentServiceRequisiteTypeEntity} from './payment-service-requisite-type.entity';
-import {PaymentServiceRequisiteTypePatternItemTypeEnum} from './payment-service-requisite-type-pattern-item-type.enum';
+import {ValidatorPatternItemTypeEnum} from './validator-pattern-item-type.enum';
 import {escapeRegExp} from '../../functions/escape-reg-exp';
+import {ValidatorEntity} from './validator.entity';
 
-@Entity('payment_service_requisite_type_item')
-export class PaymentServiceRequisiteTypePatternItemEntity {
+@Entity('validator_pattern_item')
+export class ValidatorPatternItemEntity {
 
     @PrimaryGeneratedColumn({unsigned: true})
     id: number;
 
-    @ManyToOne(type => PaymentServiceRequisiteTypeEntity)
-    paymentServiceRequisiteType: PaymentServiceRequisiteTypeEntity;
+    @ManyToOne(type => ValidatorEntity)
+    validator: ValidatorEntity;
 
-    @Column({type: 'enum', enum: PaymentServiceRequisiteTypePatternItemTypeEnum})
-    type: PaymentServiceRequisiteTypePatternItemTypeEnum;
+    @Column({type: 'enum', enum: ValidatorPatternItemTypeEnum})
+    type: ValidatorPatternItemTypeEnum;
 
 
     @Column({default: null})
@@ -36,9 +36,9 @@ export class PaymentServiceRequisiteTypePatternItemEntity {
 
     getPlaceholder(): string {
         switch (this.type) {
-            case PaymentServiceRequisiteTypePatternItemTypeEnum.FixedString:
+            case ValidatorPatternItemTypeEnum.FixedString:
                 return this.fixedString;
-            case PaymentServiceRequisiteTypePatternItemTypeEnum.RegExpPattern:
+            case ValidatorPatternItemTypeEnum.RegExpPattern:
                 return this.regExpPlaceholder;
         }
     }
@@ -46,18 +46,18 @@ export class PaymentServiceRequisiteTypePatternItemEntity {
     getRegExp(start: boolean): RegExp {
         const startPattern = start ? '^' : '';
         switch (this.type) {
-            case PaymentServiceRequisiteTypePatternItemTypeEnum.FixedString:
+            case ValidatorPatternItemTypeEnum.FixedString:
                 return new RegExp(startPattern + escapeRegExp(this.fixedString));
-            case PaymentServiceRequisiteTypePatternItemTypeEnum.RegExpPattern:
+            case ValidatorPatternItemTypeEnum.RegExpPattern:
                 return new RegExp(startPattern + this.regExpPattern, this.regExpPattern);
         }
     }
 
     getLengths(): [number, number] {
         switch (this.type) {
-            case PaymentServiceRequisiteTypePatternItemTypeEnum.FixedString:
+            case ValidatorPatternItemTypeEnum.FixedString:
                 return [String(this.fixedString).length, String(this.fixedString).length];
-            case PaymentServiceRequisiteTypePatternItemTypeEnum.RegExpPattern:
+            case ValidatorPatternItemTypeEnum.RegExpPattern:
                 return [this.regExpMinLength, this.regExpMaxLength];
         }
     }

@@ -3,7 +3,7 @@ import {PaymentServiceEntity} from '../payment-service/payment-service.entity';
 import {CurrencyEntity} from '../currency/currency.entity';
 import {PaymentServiceRequisiteTypeEntity} from '../payment-service-requisite-type/payment-service-requisite-type.entity';
 import {Type} from 'serializer.ts/Decorators';
-import {calculateFee} from '../../functions/calculate.fee';
+import {calculateFee} from '../../functions/calculate-fee';
 import {BigNumber} from 'bignumber.js';
 
 @Entity('payment_service_currency')
