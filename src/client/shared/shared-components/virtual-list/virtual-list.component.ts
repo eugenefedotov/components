@@ -15,11 +15,12 @@ import {
     ViewChild,
     ViewChildren
 } from '@angular/core';
-import {distinctUntilChanged, map, switchMap, takeUntil} from 'rxjs/operators';
+import {distinctUntilChanged, map, switchMap, takeUntil, tap} from 'rxjs/operators';
 import {BehaviorSubject, combineLatest, Subject} from 'rxjs';
 import {ListSource} from '../../../../shared/classes/list-source/list-source';
 import {CachedListSource} from '../../../../shared/classes/list-source/impl/cached-list-source/cached-list-source';
 import {VirtualListViewportRangeModel} from './models/virtual-list-viewport-range.model';
+import {CachedListSourceResponseModel} from '../../../../shared/classes/list-source/impl/cached-list-source/cached-list-source-response.model';
 
 @Component({
     selector: 'app-virtual-list',
@@ -59,21 +60,26 @@ export class VirtualListComponent<T = any> implements OnInit, OnChanges, OnInit,
         const height$ = this.height$.pipe(distinctUntilChanged());
         const range$ = this.range$.pipe(distinctUntilChanged((x, y) => x.start === y.start && x.end === y.end));
 
-        sourceSize$.pipe(takeUntil(this.destroy$)).subscribe((val) => console.log('sourceSize$', val));
-        scrollTop$.pipe(takeUntil(this.destroy$)).subscribe((val) => console.log('scrollTop$', val));
-        height$.pipe(takeUntil(this.destroy$)).subscribe((val) => console.log('height$', val));
-        range$.pipe(takeUntil(this.destroy$)).subscribe((val) => console.log('range$', val));
+        // sourceSize$.pipe(takeUntil(this.destroy$)).subscribe((val) => console.log('sourceSize$', val));
+        // scrollTop$.pipe(takeUntil(this.destroy$)).subscribe((val) => console.log('scrollTop$', val));
+        // height$.pipe(takeUntil(this.destroy$)).subscribe((val) => console.log('height$', val));
+        // range$.pipe(takeUntil(this.destroy$)).subscribe((val) => console.log('range$', val));
 
         this.source$
             .pipe(
+                tap(() => {
+                    this.realItemsHeight.clear();
+                    this.viewItems$.next([]);
+                }),
+                switchMap(source => source.getData({offset: 0, limit: 0})),
                 takeUntil(this.destroy$)
             )
-            .subscribe(() => {
-                this.realItemsHeight.clear();
+            .subscribe((resp: CachedListSourceResponseModel<T>) => {
+                this.sourceSize$.next(resp.count);
+                this.scrollTop$.next(0);
             });
 
         combineLatest(
-            this.source$,
             sourceSize$,
             scrollTop$,
             height$
@@ -81,8 +87,8 @@ export class VirtualListComponent<T = any> implements OnInit, OnChanges, OnInit,
             .pipe(
                 takeUntil(this.destroy$)
             )
-            .subscribe(([source, sourceSize, scrollTop, size]) => {
-                this.range$.next(this.getRange(scrollTop, size));
+            .subscribe(([sourceSize, scrollTop, height]) => {
+                this.range$.next(this.getRange(sourceSize, scrollTop, height));
             });
 
         combineLatest(
@@ -101,7 +107,6 @@ export class VirtualListComponent<T = any> implements OnInit, OnChanges, OnInit,
             )
             .subscribe(({source, range, response}) => {
                 this.viewItems$.next(response.items);
-                this.sourceSize$.next(response.count);
                 this.cdr.detectChanges();
             });
 
@@ -115,7 +120,6 @@ export class VirtualListComponent<T = any> implements OnInit, OnChanges, OnInit,
             )
             .subscribe(([viewItems, range, sourceSize]) => {
                 this.updateVirtualHeights(viewItems, range, sourceSize);
-
                 this.cdr.detectChanges();
             });
     }
@@ -212,9 +216,9 @@ export class VirtualListComponent<T = any> implements OnInit, OnChanges, OnInit,
         this.destroy$.complete();
     }
 
-    private getRange(scrollTop: number, height: number): VirtualListViewportRangeModel {
+    private getRange(sourceSize: number, scrollTop: number, height: number): VirtualListViewportRangeModel {
         const start = this.getIndexByOffsetAndTop(0, scrollTop);
-        const end = this.getIndexByOffsetAndTop(start, height);
+        const end = Math.min(this.getIndexByOffsetAndTop(start, height) + 1, sourceSize);
 
         return {start, end};
     }

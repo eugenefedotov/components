@@ -74,6 +74,10 @@ export class CachedListSource<T> implements ListSource<T> {
     }
 
     private getFromCache(request: CachedListSourceRequestModel): CachedListSourceResponseModel<T> {
+        if (!this.count) {
+            return null;
+        }
+
         if (!request || !request.limit) {
             return {count: this.count, items: [], partial: false};
         }
