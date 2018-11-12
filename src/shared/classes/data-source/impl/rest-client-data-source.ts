@@ -45,7 +45,7 @@ export class RestClientDataSource<T> implements DataSource<T> {
     private deserializeResponse(response: DataSourceResponseModel<T>): DataSourceResponseModel<T> {
         return {
             ...response,
-            items: deserialize(this.type as Function, JSON.stringify(response.items))
+            items: deserialize(this.type as Function, response.items)
         };
     }
 }
