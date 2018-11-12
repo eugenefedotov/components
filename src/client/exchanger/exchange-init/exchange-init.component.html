@@ -3,9 +3,11 @@
         <app-block-wrapper [title]="'Калькулятор'">
             <app-exchange-route
                     *ngIf="fromPaymentServiceCurrency && toPaymentServiceCurrency"
-                    [fromSum]="fromSum"
+                    [(fromSum)]="fromSum"
                     [fromPaymentServiceCurrency]="fromPaymentServiceCurrency"
-                    [toPaymentServiceCurrency]="toPaymentServiceCurrency"></app-exchange-route>
+                    [toPaymentServiceCurrency]="toPaymentServiceCurrency"
+                    (exchangeRouteChange)="onExchangeRouteChange($event)"
+            ></app-exchange-route>
         </app-block-wrapper>
     </div>
     <div class="exchange-init__requisites">
@@ -18,7 +20,7 @@
             </app-value-wrapper>
 
             <app-value-wrapper [title]="''">
-                <app-button [text]="'Обменять'"></app-button>
+                <app-button [text]="'Обменять'" (click)="onExchangeClick()"></app-button>
             </app-value-wrapper>
         </app-block-wrapper>
     </div>

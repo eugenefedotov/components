@@ -23,4 +23,14 @@ export class ExchangeRestService {
             );
     }
 
+    initExchange(exchange: ExchangeEntity): Observable<ExchangeEntity> {
+        return this.http.post(`/api/exchange`,
+            exchange,
+            {
+                responseType: 'text'
+            })
+            .pipe(
+                map(jsonText => deserialize(ExchangeEntity, jsonText))
+            );
+    }
 }

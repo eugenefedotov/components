@@ -33,6 +33,9 @@ export class ExchangeRouteComponent implements OnInit, OnChanges, OnDestroy {
 
     exchangeRoute: ExchangeRouteEntity;
 
+    @Output()
+    exchangeRouteChange = new EventEmitter<ExchangeRouteEntity>();
+
     form = new FormGroup({
         fromClient: new FormControl(0),
         fromFee: new FormControl(0),
@@ -186,6 +189,8 @@ export class ExchangeRouteComponent implements OnInit, OnChanges, OnDestroy {
 
     setExchangeRoute(exchangeRoute: ExchangeRouteEntity) {
         this.exchangeRoute = exchangeRoute;
+        this.exchangeRouteChange.emit(this.exchangeRoute);
+
         this.updateValidators();
 
         if (this.fromSum) {
