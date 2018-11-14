@@ -9,7 +9,7 @@ export class ExchangeEntity {
     uuid: string;
 
     @Type(type => ExchangeRouteEntity)
-    @ManyToOne(type => ExchangeRouteEntity)
+    @ManyToOne(type => ExchangeRouteEntity, {nullable: false, eager: true})
     exchangeRoute: ExchangeRouteEntity;
 
     @Column({unsigned: true, type: 'double', nullable: true})

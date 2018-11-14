@@ -14,23 +14,16 @@ export class ExchangeRestService {
     }
 
     getByUuid(uuid: string): Observable<ExchangeEntity> {
-        return this.http.get(`/api/exchange/${uuid}`,
-            {
-                responseType: 'text'
-            })
+        return this.http.get(`/api/exchange/${uuid}`)
             .pipe(
-                map(jsonText => deserialize(ExchangeEntity, jsonText))
+                map(response => deserialize(ExchangeEntity, response))
             );
     }
 
     initExchange(exchange: ExchangeEntity): Observable<ExchangeEntity> {
-        return this.http.post(`/api/exchange`,
-            exchange,
-            {
-                responseType: 'text'
-            })
+        return this.http.post(`/api/exchange`, exchange)
             .pipe(
-                map(jsonText => deserialize(ExchangeEntity, jsonText))
+                map(response => deserialize(ExchangeEntity, response))
             );
     }
 }

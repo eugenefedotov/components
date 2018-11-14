@@ -49,6 +49,6 @@ export class ExchangeInitComponent implements OnInit {
 
         exchange = await this.exchangeRestService.initExchange(exchange).toPromise();
 
-        await this.router.navigate(['exchange', 'exchange-status', exchange.uuid]);
+        await this.router.navigate(['exchanger', 'exchange-status', exchange.uuid]);
     }
 }
