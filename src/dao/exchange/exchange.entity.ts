@@ -1,6 +1,7 @@
 import {Column, Entity, ManyToOne, PrimaryGeneratedColumn} from 'typeorm';
 import {ExchangeRouteEntity} from '../exchange-route/exchange-route.entity';
 import {Type} from 'serializer.ts/Decorators';
+import {PaymentServiceRequisiteTypeEntity} from '../payment-service-requisite-type/payment-service-requisite-type.entity';
 
 @Entity('exchange')
 export class ExchangeEntity {
@@ -14,4 +15,11 @@ export class ExchangeEntity {
 
     @Column({unsigned: true, type: 'double', nullable: true})
     fromSum: number;
+
+    @Type(type => PaymentServiceRequisiteTypeEntity)
+    @ManyToOne(type => PaymentServiceRequisiteTypeEntity, {nullable: false, eager: true})
+    toRequisiteType: PaymentServiceRequisiteTypeEntity;
+
+    @Column()
+    toRequisiteValue: string;
 }
