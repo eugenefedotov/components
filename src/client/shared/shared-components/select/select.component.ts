@@ -62,7 +62,7 @@ export class SelectComponent implements OnInit, OnChanges, OnDestroy, ControlVal
 
     @ViewChild('selectDrop') selectDrop: ElementRef<HTMLElement>;
 
-    comparator = new KeyComparator('value');
+    comparator = new KeyComparator<any>('value');
 
     constructor() {
     }

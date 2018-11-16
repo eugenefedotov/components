@@ -13,10 +13,10 @@
     <div class="exchange-init__requisites">
         <app-block-wrapper [title]="'Реквизит для зачисления ' + toPaymentServiceCurrency.code">
             <app-value-wrapper [title]="'Тип реквизита'">
-
+                <app-select [(selectedItem)]="selectedRequisiteTypeItem" [source]="requisiteTypeSource"></app-select>
             </app-value-wrapper>
             <app-value-wrapper [title]="'Значение реквизита'">
-
+                <app-input [(ngModel)]="requisiteValue"></app-input>
             </app-value-wrapper>
 
             <app-value-wrapper [title]="''">

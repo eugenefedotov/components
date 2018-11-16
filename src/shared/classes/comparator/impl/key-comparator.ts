@@ -1,6 +1,6 @@
 import {Comparator} from '../comparator';
 
-export class KeyComparator<T> implements Comparator<T> {
+export class KeyComparator<T = any> implements Comparator<T> {
 
     constructor(private key: keyof T) {
 

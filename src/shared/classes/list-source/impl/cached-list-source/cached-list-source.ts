@@ -9,7 +9,7 @@ import {CachedListSourceRequestModel} from './cached-list-source-request.model';
 
 export class CachedListSource<T> implements ListSource<T> {
 
-    private count: number;
+    private count: number = null;
     private cache = new Map<number, T>();
 
     private activeRequests = new Map<ListSourceRequestModel, Observable<ListSourceResponseModel<T>>>();
@@ -74,7 +74,7 @@ export class CachedListSource<T> implements ListSource<T> {
     }
 
     private getFromCache(request: CachedListSourceRequestModel): CachedListSourceResponseModel<T> {
-        if (!this.count) {
+        if (this.count === null) {
             return null;
         }
 

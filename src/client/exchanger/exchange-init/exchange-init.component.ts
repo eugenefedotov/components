@@ -5,6 +5,10 @@ import {ExchangeInitParamsModel} from './exchange-init-params.model';
 import {ExchangeRestService} from '../../shared/shared-rest-services/exchange-rest/exchange-rest.service';
 import {ExchangeRouteEntity} from '../../../dao/exchange-route/exchange-route.entity';
 import {ExchangeEntity} from '../../../dao/exchange/exchange.entity';
+import {SelectSource} from '../../../shared/classes/select-source/select-source';
+import {LocalSelectSource} from '../../../shared/classes/select-source/impl/local-select-source';
+import {PaymentServiceRequisiteTypeEntity} from '../../../dao/payment-service-requisite-type/payment-service-requisite-type.entity';
+import {SelectItemModel} from '../../../shared/classes/select-source/models/select-item.model';
 
 @Component({
     selector: 'app-exchange-init',
@@ -18,6 +22,9 @@ export class ExchangeInitComponent implements OnInit {
     fromPaymentServiceCurrency: PaymentServiceCurrencyEntity;
     toPaymentServiceCurrency: PaymentServiceCurrencyEntity;
     exchangeRoute: ExchangeRouteEntity;
+    requisiteTypeSource: SelectSource<PaymentServiceRequisiteTypeEntity>;
+    selectedRequisiteTypeItem: SelectItemModel<PaymentServiceRequisiteTypeEntity>;
+    requisiteValue: string;
 
     constructor(private route: ActivatedRoute,
                 private router: Router,
@@ -29,6 +36,8 @@ export class ExchangeInitComponent implements OnInit {
         this.route.data.subscribe((data: { params: ExchangeInitParamsModel }) => {
             this.fromPaymentServiceCurrency = data.params.from;
             this.toPaymentServiceCurrency = data.params.to;
+
+            this.updateRequisiteTypeSource();
             this.cdr.markForCheck();
         });
 
@@ -46,9 +55,24 @@ export class ExchangeInitComponent implements OnInit {
         let exchange = new ExchangeEntity();
         exchange.exchangeRoute = this.exchangeRoute;
         exchange.fromSum = this.fromSum;
+        exchange.toRequisiteType = this.selectedRequisiteTypeItem && this.selectedRequisiteTypeItem.attributes;
+        exchange.toRequisiteValue = this.requisiteValue;
 
         exchange = await this.exchangeRestService.initExchange(exchange).toPromise();
 
         await this.router.navigate(['exchanger', 'exchange-status', exchange.uuid]);
+    }
+
+    private updateRequisiteTypeSource() {
+        const requisiteTypes = this.toPaymentServiceCurrency ? this.toPaymentServiceCurrency.requisiteTypes : [];
+
+        this.requisiteTypeSource = new LocalSelectSource(
+            requisiteTypes
+                .map(type => ({
+                    value: type.id,
+                    name: type.name,
+                    attributes: type
+                }))
+        );
     }
 }

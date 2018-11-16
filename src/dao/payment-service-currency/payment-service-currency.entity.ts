@@ -60,7 +60,7 @@ export class PaymentServiceCurrencyEntity {
     step: number;
 
     @Type(type => PaymentServiceRequisiteTypeEntity)
-    @ManyToMany(type => PaymentServiceRequisiteTypeEntity)
+    @ManyToMany(type => PaymentServiceRequisiteTypeEntity, {eager: true}) // todo потенциально тяжелый запрос
     @JoinTable({name: `payment_service_currency__requisite_types`})
     requisiteTypes: PaymentServiceRequisiteTypeEntity[];
 
