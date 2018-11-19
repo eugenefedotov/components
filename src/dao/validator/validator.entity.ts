@@ -1,5 +1,5 @@
 import {Column, Entity, OneToMany, PrimaryGeneratedColumn} from 'typeorm';
-import {ValidatorPatternItemEntity} from './validator-pattern-item.entity';
+import {ValidatorCharEntity} from './validator-char.entity';
 
 @Entity('validator')
 export class ValidatorEntity {
@@ -10,26 +10,26 @@ export class ValidatorEntity {
     @Column()
     name: string;
 
-    @OneToMany(type => ValidatorPatternItemEntity, object => object.validator, {
+    @OneToMany(type => ValidatorCharEntity, object => object.validator, {
         eager: true,
         cascade: true
     })
-    patternItems: ValidatorPatternItemEntity[];
+    chars: ValidatorCharEntity[];
 
     format(value: string): string {
         let formatted = '';
         let valid = true;
-        for (const patternItem of this.patternItems) {
-            if (value.length && valid && patternItem.getRegExp(true).test(value)) {
-                formatted = formatted + patternItem.getRegExp(true).exec(value)[0];
-                value = value.replace(patternItem.getRegExp(true), '');
+        for (const patternItem of this.chars) {
+            if (value.length && valid && patternItem.isStartWith(value)) {
+                formatted = formatted + patternItem.getMatchedPart(value);
+                value = patternItem.deleteStartFrom(value);
                 continue;
             } else {
                 valid = false;
             }
 
             if (!valid) {
-                formatted = formatted + patternItem.getPlaceholder();
+                formatted = formatted + patternItem.placeholder;
                 continue;
             }
         }
@@ -38,32 +38,28 @@ export class ValidatorEntity {
     }
 
     isStartWith(value: string): boolean {
-        for (const patternItem of this.patternItems) {
+        for (const patternItem of this.chars) {
             if (!value.length) {
                 return true;
             }
 
-            const regExp = patternItem.getRegExp(true);
-
-            if (!regExp.test(value)) {
+            if (!patternItem.isStartWith(value)) {
                 return false;
             }
 
-            value = value.replace(regExp, '');
+            value = patternItem.deleteStartFrom(value);
         }
 
         return false;
     }
 
     isValidAndComplete(value: string): boolean {
-        for (const patternItem of this.patternItems) {
-            const regExp = patternItem.getRegExp(true);
-
-            if (!regExp.test(value)) {
+        for (const patternItem of this.chars) {
+            if (!patternItem.isStartWith(value)) {
                 return false;
             }
 
-            value = value.replace(regExp, '');
+            value = patternItem.deleteStartFrom(value);
         }
 
         return !value.length;
