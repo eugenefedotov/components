@@ -1,5 +1,6 @@
 import {Directive, ElementRef, HostListener, Input, OnChanges, SimpleChanges} from '@angular/core';
 import {MaskEntity} from '../../../../dao/mask/mask.entity';
+import {NgControl} from '@angular/forms';
 
 @Directive({
     selector: 'input[appInputMask]'
@@ -11,13 +12,14 @@ export class InputMaskDirective implements OnChanges {
     private el: HTMLInputElement;
 
     constructor(
-        private elementRef: ElementRef<HTMLInputElement>
+        private elementRef: ElementRef<HTMLInputElement>,
+        private control: NgControl
     ) {
         this.el = this.elementRef.nativeElement;
     }
 
     ngOnChanges(changes: SimpleChanges): void {
-
+        // this.control.control.setValidators();
     }
 
     @HostListener('change')
