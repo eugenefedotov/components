@@ -1,15 +1,15 @@
 import {Column, Entity, ManyToOne, PrimaryGeneratedColumn} from 'typeorm';
-import {ValidatorEntity} from './validator.entity';
+import {MaskEntity} from './mask.entity';
 import {escapeRegExp} from '../../functions/escape-reg-exp';
 
-@Entity('validator_pattern_item')
-export class ValidatorCharEntity {
+@Entity('mask_char')
+export class MaskCharEntity {
 
     @PrimaryGeneratedColumn({unsigned: true})
     id: number;
 
-    @ManyToOne(type => ValidatorEntity)
-    validator: ValidatorEntity;
+    @ManyToOne(type => MaskEntity)
+    mask: MaskEntity;
 
     @Column({default: null, comment: 'Символы, которые можно использовать'})
     chars: string;

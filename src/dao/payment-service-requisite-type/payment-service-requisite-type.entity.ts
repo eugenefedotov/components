@@ -1,5 +1,5 @@
 import {Column, Entity, ManyToOne, PrimaryGeneratedColumn} from 'typeorm';
-import {ValidatorEntity} from '../validator/validator.entity';
+import {MaskEntity} from '../mask/mask.entity';
 import {Type} from 'serializer.ts/Decorators';
 
 @Entity('payment_service_requisite_type')
@@ -11,7 +11,7 @@ export class PaymentServiceRequisiteTypeEntity {
     @Column()
     name: string;
 
-    @Type(type => ValidatorEntity)
-    @ManyToOne(type => ValidatorEntity, {eager: true})
-    validator: ValidatorEntity;
+    @Type(type => MaskEntity)
+    @ManyToOne(type => MaskEntity, {eager: true})
+    validator: MaskEntity;
 }

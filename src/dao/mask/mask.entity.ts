@@ -1,8 +1,8 @@
 import {Column, Entity, OneToMany, PrimaryGeneratedColumn} from 'typeorm';
-import {ValidatorCharEntity} from './validator-char.entity';
+import {MaskCharEntity} from './mask-char.entity';
 
-@Entity('validator')
-export class ValidatorEntity {
+@Entity('mask')
+export class MaskEntity {
 
     @PrimaryGeneratedColumn({unsigned: true})
     id: number;
@@ -10,11 +10,11 @@ export class ValidatorEntity {
     @Column()
     name: string;
 
-    @OneToMany(type => ValidatorCharEntity, object => object.validator, {
+    @OneToMany(type => MaskCharEntity, object => object.mask, {
         eager: true,
         cascade: true
     })
-    chars: ValidatorCharEntity[];
+    chars: MaskCharEntity[];
 
     format(value: string): string {
         let formatted = '';
