@@ -1,6 +1,7 @@
 import {Component, forwardRef, HostBinding, Input, OnDestroy, OnInit} from '@angular/core';
 import {ControlValueAccessor, NG_VALUE_ACCESSOR} from '@angular/forms';
 import {Subject} from 'rxjs';
+import {MaskEntity} from '../../../../dao/mask/mask.entity';
 
 const INPUT_VALUE_ACCESSOR = {
     provide: NG_VALUE_ACCESSOR,
@@ -21,6 +22,9 @@ export class InputComponent implements OnInit, ControlValueAccessor, OnDestroy {
 
     @Input()
     suffix: string;
+
+    @Input()
+    mask: MaskEntity;
 
     @Input()
     type: string;

@@ -10,7 +10,8 @@
                (ngModelChange)="onValueChange()"
                (focus)="setFocus(true)"
                (blur)="setFocus(false)"
+               [appInputMask]="mask"
         >
     </div>
-    <div class="input__suffix">{{suffix}}</div>
+    <div class="input__suffix"> {{suffix}}</div>
 </div>
