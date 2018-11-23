@@ -13,5 +13,5 @@ export class PaymentServiceRequisiteTypeEntity {
 
     @Type(type => MaskEntity)
     @ManyToOne(type => MaskEntity, {eager: true})
-    validator: MaskEntity;
+    mask: MaskEntity;
 }
