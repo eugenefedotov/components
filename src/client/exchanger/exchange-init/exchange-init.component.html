@@ -16,7 +16,7 @@
                 <app-select [(selectedItem)]="selectedRequisiteTypeItem" [source]="requisiteTypeSource"></app-select>
             </app-value-wrapper>
             <app-value-wrapper [title]="selectedRequisiteTypeItem?.name || 'Значение реквизита'">
-                <app-input [(ngModel)]="requisiteValue"></app-input>
+                <app-input [(ngModel)]="requisiteValue" [mask]="selectedRequisiteTypeItem?.attributes.mask"></app-input>
             </app-value-wrapper>
 
             <app-value-wrapper [title]="''">

@@ -1,15 +1,19 @@
-import {Directive, ElementRef, HostListener, Input, OnChanges, SimpleChanges} from '@angular/core';
-import {MaskEntity} from '../../../../dao/mask/mask.entity';
-import {NgControl} from '@angular/forms';
+import {Directive, ElementRef, HostListener, Input, OnChanges, OnDestroy, OnInit, SimpleChanges} from '@angular/core';
+import {MaskEntity, MaskResult} from '../../../../dao/mask/mask.entity';
+import {AbstractControl, NgControl, ValidationErrors} from '@angular/forms';
+import {Subject} from 'rxjs';
+import {distinctUntilChanged, filter, takeUntil} from 'rxjs/operators';
 
 @Directive({
     selector: 'input[appInputMask]'
 })
-export class InputMaskDirective implements OnChanges {
+export class InputMaskDirective implements OnChanges, OnInit, OnDestroy {
 
     @Input() appInputMask: MaskEntity;
 
     private el: HTMLInputElement;
+    private destroy$ = new Subject();
+    private oldValue: string;
 
     constructor(
         private elementRef: ElementRef<HTMLInputElement>,
@@ -18,25 +22,57 @@ export class InputMaskDirective implements OnChanges {
         this.el = this.elementRef.nativeElement;
     }
 
+    ngOnInit(): void {
+        this.control.control.valueChanges
+            .pipe(
+                filter(() => !!this.appInputMask),
+                distinctUntilChanged(),
+                takeUntil(this.destroy$)
+            )
+            .subscribe(() => this.updateInput());
+    }
+
     ngOnChanges(changes: SimpleChanges): void {
-        // this.control.control.setValidators();
+        if (changes.hasOwnProperty('appInputMask')) {
+            this.updateInput();
+        }
     }
 
-    @HostListener('change')
-    onValueChange() {
-        this.formatValue();
+    ngOnDestroy(): void {
+        this.destroy$.next();
+        this.destroy$.complete();
     }
 
-    @HostListener('blur')
-    onBlur() {
-        this.formatValue();
+    @HostListener('focus')
+    onFocus() {
+        this.updateInput();
     }
 
-    formatValue() {
-        this.el.value = this.format(this.el.value);
+    updateInput() {
+        const origin = String(this.control.control.value);
+
+        if (this.oldValue === origin) {
+            return;
+        }
+
+        const isAdding = String(this.oldValue).length <= origin.length;
+        const maskResult = this.tryMask(origin, isAdding);
+        this.oldValue = origin;
+
+        if (maskResult) {
+            if (origin !== maskResult.formatted) {
+                this.control.control.setValue(maskResult.formatted);
+            }
+
+            if (maskResult.cursor !== null) {
+                // console.log(maskResult);
+                this.el.selectionStart = maskResult.cursor;
+                this.el.selectionEnd = maskResult.cursor;
+            }
+        }
     }
 
-    format(text: string): string {
-        return this.appInputMask ? this.appInputMask.format(text) : text;
+    private tryMask(text: string, adding: boolean): MaskResult {
+        return this.appInputMask ? this.appInputMask.try(text, adding) : null;
     }
 }

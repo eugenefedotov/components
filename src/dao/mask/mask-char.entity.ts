@@ -1,6 +1,5 @@
 import {Column, Entity, ManyToOne, PrimaryGeneratedColumn} from 'typeorm';
 import {MaskEntity} from './mask.entity';
-import {escapeRegExp} from '../../functions/escape-reg-exp';
 
 @Entity('mask_char')
 export class MaskCharEntity {
@@ -16,26 +15,4 @@ export class MaskCharEntity {
 
     @Column({default: '_'})
     placeholder: string;
-
-    @Column({default: 1, unsigned: true, comment: 'Минимальное кол-во символов'})
-    minLength: number;
-
-    @Column({default: 1, unsigned: true, comment: 'Максимальное кол-во символов'})
-    maxLength: number;
-
-    isStartWith(value: string): boolean {
-        return this.getRegExp().test(value);
-    }
-
-    getMatchedPart(value: string): string {
-        return this.getRegExp().exec(value)[0];
-    }
-
-    deleteStartFrom(value: string): string {
-        return value.replace(this.getRegExp(), '');
-    }
-
-    private getRegExp(): RegExp {
-        return new RegExp(`^[${escapeRegExp(this.chars)}]{${this.minLength},${this.maxLength}}`);
-    }
 }
