@@ -1,7 +1,8 @@
-import {Column, Entity, ManyToOne, PrimaryGeneratedColumn} from 'typeorm';
+import {Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn} from 'typeorm';
 import {ExchangeRouteEntity} from '../exchange-route/exchange-route.entity';
 import {Type} from 'serializer.ts/Decorators';
 import {PaymentServiceRequisiteTypeEntity} from '../payment-service-requisite-type/payment-service-requisite-type.entity';
+import {PaymentEntity} from '../payment/payment.entity';
 
 @Entity('exchange')
 export class ExchangeEntity {
@@ -22,4 +23,12 @@ export class ExchangeEntity {
 
     @Column()
     toRequisiteValue: string;
+
+    @Type(type => PaymentEntity)
+    @OneToMany(type => PaymentEntity, object => object.incoming, {eager: true})
+    incomingPayments: PaymentEntity[];
+
+    @Type(type => PaymentEntity)
+    @OneToMany(type => PaymentEntity, object => object.outgoing, {eager: true})
+    outgoingPayments: PaymentEntity[];
 }
