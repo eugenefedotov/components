@@ -3,7 +3,7 @@
         <app-block-wrapper [title]="'Калькулятор'">
             <app-exchange-route
                     *ngIf="fromPaymentServiceCurrency && toPaymentServiceCurrency"
-                    [(fromSum)]="fromSum"
+                    [(fromSum)]="form.get('fromSum').value"
                     [fromPaymentServiceCurrency]="fromPaymentServiceCurrency"
                     [toPaymentServiceCurrency]="toPaymentServiceCurrency"
                     (exchangeRouteChange)="onExchangeRouteChange($event)"
@@ -13,14 +13,23 @@
     <div class="exchange-init__requisites">
         <app-block-wrapper [title]="'Реквизит для зачисления ' + toPaymentServiceCurrency.code">
             <app-value-wrapper [title]="'Тип реквизита'">
-                <app-select [(selectedItem)]="selectedRequisiteTypeItem" [source]="requisiteTypeSource"></app-select>
+                <app-select
+                        [source]="requisiteTypeSource"
+                        [formControl]="form.get('requisiteType')"
+                        [(selectedItem)]="selectedRequisiteTypeItem"
+                ></app-select>
             </app-value-wrapper>
             <app-value-wrapper [title]="selectedRequisiteTypeItem?.name || 'Значение реквизита'">
-                <app-input [(ngModel)]="requisiteValue" [mask]="selectedRequisiteTypeItem?.attributes.mask"></app-input>
+                <app-input [formControl]="form.get('requisiteValue')"
+                           [mask]="selectedRequisiteTypeItem?.attributes.mask"></app-input>
             </app-value-wrapper>
 
             <app-value-wrapper [title]="''">
-                <app-button [text]="'Обменять'" (click)="onExchangeClick()"></app-button>
+                <button
+                        [disabled]="form.invalid"
+                        [accent]="true"
+                        [text]="'Обменять'"
+                        (click)="onExchangeClick()"></button>
             </app-value-wrapper>
         </app-block-wrapper>
     </div>

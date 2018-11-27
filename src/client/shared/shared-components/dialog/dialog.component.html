@@ -3,13 +3,13 @@
 </ng-template>
 <ng-template #footerTemplate>
     <div class="dialog__buttons">
-        <app-button *ngIf="rejected.observers.length"
+        <button *ngIf="rejected.observers.length"
                     class="dialog__buttons-button"
                     [text]="rejectButtonText"
-                    (click)="onRejectButtonClick($event)"></app-button>
-        <app-button [text]="resolveButtonText"
+                    (click)="onRejectButtonClick($event)"></button>
+        <button [text]="resolveButtonText"
                     class="dialog__buttons-button"
-                    (click)="onResolveButtonClick($event)"></app-button>
+                    (click)="onResolveButtonClick($event)"></button>
     </div>
 </ng-template>
 

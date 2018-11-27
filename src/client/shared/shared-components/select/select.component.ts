@@ -138,7 +138,7 @@ export class SelectComponent implements OnInit, OnChanges, OnDestroy, ControlVal
         this.selectedItemChange.emit(this.selectedItem);
 
         if (this.onChange) {
-            this.onChange(this.selectedItem.value);
+            this.onChange(this.selectedItem ? this.selectedItem.value : null);
         }
     }
 

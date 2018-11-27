@@ -34,7 +34,7 @@ export class InputMaskDirective implements OnChanges, OnInit, OnDestroy {
 
     ngOnChanges(changes: SimpleChanges): void {
         if (changes.hasOwnProperty('appInputMask')) {
-            this.updateInput();
+            this.updateInput(true);
         }
     }
 
@@ -48,10 +48,10 @@ export class InputMaskDirective implements OnChanges, OnInit, OnDestroy {
         this.updateInput();
     }
 
-    updateInput() {
+    updateInput(init = false) {
         const origin = String(this.control.control.value);
 
-        if (this.oldValue === origin) {
+        if (this.oldValue === origin && !init) {
             return;
         }
 

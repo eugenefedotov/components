@@ -27,7 +27,7 @@
     @include pitted-text($color-light-accent, true);
   }
 
-  &[disabled] {
+  &[disabled], &.accent[disabled] {
     cursor: not-allowed;
 
     background-color: transparentize($color-light, .5);
