@@ -1,21 +1,33 @@
-import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
-import {PaymentServiceCurrencyEntity} from '../../../../dao/payment-service-currency/payment-service-currency.entity';
-import {PaymentServiceCurrencyRestService} from '../../shared-rest-services/payment-service-currency-rest/payment-service-currency-rest.service';
+import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    Input,
+    OnChanges,
+    OnDestroy,
+    OnInit,
+    SimpleChanges
+} from '@angular/core';
 import {DataSourceRequestFilterTypeEnum} from '../../../../shared/classes/data-source/models/data-source-request-filter-type.enum';
 import {CurrencyEntity} from '../../../../dao/currency/currency.entity';
 import {CurrencyRestService} from '../../shared-rest-services/currency-rest/currency-rest.service';
+import {Subject} from 'rxjs';
+import {takeUntil} from 'rxjs/operators';
 
 @Component({
-  selector: 'app-currency',
-  templateUrl: './currency.component.html',
-  styleUrls: ['./currency.component.scss']
+    selector: 'app-currency',
+    templateUrl: './currency.component.html',
+    styleUrls: ['./currency.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class CurrencyComponent implements OnInit, OnChanges {
+export class CurrencyComponent implements OnInit, OnChanges, OnDestroy {
 
     @Input() id: number;
     @Input() item: CurrencyEntity;
 
-    constructor(private currencyRestService: CurrencyRestService) {
+    private destroy$ = new Subject();
+
+    constructor(private currencyRestService: CurrencyRestService, private cdr: ChangeDetectorRef) {
     }
 
     ngOnChanges(changes: SimpleChanges): void {
@@ -25,6 +37,11 @@ export class CurrencyComponent implements OnInit, OnChanges {
     }
 
     ngOnInit() {
+    }
+
+    ngOnDestroy(): void {
+        this.destroy$.next();
+        this.destroy$.complete();
     }
 
     async updateItem() {
@@ -47,6 +64,12 @@ export class CurrencyComponent implements OnInit, OnChanges {
             offset: 0,
             limit: 1
         })
-            .subscribe(value => this.item = value.items[0]);
+            .pipe(
+                takeUntil(this.destroy$)
+            )
+            .subscribe(value => {
+                this.item = value.items[0];
+                this.cdr.markForCheck();
+            });
     }
 }

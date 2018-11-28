@@ -12,6 +12,7 @@ import {PaymentServiceCurrencyBlockComponent} from './payment-service-currency-b
 import {CurrencyComponent} from './currency/currency.component';
 import {PaymentServiceComponent} from './payment-service/payment-service.component';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import { ExchangeInfoComponent } from './exchange-info/exchange-info.component';
 
 @NgModule({
     imports: [
@@ -30,7 +31,8 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
         ExchangeRouteComponent,
         PaymentServiceCurrencyBlockComponent,
         CurrencyComponent,
-        PaymentServiceComponent
+        PaymentServiceComponent,
+        ExchangeInfoComponent
     ],
     exports: [
         HeaderComponent,
@@ -38,7 +40,8 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
         ExchangeRouteComponent,
         PaymentServiceCurrencyBlockComponent,
         CurrencyComponent,
-        PaymentServiceComponent
+        PaymentServiceComponent,
+        ExchangeInfoComponent
     ]
 })
 export class SharedRichComponentsModule {

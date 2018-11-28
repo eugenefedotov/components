@@ -1,8 +1,6 @@
+@import "scss/variables";
+
 :host {
   display: flex;
   flex-direction: column;
-
-  .exchange-info {
-    flex: 1;
-  }
 }

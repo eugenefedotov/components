@@ -1,23 +1,52 @@
-import {Component, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {ExchangeEntity} from '../../../dao/exchange/exchange.entity';
+import {ExchangeRestService} from '../../shared/shared-rest-services/exchange-rest/exchange-rest.service';
+import {Subject} from 'rxjs';
+import {takeUntil} from 'rxjs/operators';
 
 @Component({
     selector: 'app-exchange-status',
     templateUrl: './exchange-status.component.html',
-    styleUrls: ['./exchange-status.component.scss']
+    styleUrls: ['./exchange-status.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ExchangeStatusComponent implements OnInit {
+export class ExchangeStatusComponent implements OnInit, OnDestroy {
 
-    private exchange: ExchangeEntity;
+    exchange: ExchangeEntity;
 
-    constructor(private route: ActivatedRoute) {
+    private destroy$ = new Subject();
+
+    constructor(private route: ActivatedRoute,
+                private exchangeRestService: ExchangeRestService,
+                private cdr: ChangeDetectorRef) {
     }
 
     ngOnInit() {
         this.route.data.subscribe((data: { exchange: ExchangeEntity }) => {
             this.exchange = data.exchange;
+            this.cdr.markForCheck();
         });
     }
 
+    ngOnDestroy(): void {
+        this.destroy$.next();
+        this.destroy$.complete();
+    }
+
+    updateClick() {
+        this.update();
+    }
+
+    update() {
+        this.exchangeRestService
+            .getByUuid(this.exchange.uuid)
+            .pipe(
+                takeUntil(this.destroy$)
+            )
+            .subscribe((exchange) => {
+                this.exchange = exchange;
+                this.cdr.markForCheck();
+            });
+    }
 }
