@@ -23,18 +23,24 @@
   @include convex($color-light, true);
   @include pitted-text($color-dark, true);
 
+  &[disabled] {
+    cursor: not-allowed;
+
+    background-color: transparentize($color-light, .5);
+    @include convex(transparent, false);
+    @include pitted-text(transparentize($color-dark, .5), false);
+  }
+
   &.accent {
     background-color: $color-dark-accent;
     @include convex($color-dark-accent, true);
     @include pitted-text($color-light-accent, true);
-  }
 
-  &[disabled], &.accent[disabled] {
-    cursor: not-allowed;
-
-    background-color: transparentize($color-light, .5);
-    @include convex(transparentize($color-light, .5), false);
-    @include pitted-text(transparentize($color-dark, .5), false);
+    &[disabled] {
+      background-color: transparentize($color-dark-accent, .5);
+      @include convex(transparent, false);
+      @include pitted-text(transparentize($color-light-accent, .5), false);
+    }
   }
 
   .button {
