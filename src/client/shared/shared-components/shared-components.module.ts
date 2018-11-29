@@ -25,6 +25,7 @@ import {BlockWrapperComponent} from './block-wrapper/block-wrapper.component';
 import {InputComponent} from './input/input.component';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import { BreadcrumbsComponent } from './breadcrumbs/breadcrumbs.component';
+import { UpdaterComponent } from './updater/updater.component';
 
 @NgModule({
     imports: [
@@ -57,6 +58,7 @@ import { BreadcrumbsComponent } from './breadcrumbs/breadcrumbs.component';
         BlockWrapperComponent,
         InputComponent,
         BreadcrumbsComponent,
+        UpdaterComponent,
     ],
     exports: [
         ScrollBoxComponent,
