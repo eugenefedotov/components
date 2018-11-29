@@ -20,7 +20,7 @@
                     [toPaymentServiceCurrency]="toPaymentServiceCurrency"></app-exchange-route>
 
             <app-value-wrapper [title]="''">
-                <button (click)="onExchangeClick()" [disabled]="!valid" [accent]="valid" [text]="'Обменять'"></button>
+                <app-button (click)="onExchangeClick()" [disabled]="!valid" [accent]="valid" [text]="'Обменять'"></app-button>
             </app-value-wrapper>
         </app-block-wrapper>
     </div>
