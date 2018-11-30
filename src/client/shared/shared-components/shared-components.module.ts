@@ -73,6 +73,7 @@ import { UpdaterComponent } from './updater/updater.component';
         BlockWrapperComponent,
         InputComponent,
         BreadcrumbsComponent,
+        UpdaterComponent,
     ],
     entryComponents: [
         WindowComponent,
