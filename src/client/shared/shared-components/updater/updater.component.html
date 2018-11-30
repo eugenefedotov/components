@@ -1,3 +1,4 @@
 <p>
-  updater works!
+    progress: {{progress}} <span *ngIf="updating">(updating)</span>
+    <app-button (click)="onUpdateClick()" [disabled]="updating" [text]="'update'"></app-button>
 </p>

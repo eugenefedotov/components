@@ -34,7 +34,5 @@ export class ButtonComponent implements OnInit {
     onButtonClick($event: MouseEvent) {
         event.stopPropagation();
         this.click.emit($event);
-
-        console.log('onButtonClick');
     }
 }

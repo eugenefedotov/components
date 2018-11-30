@@ -3,7 +3,7 @@ import {ActivatedRoute} from '@angular/router';
 import {ExchangeEntity} from '../../../dao/exchange/exchange.entity';
 import {ExchangeRestService} from '../../shared/shared-rest-services/exchange-rest/exchange-rest.service';
 import {Subject} from 'rxjs';
-import {takeUntil} from 'rxjs/operators';
+import {finalize, takeUntil} from 'rxjs/operators';
 
 @Component({
     selector: 'app-exchange-status',
@@ -13,6 +13,7 @@ import {takeUntil} from 'rxjs/operators';
 })
 export class ExchangeStatusComponent implements OnInit, OnDestroy {
 
+    updating = false;
     exchange: ExchangeEntity;
 
     private destroy$ = new Subject();
@@ -34,15 +35,17 @@ export class ExchangeStatusComponent implements OnInit, OnDestroy {
         this.destroy$.complete();
     }
 
-    updateClick() {
+    onUpdate() {
         this.update();
     }
 
     update() {
+        this.updating = true;
         this.exchangeRestService
             .getByUuid(this.exchange.uuid)
             .pipe(
-                takeUntil(this.destroy$)
+                takeUntil(this.destroy$),
+                finalize(() => this.updating = false)
             )
             .subscribe((exchange) => {
                 this.exchange = exchange;

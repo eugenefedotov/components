@@ -1,17 +1,6 @@
-import {
-    ChangeDetectionStrategy,
-    ChangeDetectorRef,
-    Component,
-    EventEmitter,
-    Input,
-    OnChanges,
-    OnDestroy,
-    OnInit,
-    Output,
-    SimpleChanges
-} from '@angular/core';
-import {BehaviorSubject, combineLatest, interval, Subject} from 'rxjs';
-import {takeUntil, withLatestFrom} from 'rxjs/operators';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
+import {interval, Subject} from 'rxjs';
+import {filter, takeUntil} from 'rxjs/operators';
 
 @Component({
     selector: 'app-updater',
@@ -19,10 +8,10 @@ import {takeUntil, withLatestFrom} from 'rxjs/operators';
     styleUrls: ['./updater.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class UpdaterComponent implements OnInit, OnChanges, OnDestroy {
+export class UpdaterComponent implements OnInit, OnDestroy {
 
     @Input()
-    interval: number;
+    intervalSec: number;
 
     @Input()
     updating: boolean;
@@ -30,35 +19,22 @@ export class UpdaterComponent implements OnInit, OnChanges, OnDestroy {
     @Output()
     update = new EventEmitter();
 
-    private interval$ = new BehaviorSubject<number>(5);
-    private updating$ = new BehaviorSubject<boolean>(false);
-    private unsubscribe$ = new Subject();
+    progress: number;
+    startTime: number;
+    endTime: number;
+
     private destroy$ = new Subject();
 
     constructor(private cdr: ChangeDetectorRef) {
     }
 
     ngOnInit() {
-        combineLatest(
-            this.interval$,
-            this.updating$
-        )
+        interval(30)
             .pipe(
-                withLatestFrom(interval(100)),
+                filter(() => !this.updating),
                 takeUntil(this.destroy$)
             )
-            .subscribe(([[_interval, updating], intervalResult]) => {
-                console.log({_interval, updating, intervalResult});
-            });
-    }
-
-    ngOnChanges(changes: SimpleChanges): void {
-        if (changes.hasOwnProperty('interval')) {
-            this.interval$.next(changes.interval.currentValue);
-        }
-        if (changes.hasOwnProperty('updating')) {
-            this.updating$.next(changes.updating.currentValue);
-        }
+            .subscribe(() => this.tick());
     }
 
     ngOnDestroy(): void {
@@ -66,4 +42,30 @@ export class UpdaterComponent implements OnInit, OnChanges, OnDestroy {
         this.destroy$.complete();
     }
 
+    onUpdateClick() {
+        this.needUpdate();
+    }
+
+    private tick() {
+        const currTime = Date.now();
+
+        if (!this.startTime) {
+            this.startTime = currTime;
+            this.endTime = currTime + this.intervalSec * 1000;
+        }
+
+        this.progress = Math.min((currTime - this.startTime) / (this.intervalSec * 1000), 1);
+
+        if (this.progress === 1) {
+            this.needUpdate();
+        }
+
+        this.cdr.markForCheck();
+    }
+
+    private needUpdate() {
+        this.progress = 0;
+        this.startTime = null;
+        this.update.emit();
+    }
 }
