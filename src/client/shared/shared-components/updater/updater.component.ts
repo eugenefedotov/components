@@ -1,6 +1,7 @@
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import {interval, Subject} from 'rxjs';
 import {filter, takeUntil} from 'rxjs/operators';
+import {AnimationFrameScheduler} from 'rxjs/internal/scheduler/AnimationFrameScheduler';
 
 @Component({
     selector: 'app-updater',
@@ -29,7 +30,7 @@ export class UpdaterComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
-        interval(30)
+        interval(100, AnimationFrameScheduler)
             .pipe(
                 filter(() => !this.updating),
                 takeUntil(this.destroy$)
