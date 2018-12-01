@@ -24,7 +24,7 @@ export class ExchangeEntity {
     @ManyToOne(type => ExchangeRouteEntity, {nullable: false, eager: true})
     exchangeRoute: ExchangeRouteEntity;
 
-    @Column({unsigned: true, type: 'double', nullable: true})
+    @Column({unsigned: true, type: 'double', nullable: false})
     fromSum: number;
 
     @Type(type => PaymentServiceRequisiteTypeEntity)
