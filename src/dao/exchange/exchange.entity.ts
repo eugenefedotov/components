@@ -4,6 +4,7 @@ import {Type} from 'serializer.ts/Decorators';
 import {PaymentServiceRequisiteTypeEntity} from '../payment-service-requisite-type/payment-service-requisite-type.entity';
 import {ExchangeIncomingPaymentEntity} from '../exchange-incoming-payment/exchange-incoming-payment.entity';
 import {ExchangeOutgoingPaymentEntity} from '../exchange-outgoing-payment/exchange-outgoing-payment.entity';
+import {ExchangeStatusEnum} from './exchange-status.enum';
 
 @Entity('exchange')
 export class ExchangeEntity {
@@ -32,4 +33,11 @@ export class ExchangeEntity {
     @Type(type => ExchangeOutgoingPaymentEntity)
     @OneToMany(type => ExchangeOutgoingPaymentEntity, object => object.exchange, {eager: true})
     outgoingPayments: ExchangeOutgoingPaymentEntity[];
+
+    @Column({
+        type: 'enum',
+        enum: ExchangeStatusEnum,
+        default: ExchangeStatusEnum.Initialized
+    })
+    status: ExchangeStatusEnum;
 }
