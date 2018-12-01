@@ -49,6 +49,7 @@ export class ExchangeStatusComponent implements OnInit, OnDestroy {
             )
             .subscribe((exchange) => {
                 this.exchange = exchange;
+                console.log(exchange);
                 this.cdr.markForCheck();
             });
     }

@@ -12,6 +12,14 @@ export class ExchangeEntity {
     @PrimaryGeneratedColumn('uuid')
     uuid: string;
 
+    @Type(type => Date)
+    @Column({
+        type: 'timestamp',
+        nullable: false,
+        default: () => 'CURRENT_TIMESTAMP'
+    })
+    initDate: Date;
+
     @Type(type => ExchangeRouteEntity)
     @ManyToOne(type => ExchangeRouteEntity, {nullable: false, eager: true})
     exchangeRoute: ExchangeRouteEntity;
