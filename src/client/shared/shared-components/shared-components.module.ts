@@ -24,14 +24,16 @@ import {ValueWrapperComponent} from './value-wrapper/value-wrapper.component';
 import {BlockWrapperComponent} from './block-wrapper/block-wrapper.component';
 import {InputComponent} from './input/input.component';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import { BreadcrumbsComponent } from './breadcrumbs/breadcrumbs.component';
-import { UpdaterComponent } from './updater/updater.component';
+import {BreadcrumbsComponent} from './breadcrumbs/breadcrumbs.component';
+import {UpdaterComponent} from './updater/updater.component';
+import {SharedPipesModule} from '../shared-pipes/shared-pipes.module';
 
 @NgModule({
     imports: [
         CommonModule,
         RouterModule,
         FormsModule,
+        SharedPipesModule,
         ReactiveFormsModule,
         SharedDirectivesModule,
         Angular2FontawesomeModule

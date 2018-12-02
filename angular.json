@@ -108,6 +108,10 @@
       "prefix": "app",
       "spec": false,
       "flat": false
+    },
+    "@schematics/angular:pipe": {
+      "flat": false,
+      "spec": false
     }
   }
 }

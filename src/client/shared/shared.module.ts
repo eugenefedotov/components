@@ -4,10 +4,12 @@ import {SharedComponentsModule} from './shared-components/shared-components.modu
 import {SharedRestServicesModule} from './shared-rest-services/shared-rest-services.module';
 import {SharedDirectivesModule} from './shared-directives/shared-directives.module';
 import {SharedRichComponentsModule} from './shared-rich-components/shared-rich-components.module';
+import {SharedPipesModule} from './shared-pipes/shared-pipes.module';
 
 @NgModule({
     imports: [
         SharedServicesModule,
+        SharedPipesModule,
         SharedComponentsModule,
         SharedRestServicesModule,
         SharedDirectivesModule,
@@ -17,6 +19,7 @@ import {SharedRichComponentsModule} from './shared-rich-components/shared-rich-c
     providers: [],
     exports: [
         SharedServicesModule,
+        SharedPipesModule,
         SharedComponentsModule,
         SharedRestServicesModule,
         SharedDirectivesModule,

@@ -12,7 +12,8 @@ import {PaymentServiceCurrencyBlockComponent} from './payment-service-currency-b
 import {CurrencyComponent} from './currency/currency.component';
 import {PaymentServiceComponent} from './payment-service/payment-service.component';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import { ExchangeInfoComponent } from './exchange-info/exchange-info.component';
+import {ExchangeInfoComponent} from './exchange-info/exchange-info.component';
+import {SharedPipesModule} from '../shared-pipes/shared-pipes.module';
 
 @NgModule({
     imports: [
@@ -22,7 +23,8 @@ import { ExchangeInfoComponent } from './exchange-info/exchange-info.component';
         Angular2FontawesomeModule,
         SharedComponentsModule,
         SharedServicesModule,
-        SharedDirectivesModule
+        SharedDirectivesModule,
+        SharedPipesModule
     ],
     declarations: [
         HeaderComponent,

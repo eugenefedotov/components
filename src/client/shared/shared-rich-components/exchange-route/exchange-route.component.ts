@@ -1,10 +1,21 @@
-import {Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges} from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    EventEmitter,
+    Input,
+    OnChanges,
+    OnDestroy,
+    OnInit,
+    Output,
+    SimpleChanges
+} from '@angular/core';
 import {PaymentServiceCurrencyEntity} from '../../../../dao/payment-service-currency/payment-service-currency.entity';
 import {ExchangeRouteEntity} from '../../../../dao/exchange-route/exchange-route.entity';
 import {ExchangeRouteRestService} from '../../shared-rest-services/exchange-route-rest/exchange-route-rest.service';
 import {DataSourceRequestFilterTypeEnum} from '../../../../shared/classes/data-source/models/data-source-request-filter-type.enum';
 import {hasAnyChanges} from '../../../../functions/has-any-changes';
-import {FormControl, FormGroup, ValidatorFn, Validators} from '@angular/forms';
+import {FormBuilder, FormControl, ValidatorFn, Validators} from '@angular/forms';
 import {Subject} from 'rxjs';
 import {distinctUntilChanged, map, takeUntil} from 'rxjs/operators';
 import {BigNumber} from 'bignumber.js';
@@ -12,9 +23,13 @@ import {BigNumber} from 'bignumber.js';
 @Component({
     selector: 'app-exchange-route',
     templateUrl: './exchange-route.component.html',
-    styleUrls: ['./exchange-route.component.scss']
+    styleUrls: ['./exchange-route.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ExchangeRouteComponent implements OnInit, OnChanges, OnDestroy {
+
+    @Input()
+    disabled = false;
 
     @Input()
     fromSum = 0;
@@ -31,32 +46,39 @@ export class ExchangeRouteComponent implements OnInit, OnChanges, OnDestroy {
     @Output()
     fromSumChange = new EventEmitter<number>();
 
+    @Input()
     exchangeRoute: ExchangeRouteEntity;
 
     @Output()
     exchangeRouteChange = new EventEmitter<ExchangeRouteEntity>();
 
-    form = new FormGroup({
-        fromClient: new FormControl(0),
-        fromFee: new FormControl(0),
-        from: new FormControl(0),
-        to: new FormControl(0),
-        toFee: new FormControl(0),
-        toClient: new FormControl(0)
+    form = this.fb.group({
+        fromClient: [0],
+        fromFee: [0],
+        from: [0],
+        to: [0],
+        toFee: [0],
+        toClient: [0]
     });
 
     destroy$ = new Subject();
 
-    constructor(private exchangeRouteRestService: ExchangeRouteRestService) {
+    constructor(private exchangeRouteRestService: ExchangeRouteRestService,
+                private fb: FormBuilder,
+                private cdr: ChangeDetectorRef
+    ) {
     }
 
     ngOnChanges(changes: SimpleChanges): void {
         if (hasAnyChanges(changes, ['fromPaymentServiceCurrency', 'toPaymentServiceCurrency'])) {
-            this.updateRoute();
+            this.updateRouteByPSC();
             this.updateValidators();
         }
         if (hasAnyChanges(changes, ['fromSum'])) {
             this.form.get('fromClient').setValue(this.fromSum);
+        }
+        if (hasAnyChanges(changes, ['exchangeRoute'])) {
+            this.setExchangeRoute(this.exchangeRoute);
         }
     }
 
@@ -100,40 +122,40 @@ export class ExchangeRouteComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     updateByFromClient(val: number) {
-        if (!this.fromPaymentServiceCurrency) {
+        if (!this.exchangeRoute || !this.exchangeRoute.fromPaymentServiceCurrency) {
             return;
         }
 
-        this.form.get('from').setValue(this.fromPaymentServiceCurrency.calculateTargetSum(val), {emitEvent: false});
+        this.form.get('from').setValue(this.exchangeRoute.fromPaymentServiceCurrency.calculateTargetSum(val), {emitEvent: false});
         this.updateToByFrom();
         this.updateFee();
     }
 
     updateByFrom(val: number) {
-        if (!this.fromPaymentServiceCurrency) {
+        if (!this.exchangeRoute || !this.fromPaymentServiceCurrency) {
             return;
         }
 
-        this.form.get('fromClient').setValue(this.fromPaymentServiceCurrency.calculateSourceSum(val), {emitEvent: false});
+        this.form.get('fromClient').setValue(this.exchangeRoute.fromPaymentServiceCurrency.calculateSourceSum(val), {emitEvent: false});
         this.updateToByFrom();
         this.updateFee();
     }
 
     updateByTo(val: number) {
-        if (!this.toPaymentServiceCurrency) {
+        if (!this.exchangeRoute || !this.toPaymentServiceCurrency) {
             return;
         }
-        this.form.get('toClient').setValue(this.toPaymentServiceCurrency.calculateTargetSum(val), {emitEvent: false});
+        this.form.get('toClient').setValue(this.exchangeRoute.toPaymentServiceCurrency.calculateTargetSum(val), {emitEvent: false});
         this.updateFromByTo();
         this.updateFee();
     }
 
     updateByToClient(val: number) {
-        if (!this.toPaymentServiceCurrency) {
+        if (!this.exchangeRoute || !this.toPaymentServiceCurrency) {
             return;
         }
 
-        this.form.get('to').setValue(this.toPaymentServiceCurrency.calculateSourceSum(val), {emitEvent: false});
+        this.form.get('to').setValue(this.exchangeRoute.toPaymentServiceCurrency.calculateSourceSum(val), {emitEvent: false});
         this.updateFromByTo();
         this.updateFee();
     }
@@ -151,15 +173,15 @@ export class ExchangeRouteComponent implements OnInit, OnChanges, OnDestroy {
         const to = new BigNumber(from).div(this.exchangeRoute.fromAmount).times(this.exchangeRoute.toAmount).toNumber();
 
         this.form.get('to').setValue(to, {emitEvent: false});
-        this.form.get('toClient').setValue(this.toPaymentServiceCurrency.calculateTargetSum(to), {emitEvent: false});
+        this.form.get('toClient').setValue(this.exchangeRoute.toPaymentServiceCurrency.calculateTargetSum(to), {emitEvent: false});
     }
 
     updateFee() {
-        this.form.get('fromFee').setValue(this.fromPaymentServiceCurrency.calculateFee(this.form.get('from').value, false));
-        this.form.get('toFee').setValue(this.toPaymentServiceCurrency.calculateFee(this.form.get('to').value, false));
+        this.form.get('fromFee').setValue(this.exchangeRoute.fromPaymentServiceCurrency.calculateFee(this.form.get('from').value, false));
+        this.form.get('toFee').setValue(this.exchangeRoute.toPaymentServiceCurrency.calculateFee(this.form.get('to').value, false));
     }
 
-    updateRoute() {
+    updateRouteByPSC() {
         this.exchangeRoute = null;
         if (!this.fromPaymentServiceCurrency || !this.toPaymentServiceCurrency) {
             return;
@@ -184,7 +206,10 @@ export class ExchangeRouteComponent implements OnInit, OnChanges, OnDestroy {
             .pipe(
                 takeUntil(this.destroy$)
             )
-            .subscribe(value => this.setExchangeRoute(value.items[0]));
+            .subscribe(value => {
+                this.setExchangeRoute(value.items[0]);
+                this.cdr.markForCheck();
+            });
     }
 
     setExchangeRoute(exchangeRoute: ExchangeRouteEntity) {
