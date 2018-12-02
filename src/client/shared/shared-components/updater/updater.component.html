@@ -1,4 +1,10 @@
-<p>
-    progress: {{progress}} <span *ngIf="updating">(updating)</span>
-    <app-button (click)="onUpdateClick()" [disabled]="updating" [text]="'update'"></app-button>
-</p>
+<div class="updater">
+    <div class="updater__progress"
+         [style.width.%]="progress * 100"
+    ></div>
+    <app-button
+            (click)="onUpdateClick()"
+            [disabled]="updating"
+            [accent]="true"
+            [text]="!updating ? 'Обновить' : 'Обновление...'"></app-button>
+</div>

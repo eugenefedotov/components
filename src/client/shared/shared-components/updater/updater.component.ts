@@ -62,7 +62,7 @@ export class UpdaterComponent implements OnInit, OnDestroy {
             this.needUpdate();
         }
 
-        this.cdr.markForCheck();
+        this.cdr.detectChanges();
     }
 
     private needUpdate() {

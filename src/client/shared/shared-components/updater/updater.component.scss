@@ -1,0 +1,27 @@
+@import "scss/variables";
+
+:host {
+  display: block;
+
+  .updater {
+    height: 2rem;
+    display: flex;
+
+    flex-direction: column;
+    align-items: center;
+
+    position: relative;
+
+    &__progress {
+      position: absolute;
+      z-index: 0;
+      left: 0;
+      top: 0;
+      height: .25rem;
+      width: 0;
+
+      background-color: $color-light-accent;
+    }
+
+  }
+}
