@@ -3,7 +3,8 @@
         <app-block-wrapper [title]="'Калькулятор'">
             <app-exchange-route
                     *ngIf="fromPaymentServiceCurrency && toPaymentServiceCurrency"
-                    [(fromSum)]="form.get('fromSum').value"
+                    [fromSum]="form.get('fromSum').value"
+                    (fromSumChange)="form.get('fromSum').setValue($event)"
                     [fromPaymentServiceCurrency]="fromPaymentServiceCurrency"
                     [toPaymentServiceCurrency]="toPaymentServiceCurrency"
                     (exchangeRouteChange)="onExchangeRouteChange($event)"
