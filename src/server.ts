@@ -6,19 +6,15 @@ import * as compress from 'compression';
 import * as methodOverride from 'method-override';
 import {createConnection} from 'typeorm';
 import '@tsed/servestatic';
-import {NotFoundMiddleware} from './server/middlewares/not-found.middleware';
 import * as Path from 'path';
+import {API_CONTROLLERS} from './server/controllers/api';
+import './server/middlewares/global-error-handler.middleware';
 
 @ServerSettings({
     rootDir: Path.resolve(__dirname, 'server'),
     mount: {
-        '/api': '${rootDir}/controllers/api/**/*.ts'
+        '/api': API_CONTROLLERS
     },
-    componentsScan: [
-        '${rootDir}/middlewares/**/*.ts',
-        '${rootDir}/services/**/*.ts',
-        '${rootDir}/converters/**/*.ts'
-    ],
     serveStatic: {
         '/': '${rootDir}/static'
     },

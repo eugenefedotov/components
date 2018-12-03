@@ -13,6 +13,7 @@ export class ExchangeValidatorService {
     private paymentServiceRequisiteTypeRepository = getCustomRepository(PaymentServiceRequisiteTypeRepository);
 
     async isValid(exchange: ExchangeEntity): Promise<boolean> {
+        exchange = await this.exchangeRepository.preload(exchange);
         const paymentServiceRequisiteType = await this.paymentServiceRequisiteTypeRepository.preload(exchange.toRequisiteType);
         return paymentServiceRequisiteType.mask.isValidAndComplete(exchange.toRequisiteValue);
     }
