@@ -27,6 +27,8 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {BreadcrumbsComponent} from './breadcrumbs/breadcrumbs.component';
 import {UpdaterComponent} from './updater/updater.component';
 import {SharedPipesModule} from '../shared-pipes/shared-pipes.module';
+import {GridComponent} from './grid/grid.component';
+import { GridViewportComponent } from './grid/grid-viewport/grid-viewport.component';
 
 @NgModule({
     imports: [
@@ -61,6 +63,8 @@ import {SharedPipesModule} from '../shared-pipes/shared-pipes.module';
         InputComponent,
         BreadcrumbsComponent,
         UpdaterComponent,
+        GridComponent,
+        GridViewportComponent,
     ],
     exports: [
         ScrollBoxComponent,
@@ -76,6 +80,7 @@ import {SharedPipesModule} from '../shared-pipes/shared-pipes.module';
         InputComponent,
         BreadcrumbsComponent,
         UpdaterComponent,
+        GridComponent,
     ],
     entryComponents: [
         WindowComponent,

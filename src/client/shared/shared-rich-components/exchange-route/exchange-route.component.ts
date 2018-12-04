@@ -70,14 +70,14 @@ export class ExchangeRouteComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     ngOnChanges(changes: SimpleChanges): void {
-        if (hasAnyChanges(changes, ['fromPaymentServiceCurrency', 'toPaymentServiceCurrency'])) {
+        if (hasAnyChanges<ExchangeRouteComponent>(changes, ['fromPaymentServiceCurrency', 'toPaymentServiceCurrency'])) {
             this.updateRouteByPSC();
             this.updateValidators();
         }
-        if (hasAnyChanges(changes, ['fromSum'])) {
+        if (hasAnyChanges<ExchangeRouteComponent>(changes, ['fromSum'])) {
             this.form.get('fromClient').setValue(this.fromSum);
         }
-        if (hasAnyChanges(changes, ['exchangeRoute'])) {
+        if (hasAnyChanges<ExchangeRouteComponent>(changes, ['exchangeRoute'])) {
             this.setExchangeRoute(this.exchangeRoute);
         }
     }

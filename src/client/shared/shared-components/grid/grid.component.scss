@@ -1,0 +1,51 @@
+:host {
+  flex: 1;
+
+  display: flex;
+  flex-direction: column;
+
+  .grid {
+    flex: 1;
+
+    display: flex;
+    flex-direction: column;
+
+    &__scrollable {
+
+    }
+
+
+    &__top {
+
+    }
+
+    &__left {
+
+    }
+
+    &__right {
+
+    }
+
+    &__bottom {
+
+    }
+
+
+    &__top-left-corner {
+
+    }
+
+    &__top-right-corner {
+
+    }
+
+    &__bottom-left-corner {
+
+    }
+
+    &__bottom-right-corner {
+
+    }
+  }
+}

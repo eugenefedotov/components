@@ -68,7 +68,7 @@ export class SelectComponent implements OnInit, OnChanges, OnDestroy, ControlVal
     }
 
     ngOnChanges(changes: SimpleChanges): void {
-        if (hasAnyChanges(changes, ['source'])) {
+        if (hasAnyChanges<SelectComponent>(changes, ['source'])) {
             this.source$.next(this.source);
         }
     }

@@ -39,7 +39,7 @@ export class RadioComponent implements OnInit, OnChanges, ControlValueAccessor, 
     }
 
     ngOnChanges(changes: SimpleChanges): void {
-        if (hasAnyChanges(changes, ['source', 'limit'])) {
+        if (hasAnyChanges<RadioComponent>(changes, ['source', 'limit'])) {
             this.updateItems();
         }
     }

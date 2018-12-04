@@ -47,7 +47,7 @@ export class PaymentServiceCurrencyListComponent implements OnChanges, OnInit {
     }
 
     ngOnChanges(changes: SimpleChanges): void {
-        if (hasAnyChanges(changes, ['currency', 'paymentService'])) {
+        if (hasAnyChanges<PaymentServiceCurrencyListComponent>(changes, ['currency', 'paymentService'])) {
             this.updateListSource();
         }
     }
