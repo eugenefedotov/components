@@ -9,5 +9,9 @@ export const CLIENT_ROUTER_MODULE = RouterModule.forRoot([
     {
         path: 'exchanger',
         loadChildren: 'client/exchanger/exchanger.module#ExchangerModule'
+    },
+    {
+        path: 'demo',
+        loadChildren: 'client/demo/demo.module#DemoModule'
     }
 ]);

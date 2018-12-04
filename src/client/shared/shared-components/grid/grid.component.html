@@ -1,29 +1,124 @@
 <div class="grid">
-    <div class="grid__scrollable">
-
-    </div>
-    <div class="grid__top">
-
-    </div>
-    <div class="grid__left">
-
-    </div>
-    <div class="grid__right">
-
-    </div>
-    <div class="grid__bottom">
-
-    </div>
-    <div class="grid__top-left-corner">
-
-    </div>
-    <div class="grid__top-right-corner">
-
-    </div>
-    <div class="grid__bottom-left-corner">
-
-    </div>
-    <div class="grid__bottom-right-corner">
-
-    </div>
+    <app-grid-viewport
+            class="grid__scrollable"
+            *ngIf="middleSource$ | async"
+            [style.margin-left.px]="holdLeftPx$ | async"
+            [style.margin-top.px]="holdTopPx$ | async"
+            [style.margin-bottom.px]="holdBottomPx$ | async"
+            [style.margin-right.px]="holdRightPx$ | async"
+            [columns]="centerColumns$ | async"
+            [source]="middleSource$ | async"
+            [scrollLeft]="scrollLeft$ | async"
+            [scrollTop]="scrollTop$ | async"
+            (scrollLeftChange)="scrollLeft$.next($event)"
+            (scrollTopChange)="scrollTop$.next($event)"
+            [defaultColWidth]="defaultColWidth"
+            [defaultRowHeight]="defaultRowHeight"
+            [widths]="centerWidths$ | async"
+            [heights]="middleHeights$ | async"
+    ></app-grid-viewport>
+    <app-grid-viewport
+            class="grid__abs grid__abs_top"
+            *ngIf="topSource$ | async"
+            [style.left.px]="holdLeftPx$ | async"
+            [style.right.px]="holdRightPx$ | async"
+            [style.height.px]="holdTopPx$ | async"
+            [columns]="centerColumns$ | async"
+            [source]="topSource$ | async"
+            [scrollLeft]="scrollLeft$ | async"
+            [defaultColWidth]="defaultColWidth"
+            [defaultRowHeight]="defaultRowHeight"
+            [widths]="centerWidths$ | async"
+            [heights]="topHeights$ | async"
+    ></app-grid-viewport>
+    <app-grid-viewport
+            class="grid__abs grid__abs_left"
+            *ngIf="middleSource$ | async"
+            [style.top.px]="holdTopPx$ | async"
+            [style.bottom.px]="holdBottomPx$ | async"
+            [style.width.px]="holdLeftPx$ | async"
+            [columns]="leftColumns$ | async"
+            [source]="middleSource$ | async"
+            [scrollTop]="scrollTop$ | async"
+            [defaultColWidth]="defaultColWidth"
+            [defaultRowHeight]="defaultRowHeight"
+            [widths]="leftWidths$ | async"
+            [heights]="middleHeights$ | async"
+    ></app-grid-viewport>
+    <app-grid-viewport
+            class="grid__abs grid__abs_right"
+            *ngIf="middleSource$ | async"
+            [style.top.px]="holdTopPx$ | async"
+            [style.bottom.px]="holdBottomPx$ | async"
+            [style.width.px]="holdRightPx$ | async"
+            [columns]="rightColumns$ | async"
+            [source]="middleSource$ | async"
+            [scrollTop]="scrollTop$ | async"
+            [defaultColWidth]="defaultColWidth"
+            [defaultRowHeight]="defaultRowHeight"
+            [widths]="rightWidths$ | async"
+            [heights]="middleHeights$ | async"
+    ></app-grid-viewport>
+    <app-grid-viewport
+            class="grid__abs grid__abs_bottom"
+            *ngIf="bottomSource$ | async"
+            [style.left.px]="holdLeftPx$ | async"
+            [style.right.px]="holdRightPx$ | async"
+            [style.height.px]="holdBottomPx$ | async"
+            [columns]="centerColumns$ | async"
+            [source]="bottomSource$ | async"
+            [scrollLeft]="scrollLeft$ | async"
+            [defaultColWidth]="defaultColWidth"
+            [defaultRowHeight]="defaultRowHeight"
+            [widths]="centerWidths$ | async"
+            [heights]="bottomHeights$ | async"
+    ></app-grid-viewport>
+    <app-grid-viewport
+            class="grid__abs grid__abs_top-left-corner"
+            *ngIf="topSource$ | async"
+            [style.width.px]="holdLeftPx$ | async"
+            [style.height.px]="holdTopPx$ | async"
+            [columns]="leftColumns$ | async"
+            [source]="topSource$ | async"
+            [defaultColWidth]="defaultColWidth"
+            [defaultRowHeight]="defaultRowHeight"
+            [widths]="leftWidths$ | async"
+            [heights]="topHeights$ | async"
+    ></app-grid-viewport>
+    <app-grid-viewport
+            class="grid__abs grid__abs_top-right-corner"
+            *ngIf="topSource$ | async"
+            [style.width.px]="holdRightPx$ | async"
+            [style.height.px]="holdTopPx$ | async"
+            [columns]="rightColumns$ | async"
+            [source]="topSource$ | async"
+            [defaultColWidth]="defaultColWidth"
+            [defaultRowHeight]="defaultRowHeight"
+            [widths]="rightWidths$ | async"
+            [heights]="topHeights$ | async"
+    ></app-grid-viewport>
+    <app-grid-viewport
+            class="grid__abs grid__abs_bottom-left-corner"
+            *ngIf="bottomSource$ | async"
+            [style.width.px]="holdLeftPx$ | async"
+            [style.height.px]="holdBottomPx$ | async"
+            [columns]="leftColumns$ | async"
+            [source]="bottomSource$ | async"
+            [defaultColWidth]="defaultColWidth"
+            [defaultRowHeight]="defaultRowHeight"
+            [widths]="leftWidths$ | async"
+            [heights]="bottomHeights$ | async"
+    ></app-grid-viewport>
+    <app-grid-viewport
+            class="grid__abs grid__abs_bottom-right-corner"
+            *ngIf="bottomSource$ | async"
+            [style.width.px]="holdRightPx$ | async"
+            [style.height.px]="holdBottomPx$ | async"
+            [columns]="rightColumns$ | async"
+            [source]="bottomSource$ | async"
+            [defaultColWidth]="defaultColWidth"
+            [defaultRowHeight]="defaultRowHeight"
+            [widths]="rightWidths$ | async"
+            [heights]="bottomHeights$ | async"
+    ></app-grid-viewport>
 </div>

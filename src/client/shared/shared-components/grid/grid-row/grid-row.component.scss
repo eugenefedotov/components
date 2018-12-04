@@ -1,0 +1,17 @@
+:host {
+  flex: none;
+
+  display: flex;
+  flex-direction: column;
+
+  .grid-row {
+    display: flex;
+    flex-direction: row;
+    flex-flow: nowrap;
+    align-items: stretch;
+
+    &__cell {
+      flex: none;
+    }
+  }
+}

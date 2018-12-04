@@ -1,3 +1,15 @@
-<p>
-  grid-viewport works!
-</p>
+<app-virtual-list
+        class="viewport-virtual-list"
+        [itemTemplate]="gridRow"
+        [source]="source"
+></app-virtual-list>
+
+<ng-template #gridRow let-row="item" let-index="index">
+    <app-grid-row
+            [columns]="columns"
+            [row]="row"
+            [defaultColWidth]="defaultColWidth"
+            [widths]="widths"
+            [height]="heights[index] || defaultRowHeight"
+    ></app-grid-row>
+</ng-template>

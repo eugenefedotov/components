@@ -1,4 +1,4 @@
 export interface GridColumnModel<T extends Object = any> {
-    title: string;
+    title?: string;
     key: keyof T;
 }

@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {GridColumnModel} from '../models/grid-column.model';
 import {ListSource} from '../../../../../shared/classes/list-source/list-source';
 
@@ -17,16 +17,28 @@ export class GridViewportComponent<T extends Object = any> implements OnInit {
     source: ListSource<T>;
 
     @Input()
+    defaultColWidth = 150;
+
+    @Input()
+    defaultRowHeight = 24;
+
+    @Input()
     widths: number[];
 
     @Input()
     heights: number[];
 
     @Input()
-    left: number;
+    scrollLeft: number;
+
+    @Output()
+    scrollLeftChange = new EventEmitter<number>();
 
     @Input()
-    top: number;
+    scrollTop: number;
+
+    @Output()
+    scrollTopChange = new EventEmitter<number>();
 
     constructor() {
     }

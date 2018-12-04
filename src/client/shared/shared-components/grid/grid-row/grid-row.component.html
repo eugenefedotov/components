@@ -1,0 +1,11 @@
+<div class="grid-row"
+     [style.height.px]="height"
+>
+    <app-grid-cell
+            *ngFor="let col of columns; let i = index;"
+            class="grid-row__cell"
+            [style.width.px]="widths[i] || defaultColWidth"
+            [cell]="row[col.key]"
+    ></app-grid-cell>
+
+</div>

@@ -29,6 +29,8 @@ import {UpdaterComponent} from './updater/updater.component';
 import {SharedPipesModule} from '../shared-pipes/shared-pipes.module';
 import {GridComponent} from './grid/grid.component';
 import { GridViewportComponent } from './grid/grid-viewport/grid-viewport.component';
+import { GridRowComponent } from './grid/grid-row/grid-row.component';
+import { GridCellComponent } from './grid/grid-cell/grid-cell.component';
 
 @NgModule({
     imports: [
@@ -65,6 +67,8 @@ import { GridViewportComponent } from './grid/grid-viewport/grid-viewport.compon
         UpdaterComponent,
         GridComponent,
         GridViewportComponent,
+        GridRowComponent,
+        GridCellComponent,
     ],
     exports: [
         ScrollBoxComponent,

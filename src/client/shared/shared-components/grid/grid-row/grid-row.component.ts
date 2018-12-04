@@ -1,0 +1,33 @@
+import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core';
+import {GridColumnModel} from '../models/grid-column.model';
+
+@Component({
+    selector: 'app-grid-row',
+    templateUrl: './grid-row.component.html',
+    styleUrls: ['./grid-row.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush
+})
+export class GridRowComponent<T extends Object = any> implements OnInit {
+
+    @Input()
+    columns: GridColumnModel<T>[];
+
+    @Input()
+    row: T;
+
+    @Input()
+    defaultColWidth = 150;
+
+    @Input()
+    widths: number[];
+
+    @Input()
+    height: number;
+
+    constructor() {
+    }
+
+    ngOnInit() {
+    }
+
+}
