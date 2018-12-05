@@ -1,21 +1,12 @@
-import {
-    ChangeDetectionStrategy,
-    ChangeDetectorRef,
-    Component,
-    Input,
-    OnChanges,
-    OnDestroy,
-    OnInit,
-    SimpleChanges
-} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
 import {GridColumnModel} from './models/grid-column.model';
 import {ListSource} from '../../../../shared/classes/list-source/list-source';
-import {BehaviorSubject, Subject} from 'rxjs';
+import {BehaviorSubject, combineLatest} from 'rxjs';
 import {SlicedListSource} from '../../../../shared/classes/list-source/impl/sliced-list-source';
 import {hasAnyChanges} from '../../../../functions/has-any-changes';
 import {arraySum} from '../../../../functions/array-sum';
-import {distinctUntilChanged, take, takeUntil} from 'rxjs/operators';
-import {arrayEquals} from '../../../../functions/array-equals';
+import {map, switchMap, tap} from 'rxjs/operators';
+import {arrayFillSpaces} from '../../../../functions/array-fill-spaces';
 
 @Component({
     selector: 'app-grid',
@@ -23,7 +14,7 @@ import {arrayEquals} from '../../../../functions/array-equals';
     styleUrls: ['./grid.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class GridComponent<T extends Object = any> implements OnInit, OnChanges, OnDestroy {
+export class GridComponent<T extends Object = any> implements OnInit, OnChanges {
 
     @Input()
     columns: GridColumnModel<T>[];
@@ -32,16 +23,16 @@ export class GridComponent<T extends Object = any> implements OnInit, OnChanges,
     source: ListSource<T>;
 
     @Input()
-    defaultColWidth = 150;
+    defaultColWidth: number;
 
     @Input()
-    defaultRowHeight = 24;
+    defaultRowHeight: number;
 
     @Input()
-    widths: number[] = [];
+    widths: number[];
 
     @Input()
-    heights: number[] = [];
+    heights: number[];
 
     @Input()
     holdTopRow = 0;
@@ -55,291 +46,150 @@ export class GridComponent<T extends Object = any> implements OnInit, OnChanges,
     @Input()
     holdBottomRow = 0;
 
-    colsCount$ = new BehaviorSubject<number>(0);
-    rowsCount$ = new BehaviorSubject<number>(0);
+    columns$ = new BehaviorSubject<GridColumnModel<T>[]>([]);
+    source$ = new BehaviorSubject<ListSource<T>>(null);
+
+    defaultRowHeight$ = new BehaviorSubject<number>(24);
+    defaultColWidth$ = new BehaviorSubject<number>(150);
+
+    holdTopRow$ = new BehaviorSubject<number>(0);
+    holdLeftCol$ = new BehaviorSubject<number>(0);
+    holdRightCol$ = new BehaviorSubject<number>(0);
+    holdBottomRow$ = new BehaviorSubject<number>(0);
+
+    rowsCount$ = this.source$
+        .pipe(
+            switchMap(src => src.getData({
+                offset: 0,
+                limit: 0
+            })),
+            map(result => result.count)
+        );
 
     widths$ = new BehaviorSubject<number[]>([]);
     heights$ = new BehaviorSubject<number[]>([]);
 
-    leftHoldPx$ = new BehaviorSubject<number>(0);
-    topHoldPx$ = new BehaviorSubject<number>(0);
-    rightHoldPx$ = new BehaviorSubject<number>(0);
-    bottomHoldPx$ = new BehaviorSubject<number>(0);
+    filledWidths$ = combineLatest(this.widths$, this.defaultColWidth$, this.columns$)
+        .pipe(
+            map(([widths, dcw, columns]) => arrayFillSpaces(widths, dcw, columns.length))
+        );
+    filledHeights$ = combineLatest(this.heights$, this.defaultRowHeight$, this.rowsCount$)
+        .pipe(
+            map(([heights, drh, rowsCount]) => arrayFillSpaces(heights, drh, rowsCount))
+        );
 
     scrollTop$ = new BehaviorSubject<number>(0);
     scrollLeft$ = new BehaviorSubject<number>(0);
 
-    topSource$ = new BehaviorSubject<ListSource<T>>(null);
-    middleSource$ = new BehaviorSubject<ListSource<T>>(null);
-    bottomSource$ = new BehaviorSubject<ListSource<T>>(null);
+    sourceTop$ = combineLatest(this.source$, this.holdTopRow$)
+        .pipe(
+            map(([source, holdTopRow]) => new SlicedListSource(source, 0, holdTopRow))
+        );
+    sourceMiddle$ = combineLatest(this.source$, this.holdTopRow$, this.holdBottomRow$, this.rowsCount$)
+        .pipe(
+            map(([source, holdTopRow, holdBottomRow, rowsCount]) =>
+                new SlicedListSource(source, holdTopRow, rowsCount - holdBottomRow))
+        );
+    sourceBottom$ = combineLatest(this.source$, this.holdBottomRow$, this.rowsCount$)
+        .pipe(
+            map(([source, holdBottomRow, rowsCount]) =>
+                new SlicedListSource(source, holdBottomRow, rowsCount))
+        );
 
-    topHeights$ = new BehaviorSubject<number[]>([]);
-    middleHeights$ = new BehaviorSubject<number[]>([]);
-    bottomHeights$ = new BehaviorSubject<number[]>([]);
+    heightsTop$ = combineLatest(this.holdTopRow$, this.filledHeights$)
+        .pipe(
+            map(([holdTopRow, heights]) => heights.slice(0, holdTopRow))
+        );
+    heightsMiddle$ = combineLatest(this.holdTopRow$, this.holdBottomRow$, this.filledHeights$, this.rowsCount$)
+        .pipe(
+            map(([holdTopRow, holdBottomRow, heights, rowsCount]) => heights.slice(holdTopRow, rowsCount - holdBottomRow))
+        );
+    heightsBottom$ = combineLatest(this.holdBottomRow$, this.filledHeights$, this.rowsCount$)
+        .pipe(
+            map(([holdBottomRow, heights, rowsCount]) => heights.slice(rowsCount - holdBottomRow, rowsCount))
+        );
 
-    leftColumns$ = new BehaviorSubject<GridColumnModel<T>[]>([]);
-    centerColumns$ = new BehaviorSubject<GridColumnModel<T>[]>([]);
-    rightColumns$ = new BehaviorSubject<GridColumnModel<T>[]>([]);
+    columnsLeft$ = combineLatest(this.columns$, this.holdLeftCol$)
+        .pipe(
+            map(([columns, holdLeftCol]) => columns.slice(0, holdLeftCol))
+        );
+    columnsCenter$ = combineLatest(this.columns$, this.holdLeftCol$, this.holdRightCol$)
+        .pipe(
+            map(([columns, holdLeftCol, holdRightCol]) => columns.slice(holdLeftCol, columns.length - holdRightCol))
+        );
+    columnsRight$ = combineLatest(this.columns$, this.holdRightCol$)
+        .pipe(
+            map(([columns, holdRightCol]) => columns.slice(columns.length - holdRightCol))
+        );
 
-    leftWidths$ = new BehaviorSubject<number[]>([]);
-    centerWidths$ = new BehaviorSubject<number[]>([]);
-    rightWidths$ = new BehaviorSubject<number[]>([]);
+    widthsLeft$ = combineLatest(this.filledWidths$, this.holdLeftCol$)
+        .pipe(
+            map(([widths, holdLeftCol]) => widths.slice(0, holdLeftCol))
+        );
+    widthsCenter$ = combineLatest(this.filledWidths$, this.holdLeftCol$, this.holdRightCol$)
+        .pipe(
+            map(([widths, holdLeftCol, holdRightCol]) => widths.slice(holdLeftCol, widths.length - holdRightCol))
+        );
+    widthsRight$ = combineLatest(this.filledWidths$, this.holdRightCol$)
+        .pipe(
+            map(([widths, holdRightCol]) => widths.slice(widths.length - holdRightCol))
+        );
 
-    destroy$ = new Subject();
+    holdLeftPx$ = this.widthsLeft$
+        .pipe(
+            map(arraySum)
+        );
+    holdTopPx$ = this.heightsTop$
+        .pipe(
+            map(arraySum)
+        );
+    holdRightPx$ = this.widthsRight$
+        .pipe(
+            map(arraySum)
+        );
+    holdBottomPx$ = this.heightsBottom$
+        .pipe(
+            map(arraySum)
+        );
 
-    constructor(private cdr: ChangeDetectorRef) {
+    constructor() {
     }
 
     ngOnInit() {
-        this.rowsCount$
-            .pipe(
-                takeUntil(this.destroy$)
-            )
-            .subscribe(() => {
-                this.updateHeights();
-            });
-
-        this.colsCount$
-            .pipe(
-                takeUntil(this.destroy$)
-            )
-            .subscribe(() => {
-                this.updateWidths();
-            });
-
-        this.heights$
-            .pipe(
-                distinctUntilChanged(arrayEquals),
-                takeUntil(this.destroy$)
-            )
-            .subscribe(() => {
-                this.updateBottomHoldPx();
-                this.updateBottomHeights();
-                this.updateMiddleSource();
-                this.updateBottomSource();
-            });
-
-        this.widths$
-            .pipe(
-                distinctUntilChanged(arrayEquals),
-                takeUntil(this.destroy$)
-            )
-            .subscribe(() => {
-                this.updateRightHoldPx();
-                this.updateRightWidths();
-                this.updateCenterColumns();
-                this.updateRightColumns();
-            });
     }
 
     ngOnChanges(changes: SimpleChanges): void {
-        const needUpdateWidths = hasAnyChanges<GridComponent>(changes, ['widths']);
-        const needUpdateHeights = hasAnyChanges<GridComponent>(changes, ['heights']);
-
-        const needLeftHoldPxUpdate = hasAnyChanges<GridComponent>(changes, ['defaultColWidth', 'widths', 'holdLeftCol']);
-        const needRightHoldPxUpdate = hasAnyChanges<GridComponent>(changes, ['defaultColWidth', 'widths', 'holdRightCol']);
-        const needTopHoldPxUpdate = hasAnyChanges<GridComponent>(changes, ['defaultRowHeight', 'heights', 'holdTopRow']);
-        const needBottomHoldPxUpdate = hasAnyChanges<GridComponent>(changes, ['defaultRowHeight', 'heights', 'holdBottomRow']);
-
-        const needLeftWidthsUpdate = hasAnyChanges<GridComponent>(changes, ['widths', 'holdLeftCol']);
-        const needCenterWidthsUpdate = hasAnyChanges<GridComponent>(changes, ['widths', 'holdLeftCol', 'holdRightCol']);
-        const needRightWidthsUpdate = hasAnyChanges<GridComponent>(changes, ['widths', 'holdRightCol']);
-
-        const needTopHeightsUpdate = hasAnyChanges<GridComponent>(changes, ['heights', 'holdTopRow']);
-        const needMiddleHeightsUpdate = hasAnyChanges<GridComponent>(changes, ['heights', 'holdTopRow', 'holdBottomRow']);
-        const needBottomHeightsUpdate = hasAnyChanges<GridComponent>(changes, ['heights', 'holdBottomRow']);
-
-        const needTopSourceUpdate = hasAnyChanges<GridComponent>(changes, ['source', 'holdTopRow']);
-        const needMiddleSourceUpdate = hasAnyChanges<GridComponent>(changes, ['source', 'holdTopRow', 'holdBottomRow']);
-        const needBottomSourceUpdate = hasAnyChanges<GridComponent>(changes, ['source', 'holdBottomRow']);
-
-        const needLeftColumnsUpdate = hasAnyChanges<GridComponent>(changes, ['columns', 'holdLeftCol']);
-        const needCenterColumnsUpdate = hasAnyChanges<GridComponent>(changes, ['columns', 'holdLeftCol', 'holdRightCol']);
-        const needRightColumnsUpdate = hasAnyChanges<GridComponent>(changes, ['columns', 'holdRightCol']);
-
-        const needColumnsCountUpdate = hasAnyChanges<GridComponent>(changes, ['columns']);
-        const needRowsCountUpdate = hasAnyChanges<GridComponent>(changes, ['source']);
-
-        if (needUpdateWidths) {
-            this.updateWidths();
+        if (hasAnyChanges<GridComponent>(changes, ['holdTopRow'])) {
+            this.holdTopRow$.next(this.holdTopRow);
+        }
+        if (hasAnyChanges<GridComponent>(changes, ['holdBottomRow'])) {
+            this.holdBottomRow$.next(this.holdBottomRow);
+        }
+        if (hasAnyChanges<GridComponent>(changes, ['holdLeftCol'])) {
+            this.holdLeftCol$.next(this.holdLeftCol);
+        }
+        if (hasAnyChanges<GridComponent>(changes, ['holdRightCol'])) {
+            this.holdRightCol$.next(this.holdRightCol);
         }
 
-        if (needUpdateHeights) {
-            this.updateHeights();
+        if (hasAnyChanges<GridComponent>(changes, ['defaultColWidth'])) {
+            this.defaultColWidth$.next(this.defaultColWidth);
+        }
+        if (hasAnyChanges<GridComponent>(changes, ['defaultRowHeight'])) {
+            this.defaultRowHeight$.next(this.defaultRowHeight);
         }
 
-        if (needLeftHoldPxUpdate) {
-            this.updateLeftHoldPx();
+        if (hasAnyChanges<GridComponent>(changes, ['widths'])) {
+            this.widths$.next(this.widths);
         }
-        if (needTopHoldPxUpdate) {
-            this.updateTopHoldPx();
+        if (hasAnyChanges<GridComponent>(changes, ['heights'])) {
+            this.heights$.next(this.heights);
         }
-        if (needRightHoldPxUpdate) {
-            this.updateRightHoldPx();
+        if (hasAnyChanges<GridComponent>(changes, ['columns'])) {
+            this.columns$.next(this.columns);
         }
-        if (needBottomHoldPxUpdate) {
-            this.updateBottomHoldPx();
-        }
-
-        if (needLeftWidthsUpdate) {
-            this.updateLeftWidths();
-        }
-        if (needCenterWidthsUpdate) {
-            this.updateCenterWidths();
-        }
-        if (needRightWidthsUpdate) {
-            this.updateRightWidths();
-        }
-
-        if (needTopHeightsUpdate) {
-            this.updateTopHeights();
-        }
-        if (needMiddleHeightsUpdate) {
-            this.updateMiddleHeights();
-        }
-        if (needBottomHeightsUpdate) {
-            this.updateBottomHeights();
-        }
-
-        if (needTopSourceUpdate) {
-            this.updateTopSource();
-        }
-        if (needMiddleSourceUpdate) {
-            this.updateMiddleSource();
-        }
-        if (needBottomSourceUpdate) {
-            this.updateBottomSource();
-        }
-
-        if (needLeftColumnsUpdate) {
-            this.updateLeftColumns();
-        }
-        if (needCenterColumnsUpdate) {
-            this.updateCenterColumns();
-        }
-        if (needRightColumnsUpdate) {
-            this.updateRightColumns();
-        }
-
-        if (needColumnsCountUpdate) {
-            this.updateColsCount();
-        }
-
-        if (needRowsCountUpdate) {
-            this.updateRowsCount();
-        }
-    }
-
-    ngOnDestroy(): void {
-        this.destroy$.next();
-        this.destroy$.complete();
-    }
-
-    updateWidths() {
-        const colsCount = this.colsCount$.value;
-        const widths: number[] = [];
-        for (let i = 0; i < colsCount; i++) {
-            widths.push(this.widths[i] || this.defaultColWidth);
-        }
-
-        this.widths$.next(widths);
-    }
-
-    updateHeights() {
-        const rowsCount = this.rowsCount$.value;
-        const heights: number[] = [];
-        for (let i = 0; i < rowsCount; i++) {
-            heights.push(this.heights[i] || this.defaultRowHeight);
-        }
-        this.heights$.next(heights);
-    }
-
-    updateTopHoldPx() {
-        this.topHoldPx$.next(arraySum(this.heights, 0, this.holdTopRow));
-    }
-
-    updateLeftHoldPx() {
-        this.leftHoldPx$.next(arraySum(this.widths, 0, this.holdLeftCol));
-    }
-
-    updateRightHoldPx() {
-        this.rightHoldPx$.next(arraySum(this.widths, this.colsCount$.value - this.holdRightCol, this.colsCount$.value - 1));
-    }
-
-    updateBottomHoldPx() {
-        this.bottomHoldPx$.next(arraySum(this.heights, this.rowsCount$.value - this.holdBottomRow, this.rowsCount$.value - 1));
-    }
-
-    updateTopSource() {
-        this.topSource$.next(new SlicedListSource(this.source, 0, this.holdTopRow));
-    }
-
-    updateMiddleSource() {
-        this.middleSource$.next(new SlicedListSource(this.source, this.holdTopRow, this.rowsCount$.value - this.holdBottomRow));
-    }
-
-    updateBottomSource() {
-        this.bottomSource$.next(new SlicedListSource(this.source, this.rowsCount$.value - this.holdBottomRow, this.rowsCount$.value - 1));
-    }
-
-
-    updateLeftColumns() {
-        this.leftColumns$.next(this.columns.slice(0, this.holdLeftCol));
-    }
-
-    updateCenterColumns() {
-        this.centerColumns$.next(this.columns.slice(this.holdLeftCol, this.colsCount$.value - this.holdRightCol));
-    }
-
-    updateRightColumns() {
-        this.rightColumns$.next(this.columns.slice(this.colsCount$.value - this.holdRightCol, this.colsCount$.value - 1));
-    }
-
-
-    updateLeftWidths() {
-        this.leftWidths$.next(this.widths.slice(0, this.holdLeftCol));
-    }
-
-    updateCenterWidths() {
-        this.centerWidths$.next(this.widths.slice(this.holdLeftCol, this.colsCount$.value - this.holdRightCol));
-    }
-
-    updateRightWidths() {
-        this.rightWidths$.next(this.widths.slice(this.colsCount$.value - this.holdRightCol, this.colsCount$.value - 1));
-    }
-
-
-    updateTopHeights() {
-        this.topHeights$.next(this.heights.slice(0, this.holdTopRow));
-    }
-
-    updateMiddleHeights() {
-        this.middleHeights$.next(this.heights.slice(this.holdTopRow, -this.holdBottomRow));
-    }
-
-    updateBottomHeights() {
-        this.bottomHeights$.next(this.heights.slice(-this.holdBottomRow, 0));
-    }
-
-    updateColsCount() {
-        this.colsCount$.next(this.columns ? this.columns.length : 0);
-    }
-
-    updateRowsCount() {
-        this.rowsCount$.next(0);
-        if (this.source) {
-            this.source
-                .getData({
-                    offset: 0,
-                    limit: 0
-                })
-                .pipe(
-                    take(1),
-                    takeUntil(this.destroy$)
-                )
-                .subscribe(result => {
-                    this.rowsCount$.next(result.count);
-                });
+        if (hasAnyChanges<GridComponent>(changes, ['source'])) {
+            this.source$.next(this.source);
         }
     }
 }

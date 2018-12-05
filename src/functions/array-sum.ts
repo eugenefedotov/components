@@ -2,7 +2,7 @@
  * Быстрая альтернатива reduce
  * http://jsperf.com/array-summation
  */
-export function arraySum(array: number[], offsetStart: number, offsetEnd: number): number {
+export function arraySum(array: number[], offsetStart: number = 0, offsetEnd: number = array.length): number {
     if (offsetEnd < 0 || offsetStart < 0) {
         console.error(array, offsetEnd, offsetStart);
         return 0;

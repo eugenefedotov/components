@@ -20,7 +20,7 @@ export class SlicedListSource<T> implements ListSource<T> {
             .pipe(
                 map(resp => ({
                         ...resp,
-                        count: resp.count - this.offsetStart - this.offsetEnd
+                        count: Math.min(resp.count, this.offsetEnd - this.offsetStart)
                     })
                 )
             );
