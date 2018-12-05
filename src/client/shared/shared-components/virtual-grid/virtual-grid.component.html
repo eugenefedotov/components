@@ -1,0 +1,11 @@
+<app-scroll-box>
+  <div class="virtual-grid">
+    <app-grid-row
+            *ngFor="let row of visibleRows$ | async; let i = index;"
+            [columns]="visibleColumns$ | async"
+            [row]="row"
+            [widths]="widths"
+            [height]="heights[i]"
+    ></app-grid-row>
+  </div>
+</app-scroll-box>
