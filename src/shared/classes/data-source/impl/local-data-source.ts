@@ -27,13 +27,11 @@ export class LocalDataSource<T> implements DataSource<T> {
         }
 
         if (request.fields) {
-            response.items = this.filterFields(items, request.fields);
-        } else {
-            response.items = items;
+            items = this.filterFields(items, request.fields);
         }
 
         if (request.offset || request.limit) {
-            items = this.sliceItems(response.items, request.offset, request.limit);
+            items = this.sliceItems(items, request.offset, request.limit);
         }
 
         response.items = items;
