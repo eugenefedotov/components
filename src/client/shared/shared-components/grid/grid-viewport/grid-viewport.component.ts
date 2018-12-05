@@ -17,12 +17,6 @@ export class GridViewportComponent<T extends Object = any> implements OnInit {
     source: ListSource<T>;
 
     @Input()
-    defaultColWidth = 150;
-
-    @Input()
-    defaultRowHeight = 24;
-
-    @Input()
     widths: number[];
 
     @Input()

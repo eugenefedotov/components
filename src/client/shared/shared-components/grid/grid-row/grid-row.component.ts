@@ -16,9 +16,6 @@ export class GridRowComponent<T extends Object = any> implements OnInit {
     row: T;
 
     @Input()
-    defaultColWidth = 150;
-
-    @Input()
     widths: number[];
 
     @Input()

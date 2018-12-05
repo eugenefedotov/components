@@ -4,7 +4,7 @@
     <app-grid-cell
             *ngFor="let col of columns; let i = index;"
             class="grid-row__cell"
-            [style.width.px]="widths[i] || defaultColWidth"
+            [style.width.px]="widths[i]"
             [cell]="row[col.key]"
     ></app-grid-cell>
 
