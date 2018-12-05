@@ -1,6 +1,6 @@
 import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {GridColumnModel} from '../../../../../shared/classes/grid-source/models/grid-column.model';
-import {ListSource} from '../../../../../shared/classes/list-source/list-source';
+import {DataSource} from '../../../../../shared/classes/data-source/data-source';
 
 @Component({
     selector: 'app-grid-viewport',
@@ -14,7 +14,7 @@ export class GridViewportComponent<T extends Object = any> implements OnInit {
     columns: GridColumnModel<T>[];
 
     @Input()
-    source: ListSource<T>;
+    source: DataSource<T>;
 
     @Input()
     widths: number[];

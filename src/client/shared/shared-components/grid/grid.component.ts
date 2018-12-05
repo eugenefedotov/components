@@ -1,11 +1,11 @@
 import {ChangeDetectionStrategy, Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
 import {BehaviorSubject, combineLatest} from 'rxjs';
-import {SlicedListSource} from '../../../../shared/classes/list-source/impl/sliced-list-source';
 import {hasAnyChanges} from '../../../../functions/has-any-changes';
 import {arraySum} from '../../../../functions/array-sum';
 import {map, switchMap} from 'rxjs/operators';
 import {arrayFillSpaces} from '../../../../functions/array-fill-spaces';
 import {GridSource} from '../../../../shared/classes/grid-source/grid-source';
+import {SlicedDataSource} from '../../../../shared/classes/data-source/impl/sliced-data-source';
 
 @Component({
     selector: 'app-grid',
@@ -82,17 +82,18 @@ export class GridComponent<T extends Object = any> implements OnInit, OnChanges 
 
     sourceTop$ = combineLatest(this.source$, this.holdTopRow$)
         .pipe(
-            map(([source, holdTopRow]) => new SlicedListSource(source, 0, holdTopRow))
+            map(([source, holdTopRow]) =>
+                new SlicedDataSource(source, 0, holdTopRow))
         );
     sourceMiddle$ = combineLatest(this.source$, this.holdTopRow$, this.holdBottomRow$, this.rowsCount$)
         .pipe(
             map(([source, holdTopRow, holdBottomRow, rowsCount]) =>
-                new SlicedListSource(source, holdTopRow, rowsCount - holdBottomRow))
+                new SlicedDataSource(source, holdTopRow, rowsCount - holdBottomRow))
         );
     sourceBottom$ = combineLatest(this.source$, this.holdBottomRow$, this.rowsCount$)
         .pipe(
             map(([source, holdBottomRow, rowsCount]) =>
-                new SlicedListSource(source, holdBottomRow, rowsCount))
+                new SlicedDataSource(source, holdBottomRow, rowsCount))
         );
 
     heightsTop$ = combineLatest(this.holdTopRow$, this.filledHeights$)
