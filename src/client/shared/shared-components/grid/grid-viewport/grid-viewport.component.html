@@ -1,14 +1,6 @@
-<app-virtual-list
+<app-virtual-grid
         class="viewport-virtual-list"
-        [itemTemplate]="gridRow"
-        [source]="source"
-></app-virtual-list>
-
-<ng-template #gridRow let-row="item" let-index="index">
-    <app-grid-row
-            [columns]="columns"
-            [row]="row"
-            [widths]="widths"
-            [height]="heights[index]"
-    ></app-grid-row>
-</ng-template>
+        [source]="gridSource$ | async"
+        [widths]="widths"
+        [heights]="heights"
+></app-virtual-grid>

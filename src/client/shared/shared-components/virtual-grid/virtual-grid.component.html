@@ -1,11 +1,22 @@
-<app-scroll-box>
-  <div class="virtual-grid">
-    <app-grid-row
-            *ngFor="let row of visibleRows$ | async; let i = index;"
-            [columns]="visibleColumns$ | async"
-            [row]="row"
-            [widths]="widths"
-            [height]="heights[i]"
-    ></app-grid-row>
-  </div>
+<app-scroll-box
+        [horizontal]="true"
+        [verticalAbsoluteScrollPosition]="scrollTop$ | async"
+        (verticalAbsoluteScrollPositionChange)="scrollTop$.next($event)"
+        [horizontalAbsoluteScrollPosition]="scrollLeft$ | async"
+        (horizontalAbsoluteScrollPositionChange)="scrollLeft$.next($event)"
+>
+    <div class="virtual-grid"
+         [style.padding-left.px]="paddingLeft$ | async"
+         [style.padding-right.px]="paddingRight$ | async"
+         [style.padding-top.px]="paddingTop$ | async"
+         [style.padding-bottom.px]="paddingBottom$ | async"
+    >
+        <app-grid-row
+                *ngFor="let rowWithHeight of visibleRowsWithHeights$ | async"
+                [columns]="visibleColumns$ | async"
+                [row]="rowWithHeight.row"
+                [widths]="visibleWidths$ | async"
+                [height]="rowWithHeight.height"
+        ></app-grid-row>
+    </div>
 </app-scroll-box>
