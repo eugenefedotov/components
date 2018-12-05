@@ -1,7 +1,7 @@
 import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
-import {ListSource} from '../../../../shared/classes/list-source/list-source';
-import {LocalListSource} from '../../../../shared/classes/list-source/impl/local-list-source';
-import {GridColumnModel} from '../../../shared/shared-components/grid/models/grid-column.model';
+import {GridColumnModel} from '../../../../shared/classes/grid-source/models/grid-column.model';
+import {LocalGridSource} from '../../../../shared/classes/grid-source/impl/local-grid-source';
+import {GridSource} from '../../../../shared/classes/grid-source/grid-source';
 
 interface DemoGridRow {
     col1: string;
@@ -18,25 +18,24 @@ interface DemoGridRow {
 })
 export class DemoGridComponent implements OnInit {
 
-    gridColumns: GridColumnModel<DemoGridRow>[];
-    gridSource: ListSource<DemoGridRow>;
+    gridSource: GridSource<DemoGridRow>;
 
     constructor() {
     }
 
     ngOnInit() {
-        this.gridColumns = [
+        const gridColumns: GridColumnModel<DemoGridRow>[] = [
             {
-                key: 'col1'
+                field: 'col1'
             },
             {
-                key: 'col2'
+                field: 'col2'
             },
             {
-                key: 'col3'
+                field: 'col3'
             },
             {
-                key: 'col4'
+                field: 'col4'
             },
         ];
 
@@ -51,7 +50,7 @@ export class DemoGridComponent implements OnInit {
             });
         }
 
-        this.gridSource = new LocalListSource<DemoGridRow>(grid);
+        this.gridSource = new LocalGridSource<DemoGridRow>(gridColumns, grid);
     }
 
 }

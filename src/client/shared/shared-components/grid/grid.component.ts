@@ -1,12 +1,11 @@
 import {ChangeDetectionStrategy, Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
-import {GridColumnModel} from './models/grid-column.model';
-import {ListSource} from '../../../../shared/classes/list-source/list-source';
 import {BehaviorSubject, combineLatest} from 'rxjs';
 import {SlicedListSource} from '../../../../shared/classes/list-source/impl/sliced-list-source';
 import {hasAnyChanges} from '../../../../functions/has-any-changes';
 import {arraySum} from '../../../../functions/array-sum';
-import {map, switchMap, tap} from 'rxjs/operators';
+import {map, switchMap} from 'rxjs/operators';
 import {arrayFillSpaces} from '../../../../functions/array-fill-spaces';
+import {GridSource} from '../../../../shared/classes/grid-source/grid-source';
 
 @Component({
     selector: 'app-grid',
@@ -17,10 +16,7 @@ import {arrayFillSpaces} from '../../../../functions/array-fill-spaces';
 export class GridComponent<T extends Object = any> implements OnInit, OnChanges {
 
     @Input()
-    columns: GridColumnModel<T>[];
-
-    @Input()
-    source: ListSource<T>;
+    source: GridSource<T>;
 
     @Input()
     defaultColWidth: number;
@@ -46,8 +42,11 @@ export class GridComponent<T extends Object = any> implements OnInit, OnChanges 
     @Input()
     holdBottomRow = 0;
 
-    columns$ = new BehaviorSubject<GridColumnModel<T>[]>([]);
-    source$ = new BehaviorSubject<ListSource<T>>(null);
+    source$ = new BehaviorSubject<GridSource<T>>(null);
+    columns$ = this.source$
+        .pipe(
+            switchMap(source => source.getColumns())
+        );
 
     defaultRowHeight$ = new BehaviorSubject<number>(24);
     defaultColWidth$ = new BehaviorSubject<number>(150);
@@ -184,9 +183,6 @@ export class GridComponent<T extends Object = any> implements OnInit, OnChanges 
         }
         if (hasAnyChanges<GridComponent>(changes, ['heights'])) {
             this.heights$.next(this.heights);
-        }
-        if (hasAnyChanges<GridComponent>(changes, ['columns'])) {
-            this.columns$.next(this.columns);
         }
         if (hasAnyChanges<GridComponent>(changes, ['source'])) {
             this.source$.next(this.source);

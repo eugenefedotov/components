@@ -33,7 +33,7 @@ export class LocalDataSource<T> implements DataSource<T> {
         }
 
         if (request.offset || request.limit) {
-            response.items = this.sliceItems(response.items, request.offset, request.limit);
+            items = this.sliceItems(response.items, request.offset, request.limit);
         }
 
         response.items = items;

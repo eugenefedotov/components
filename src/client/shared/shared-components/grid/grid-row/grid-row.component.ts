@@ -1,5 +1,5 @@
 import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core';
-import {GridColumnModel} from '../models/grid-column.model';
+import {GridColumnModel} from '../../../../../shared/classes/grid-source/models/grid-column.model';
 
 @Component({
     selector: 'app-grid-row',
