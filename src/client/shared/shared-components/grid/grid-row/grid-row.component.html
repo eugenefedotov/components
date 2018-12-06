@@ -5,7 +5,7 @@
             *ngFor="let col of columns; let i = index;"
             class="grid-row__cell"
             [style.width.px]="widths[i]"
-            [cell]="row[col.field]"
+            [cell]="row ? row[col.field] : ''"
     ></app-grid-cell>
 
 </div>

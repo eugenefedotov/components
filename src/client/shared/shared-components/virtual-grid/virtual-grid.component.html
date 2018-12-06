@@ -6,17 +6,17 @@
         (horizontalAbsoluteScrollPositionChange)="scrollLeft$.next($event)"
 >
     <div class="virtual-grid"
-         [style.padding-left.px]="paddingLeft$ | async"
-         [style.padding-right.px]="paddingRight$ | async"
-         [style.padding-top.px]="paddingTop$ | async"
-         [style.padding-bottom.px]="paddingBottom$ | async"
+         [style.padding-left.px]="atomState.hiddenLeftPx"
+         [style.padding-right.px]="atomState.hiddenRightPx"
+         [style.padding-top.px]="atomState.hiddenTopPx"
+         [style.padding-bottom.px]="atomState.hiddenBottomPx"
     >
         <app-grid-row
-                *ngFor="let rowWithHeight of visibleRowsWithHeights$ | async"
-                [columns]="visibleColumns$ | async"
-                [row]="rowWithHeight.row"
-                [widths]="visibleWidths$ | async"
-                [height]="rowWithHeight.height"
+                *ngFor="let height of atomState.heights; let i = index;"
+                [columns]="atomState.columns"
+                [row]="atomState.rows[i]"
+                [widths]="atomState.widths"
+                [height]="height"
         ></app-grid-row>
     </div>
 </app-scroll-box>
