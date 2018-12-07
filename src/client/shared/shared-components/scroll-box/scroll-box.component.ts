@@ -6,17 +6,14 @@ import {
     Component,
     DoCheck,
     ElementRef,
-    EventEmitter,
     HostListener,
     Input,
     OnDestroy,
     OnInit,
-    Output,
     ViewChild
 } from '@angular/core';
-import {BigNumber} from 'bignumber.js';
-import {Subject} from 'rxjs';
-import {debounceTime, takeUntil} from 'rxjs/operators';
+import {BehaviorSubject, combineLatest, Subject} from 'rxjs';
+import {takeUntil} from 'rxjs/operators';
 import {animate, style, transition, trigger} from '@angular/animations';
 
 @Component({
@@ -40,23 +37,31 @@ import {animate, style, transition, trigger} from '@angular/animations';
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ScrollBoxComponent implements OnInit, OnInit, DoCheck, AfterViewChecked, AfterContentChecked, OnDestroy {
-    @Input() wheelSize = 50;
+    @Input()
+    wheelSize = 50;
 
-    @Input() horizontal = false;
+    @Input()
+    horizontal = false;
+    @Input()
+    vertical = true;
 
-    @Input() vertical = true;
+    @Input()
+    scrollTop = 0;
+    @Input()
+    scrollLeft = 0;
 
-    @Output() horizontalRelativeScrollPositionChange = new EventEmitter<number>();
-    @Output() horizontalAbsoluteScrollPositionChange = new EventEmitter<number>();
-
-    @Output() verticalRelativeScrollPositionChange = new EventEmitter<number>();
-    @Output() verticalAbsoluteScrollPositionChange = new EventEmitter<number>();
-
-    @Output() horizontalAbsoluteScrollSizeChange = new EventEmitter<number>();
-    @Output() verticalAbsoluteScrollSizeChange = new EventEmitter<number>();
 
     @ViewChild('scrollContainer') scrollContainerRef: ElementRef<HTMLElement>;
-    needUpdate$ = new Subject();
+
+    height$ = new BehaviorSubject(0);
+    width$ = new BehaviorSubject(0);
+
+    contentHeight$ = new BehaviorSubject(0);
+    contentWidth$ = new BehaviorSubject(0);
+
+    scrollTop$ = new BehaviorSubject(0);
+    scrollLeft$ = new BehaviorSubject(0);
+
     destroy$ = new Subject();
 
     constructor(private cdr: ChangeDetectorRef) {
@@ -167,25 +172,16 @@ export class ScrollBoxComponent implements OnInit, OnInit, DoCheck, AfterViewChe
     }
 
     ngOnInit() {
-        this.needUpdate$
+        combineLatest(this.scrollLeft$, this.scrollTop$)
             .pipe(
-                debounceTime(1),
                 takeUntil(this.destroy$)
             )
-            .subscribe(() => this.updateScrolls());
+            .subscribe(([scrollLeft, scrollTop]) => {
+                this.el.scrollLeft = scrollLeft;
+                this.el.scrollTop = scrollTop;
+            });
     }
 
-    ngDoCheck(): void {
-        this.needUpdate$.next();
-    }
-
-    ngAfterViewChecked(): void {
-        this.needUpdate$.next();
-    }
-
-    ngAfterContentChecked(): void {
-        this.needUpdate$.next();
-    }
 
     @HostListener('window:resize', ['$event'])
     onResize($event) {
@@ -204,13 +200,6 @@ export class ScrollBoxComponent implements OnInit, OnInit, DoCheck, AfterViewChe
         const deltaY = delta < 0 ? this.wheelSize : -this.wheelSize;
 
         this.verticalRelativeScrollPositionBig = new BigNumber(deltaY).div(this.verticalScrollSize).plus(this._verticalRelativeScrollPositionBig);
-    }
-
-    updateScrolls() {
-        this.el.scrollTop = this.verticalAbsoluteScrollPosition;
-        this.el.scrollLeft = this.horizontalAbsoluteScrollPosition;
-
-        this.cdr.detectChanges();
     }
 
     emitValues(horizontal: boolean) {
