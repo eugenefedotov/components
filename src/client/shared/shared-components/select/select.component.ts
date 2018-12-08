@@ -1,4 +1,5 @@
 import {
+    ChangeDetectionStrategy,
     Component,
     ElementRef,
     EventEmitter,
@@ -32,7 +33,8 @@ const SELECT_VALUE_ACCESSOR = {
     selector: 'app-select',
     templateUrl: './select.component.html',
     styleUrls: ['./select.component.scss'],
-    providers: [SELECT_VALUE_ACCESSOR]
+    providers: [SELECT_VALUE_ACCESSOR],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SelectComponent implements OnInit, OnChanges, OnDestroy, ControlValueAccessor {
     @Input() placeholder: string;
