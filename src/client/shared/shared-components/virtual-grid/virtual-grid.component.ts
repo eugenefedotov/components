@@ -39,6 +39,11 @@ export class VirtualGridComponent<T extends Object = any> implements OnInit, OnC
     heights: number[];
 
     @Input()
+    scrollBarHorizontalShow: boolean;
+    @Input()
+    scrollBarVerticalShow: boolean;
+
+    @Input()
     scrollTop: number;
     @Input()
     scrollLeft: number;

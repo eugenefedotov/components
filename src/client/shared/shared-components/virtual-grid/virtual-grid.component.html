@@ -1,5 +1,8 @@
 <app-scroll-box
-        [horizontal]="true"
+        [scrollHorizontal]="true"
+        [scrollVertical]="true"
+        [scrollBarHorizontalShow]="scrollBarHorizontalShow"
+        [scrollBarVerticalShow]="scrollBarVerticalShow"
         [scrollTop]="scrollTop$ | async"
         (scrollTopChange)="scrollTop$.next($event)"
         [scrollLeft]="scrollLeft$ | async"

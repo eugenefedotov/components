@@ -3,6 +3,8 @@
         [source]="gridSource$ | async"
         [widths]="widths"
         [heights]="heights"
+        [scrollBarHorizontalShow]="scrollBarHorizontalShow"
+        [scrollBarVerticalShow]="scrollBarVerticalShow"
         [scrollTop]="scrollTop$ | async"
         (scrollTopChange)="scrollTop$.next($event)"
         [scrollLeft]="scrollLeft$ | async"

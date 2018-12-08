@@ -37,6 +37,11 @@ export class GridViewportComponent<T extends Object = any> implements OnInit, On
     heights: number[];
 
     @Input()
+    scrollBarHorizontalShow: boolean;
+    @Input()
+    scrollBarVerticalShow: boolean;
+
+    @Input()
     scrollLeft: number;
 
     @Output()

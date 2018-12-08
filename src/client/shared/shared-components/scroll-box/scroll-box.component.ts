@@ -2,7 +2,8 @@ import {
     ChangeDetectionStrategy,
     ChangeDetectorRef,
     Component,
-    ElementRef, EventEmitter,
+    ElementRef,
+    EventEmitter,
     HostListener,
     Input,
     OnChanges,
@@ -17,15 +18,16 @@ import {
     distinctUntilChanged,
     filter,
     map,
-    share,
     shareReplay,
-    switchMap, take,
+    switchMap,
+    take,
     takeUntil,
     withLatestFrom
 } from 'rxjs/operators';
 import {animate, style, transition, trigger} from '@angular/animations';
 import {hasAnyChanges} from '../../../../functions/has-any-changes';
 import {arrayEquals} from '../../../../functions/array-equals';
+import {isBoolean} from '../../../../functions/is-boolean';
 
 @Component({
     selector: 'app-scroll-box',
@@ -52,9 +54,15 @@ export class ScrollBoxComponent implements OnInit, OnInit, OnChanges, OnDestroy 
     wheelSize = 50;
 
     @Input()
-    horizontal = false;
+    scrollHorizontal: boolean;
     @Input()
-    vertical = true;
+    scrollVertical: boolean;
+
+    @Input()
+    scrollBarHorizontalShow: boolean;
+    @Input()
+    scrollBarVerticalShow: boolean;
+
     @Input()
     update$: Observable<any>;
 
@@ -62,6 +70,7 @@ export class ScrollBoxComponent implements OnInit, OnInit, OnChanges, OnDestroy 
     scrollTop: number;
     @Input()
     scrollLeft: number;
+
     @Output()
     scrollTopChange = new EventEmitter<number>();
     @Output()
@@ -74,7 +83,14 @@ export class ScrollBoxComponent implements OnInit, OnInit, OnChanges, OnDestroy 
 
     update$$ = new BehaviorSubject<Observable<any>>(null);
 
+    scrollVertical$ = new BehaviorSubject(true);
+    scrollHorizontal$ = new BehaviorSubject(false);
+
+    scrollBarVerticalShow$ = new BehaviorSubject(true);
+    scrollBarHorizontalShow$ = new BehaviorSubject(false);
+
     wheelY$ = new Subject<number>();
+
     containerHeight$ = new BehaviorSubject(0);
     containerWidth$ = new BehaviorSubject(0);
 
@@ -127,14 +143,26 @@ export class ScrollBoxComponent implements OnInit, OnInit, OnChanges, OnDestroy 
             distinctUntilChanged()
         );
 
-    visibleVerticalScrollBar$ = this.overflowHeight$
+    overflowedHeight$ = this.overflowHeight$
         .pipe(
-            map(overflowHeight => overflowHeight > 0),
+            map((overflowHeight) => overflowHeight > 0),
             distinctUntilChanged()
         );
-    visibleHorizontalScrollBar$ = this.overflowWidth$
+
+    overflowedWidth$ = this.overflowWidth$
         .pipe(
-            map(overflowWidth => overflowWidth > 0),
+            map((overflowWidth) => overflowWidth > 0),
+            distinctUntilChanged()
+        );
+
+    visibleVerticalScrollBar$ = combineLatest(this.scrollBarVerticalShow$, this.overflowedHeight$)
+        .pipe(
+            map(([scrollVerticalShow, overflowedHeight]) => scrollVerticalShow && overflowedHeight),
+            distinctUntilChanged()
+        );
+    visibleHorizontalScrollBar$ = combineLatest(this.scrollBarHorizontalShow$, this.overflowedWidth$)
+        .pipe(
+            map(([scrollHorizontalShow, overflowedWidth]) => scrollHorizontalShow && overflowedWidth),
             distinctUntilChanged()
         );
 
@@ -169,10 +197,10 @@ export class ScrollBoxComponent implements OnInit, OnInit, OnChanges, OnDestroy 
                 withLatestFrom(this.scrollTop$),
                 map(([wheelY, scrollTop]) => scrollTop + wheelY),
                 withLatestFrom(this.overflowHeight$),
-                filter(([scrollTop, overflowHeight]) => scrollTop >= 0 && scrollTop <= overflowHeight),
+                map(([scrollTop, overflowHeight]) => Math.max(0, Math.min(scrollTop, overflowHeight))),
                 takeUntil(this.destroy$)
             )
-            .subscribe(([scrollTop]) => {
+            .subscribe((scrollTop) => {
                 this.scrollTop$.next(scrollTop);
             });
 
@@ -205,6 +233,18 @@ export class ScrollBoxComponent implements OnInit, OnInit, OnChanges, OnDestroy 
         }
         if (hasAnyChanges<ScrollBoxComponent>(changes, ['scrollLeft'])) {
             this.scrollLeft$.next(this.scrollLeft);
+        }
+        if (hasAnyChanges<ScrollBoxComponent>(changes, ['scrollVertical']) && isBoolean(this.scrollVertical)) {
+            this.scrollVertical$.next(this.scrollVertical);
+        }
+        if (hasAnyChanges<ScrollBoxComponent>(changes, ['scrollHorizontal']) && isBoolean(this.scrollHorizontal)) {
+            this.scrollHorizontal$.next(this.scrollHorizontal);
+        }
+        if (hasAnyChanges<ScrollBoxComponent>(changes, ['scrollBarVerticalShow']) && isBoolean(this.scrollBarVerticalShow)) {
+            this.scrollBarVerticalShow$.next(this.scrollBarVerticalShow);
+        }
+        if (hasAnyChanges<ScrollBoxComponent>(changes, ['scrollBarHorizontalShow']) && isBoolean(this.scrollBarHorizontalShow)) {
+            this.scrollBarHorizontalShow$.next(this.scrollBarHorizontalShow);
         }
     }
 

@@ -1,6 +1,6 @@
 <div #scrollContainer class="scroll-box__container"
-     [class.scroll-box__container_horizontal]="horizontal"
-     [class.scroll-box__container_vertical]="vertical"
+     [class.scroll-box__container_horizontal]="scrollHorizontal$ | async"
+     [class.scroll-box__container_vertical]="scrollVertical$ | async"
      (wheel)="onWheel($event)"
 >
     <div #scrollContent class="scroll-box__content">
@@ -22,14 +22,14 @@
                 (positionChange)="relativeHorizontalScrollPositionChange($event)"
 ></app-scroll-bar>
 <div [@enterAnimation]
-     *ngIf="(visibleHorizontalScrollBar$ | async) && (relativeHorizontalScrollPosition$ | async) > 0"
+     *ngIf="(overflowedWidth$ | async) && (relativeHorizontalScrollPosition$ | async) > 0"
      class="scroll-box__overflow-shadow scroll-box__overflow-shadow_left"></div>
 <div [@enterAnimation]
-     *ngIf="(visibleVerticalScrollBar$ | async) && (relativeVerticalScrollPosition$ | async) > 0"
+     *ngIf="(overflowedHeight$ | async) && (relativeVerticalScrollPosition$ | async) > 0"
      class="scroll-box__overflow-shadow scroll-box__overflow-shadow_top"></div>
 <div [@enterAnimation]
-     *ngIf="(visibleHorizontalScrollBar$ | async) && (relativeHorizontalScrollPosition$ | async) < 1"
+     *ngIf="(overflowedWidth$ | async) && (relativeHorizontalScrollPosition$ | async) < 1"
      class="scroll-box__overflow-shadow scroll-box__overflow-shadow_right"></div>
 <div [@enterAnimation]
-     *ngIf="(visibleVerticalScrollBar$ | async) && (relativeVerticalScrollPosition$ | async) < 1"
+     *ngIf="(overflowedHeight$ | async) && (relativeVerticalScrollPosition$ | async) < 1"
      class="scroll-box__overflow-shadow scroll-box__overflow-shadow_bottom"></div>
