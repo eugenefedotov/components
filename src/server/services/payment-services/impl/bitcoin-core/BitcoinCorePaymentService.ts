@@ -7,11 +7,11 @@ import Client from 'rpc-cli';
 import {BitcoinWalletInfoModel} from './models/BitcoinWalletInfoModel';
 import {getCustomRepository} from 'typeorm';
 import {BitcoinTransactionInfoModel} from './models/BitcoinTransactionInfoModel';
-import {Service} from 'typedi';
 import {PaymentServiceCurrencyEntity} from '../../../../../../../exchanger/core/dao/entities/PaymentServiceCurrencyEntity';
 import {PaymentServiceCurrencyRepository} from '../../../../../../../exchanger/core/dao/repositories/PaymentServiceCurrencyRepository';
+import {Service} from '@tsed/common';
 
-@Service('payment-service.BTC')
+@Service()
 export class BitcoinCorePaymentService implements PaymentService {
   protected host = 'des-pc';
   protected port = 8332;
