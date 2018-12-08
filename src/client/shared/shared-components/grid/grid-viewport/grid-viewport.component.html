@@ -3,4 +3,8 @@
         [source]="gridSource$ | async"
         [widths]="widths"
         [heights]="heights"
+        [scrollTop]="scrollTop$ | async"
+        (scrollTopChange)="scrollTop$.next($event)"
+        [scrollLeft]="scrollLeft$ | async"
+        (scrollLeftChange)="scrollLeft$.next($event)"
 ></app-virtual-grid>

@@ -1,20 +1,31 @@
 import {
-    AfterContentChecked,
-    AfterViewChecked,
     ChangeDetectionStrategy,
     ChangeDetectorRef,
     Component,
-    DoCheck,
-    ElementRef,
+    ElementRef, EventEmitter,
     HostListener,
     Input,
+    OnChanges,
     OnDestroy,
     OnInit,
+    Output,
+    SimpleChanges,
     ViewChild
 } from '@angular/core';
-import {BehaviorSubject, combineLatest, Subject} from 'rxjs';
-import {takeUntil} from 'rxjs/operators';
+import {BehaviorSubject, combineLatest, Observable, Subject} from 'rxjs';
+import {
+    distinctUntilChanged,
+    filter,
+    map,
+    share,
+    shareReplay,
+    switchMap, take,
+    takeUntil,
+    withLatestFrom
+} from 'rxjs/operators';
 import {animate, style, transition, trigger} from '@angular/animations';
+import {hasAnyChanges} from '../../../../functions/has-any-changes';
+import {arrayEquals} from '../../../../functions/array-equals';
 
 @Component({
     selector: 'app-scroll-box',
@@ -36,7 +47,7 @@ import {animate, style, transition, trigger} from '@angular/animations';
     ],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ScrollBoxComponent implements OnInit, OnInit, DoCheck, AfterViewChecked, AfterContentChecked, OnDestroy {
+export class ScrollBoxComponent implements OnInit, OnInit, OnChanges, OnDestroy {
     @Input()
     wheelSize = 50;
 
@@ -44,17 +55,28 @@ export class ScrollBoxComponent implements OnInit, OnInit, DoCheck, AfterViewChe
     horizontal = false;
     @Input()
     vertical = true;
+    @Input()
+    update$: Observable<any>;
 
     @Input()
-    scrollTop = 0;
+    scrollTop: number;
     @Input()
-    scrollLeft = 0;
+    scrollLeft: number;
+    @Output()
+    scrollTopChange = new EventEmitter<number>();
+    @Output()
+    scrollLeftChange = new EventEmitter<number>();
 
+    @ViewChild('scrollContainer')
+    scrollContainerRef: ElementRef<HTMLElement>;
+    @ViewChild('scrollContent')
+    scrollContentRef: ElementRef<HTMLElement>;
 
-    @ViewChild('scrollContainer') scrollContainerRef: ElementRef<HTMLElement>;
+    update$$ = new BehaviorSubject<Observable<any>>(null);
 
-    height$ = new BehaviorSubject(0);
-    width$ = new BehaviorSubject(0);
+    wheelY$ = new Subject<number>();
+    containerHeight$ = new BehaviorSubject(0);
+    containerWidth$ = new BehaviorSubject(0);
 
     contentHeight$ = new BehaviorSubject(0);
     contentWidth$ = new BehaviorSubject(0);
@@ -62,160 +84,178 @@ export class ScrollBoxComponent implements OnInit, OnInit, DoCheck, AfterViewChe
     scrollTop$ = new BehaviorSubject(0);
     scrollLeft$ = new BehaviorSubject(0);
 
+    overflowHeight$ = combineLatest(this.containerHeight$, this.contentHeight$)
+        .pipe(
+            distinctUntilChanged(arrayEquals),
+            map(([containerHeight, contentHeight]) => contentHeight - containerHeight),
+            distinctUntilChanged(),
+            shareReplay(1)
+        );
+    overflowWidth$ = combineLatest(this.containerWidth$, this.contentWidth$)
+        .pipe(
+            distinctUntilChanged(arrayEquals),
+            map(([containerWidth, contentWidth]) => contentWidth - containerWidth),
+            distinctUntilChanged(),
+            shareReplay(1)
+        );
+
+    relativeVerticalScrollSize$ = combineLatest(this.containerHeight$, this.contentHeight$)
+        .pipe(
+            distinctUntilChanged(arrayEquals),
+            map(([containerHeight, contentHeight]) => Math.min(containerHeight / contentHeight, 1)),
+            distinctUntilChanged()
+        );
+
+    relativeHorizontalScrollSize$ = combineLatest(this.containerWidth$, this.contentWidth$)
+        .pipe(
+            distinctUntilChanged(arrayEquals),
+            map(([containerWidth, contentWidth]) => Math.min(containerWidth / contentWidth, 1)),
+            distinctUntilChanged()
+        );
+
+    relativeVerticalScrollPosition$ = combineLatest(this.scrollTop$, this.overflowHeight$)
+        .pipe(
+            distinctUntilChanged(arrayEquals),
+            map(([scrollTop, overflowHeight]) => scrollTop / overflowHeight),
+            distinctUntilChanged()
+        );
+
+    relativeHorizontalScrollPosition$ = combineLatest(this.scrollLeft$, this.overflowWidth$)
+        .pipe(
+            distinctUntilChanged(arrayEquals),
+            map(([scrollLeft, overflowWidth]) => scrollLeft / overflowWidth),
+            distinctUntilChanged()
+        );
+
+    visibleVerticalScrollBar$ = this.overflowHeight$
+        .pipe(
+            map(overflowHeight => overflowHeight > 0),
+            distinctUntilChanged()
+        );
+    visibleHorizontalScrollBar$ = this.overflowWidth$
+        .pipe(
+            map(overflowWidth => overflowWidth > 0),
+            distinctUntilChanged()
+        );
+
+
     destroy$ = new Subject();
 
     constructor(private cdr: ChangeDetectorRef) {
     }
 
-    _horizontalRelativeScrollPositionBig = new BigNumber(0);
-
-    set horizontalRelativeScrollPositionBig(value: BigNumber) {
-        if (value.isNaN()) {
-            console.error('isNaN');
-        }
-
-        value = BigNumber.min(BigNumber.max(value, 0), 1);
-
-        if (this._horizontalRelativeScrollPositionBig.eq(value)) {
-            return;
-        }
-
-        this._horizontalRelativeScrollPositionBig = value;
-        this.needUpdate$.next();
-        this.emitValues(true);
-    }
-
-    _verticalRelativeScrollPositionBig = new BigNumber(0);
-
-    set verticalRelativeScrollPositionBig(value: BigNumber) {
-        if (value.isNaN()) {
-            console.error('isNaN');
-        }
-
-        value = BigNumber.min(BigNumber.max(value, 0), 1);
-
-        if (this._verticalRelativeScrollPositionBig.eq(value)) {
-            return;
-        }
-
-        this._verticalRelativeScrollPositionBig = value;
-        this.needUpdate$.next();
-        this.emitValues(false);
-    }
-
-    get _horizontalRelativeScrollSizeBig(): BigNumber {
-        return new BigNumber(this.el.offsetWidth).div(this.el.scrollWidth);
-    }
-
-    get horizontalRelativeScrollSize(): number {
-        return this._horizontalRelativeScrollSizeBig.toNumber();
-    }
-
-    get _verticalRelativeScrollSizeBig(): BigNumber {
-        return new BigNumber(this.el.offsetHeight).div(this.el.scrollHeight);
-    }
-
-    get verticalRelativeScrollSize(): number {
-        return this._verticalRelativeScrollSizeBig.toNumber();
-    }
-
-    get el(): HTMLElement {
-        return this.scrollContainerRef.nativeElement;
-    }
-
-    get verticalScrollSize(): number {
-        return this.el.scrollHeight - this.el.offsetHeight;
-    }
-
-    get horizontalScrollSize(): number {
-        return this.el.scrollWidth - this.el.offsetWidth;
-    }
-
-    get horizontalRelativeScrollPosition(): number {
-        return this._horizontalRelativeScrollPositionBig.toNumber();
-    }
-
-    @Input() set horizontalRelativeScrollPosition(value: number) {
-        this.horizontalRelativeScrollPositionBig = new BigNumber(value);
-    }
-
-    get verticalRelativeScrollPosition(): number {
-        return this._verticalRelativeScrollPositionBig.toNumber();
-    }
-
-    @Input() set verticalRelativeScrollPosition(value: number) {
-        this.verticalRelativeScrollPositionBig = new BigNumber(value);
-    }
-
-    get horizontalAbsoluteScrollPosition(): number {
-        return this._horizontalRelativeScrollPositionBig.times(this.horizontalScrollSize).toNumber();
-    }
-
-    @Input() set horizontalAbsoluteScrollPosition(value: number) {
-        this.horizontalRelativeScrollPositionBig = new BigNumber(value).div(this.horizontalScrollSize || 1);
-    }
-
-    get verticalAbsoluteScrollPosition(): number {
-        return this._verticalRelativeScrollPositionBig.times(this.verticalScrollSize).toNumber();
-    }
-
-    @Input() set verticalAbsoluteScrollPosition(value: number) {
-        this.verticalRelativeScrollPositionBig = new BigNumber(value).div(this.verticalScrollSize || 1);
-    }
-
-    get isHorizontalScrollVisible() {
-        return this.horizontal && this._horizontalRelativeScrollSizeBig.lt(1);
-    }
-
-    get isVerticalScrollVisible() {
-        return this.vertical && this._verticalRelativeScrollSizeBig.lt(1);
-    }
-
     ngOnInit() {
+        this.scrollLeft$
+            .pipe(
+                distinctUntilChanged(),
+                takeUntil(this.destroy$)
+            )
+            .subscribe(scrollLeft => {
+                this.scrollLeft = scrollLeft;
+                this.scrollLeftChange.emit(this.scrollLeft);
+            });
+        this.scrollTop$
+            .pipe(
+                distinctUntilChanged(),
+                takeUntil(this.destroy$)
+            )
+            .subscribe(scrollTop => {
+                this.scrollTop = scrollTop;
+                this.scrollTopChange.emit(this.scrollTop);
+            });
+
+        this.wheelY$
+            .pipe(
+                withLatestFrom(this.scrollTop$),
+                map(([wheelY, scrollTop]) => scrollTop + wheelY),
+                withLatestFrom(this.overflowHeight$),
+                filter(([scrollTop, overflowHeight]) => scrollTop >= 0 && scrollTop <= overflowHeight),
+                takeUntil(this.destroy$)
+            )
+            .subscribe(([scrollTop]) => {
+                this.scrollTop$.next(scrollTop);
+            });
+
+        this.update$$
+            .pipe(
+                switchMap(update$ => update$ ? update$ : []),
+                takeUntil(this.destroy$)
+            )
+            .subscribe(() => {
+                this.updateSizes();
+            });
+
         combineLatest(this.scrollLeft$, this.scrollTop$)
             .pipe(
+                distinctUntilChanged(arrayEquals),
                 takeUntil(this.destroy$)
             )
             .subscribe(([scrollLeft, scrollTop]) => {
-                this.el.scrollLeft = scrollLeft;
-                this.el.scrollTop = scrollTop;
+                this.scrollContainerRef.nativeElement.scrollLeft = scrollLeft;
+                this.scrollContainerRef.nativeElement.scrollTop = scrollTop;
             });
+    }
+
+    ngOnChanges(changes: SimpleChanges): void {
+        if (hasAnyChanges<ScrollBoxComponent>(changes, ['update$'])) {
+            this.update$$.next(this.update$);
+        }
+        if (hasAnyChanges<ScrollBoxComponent>(changes, ['scrollTop'])) {
+            this.scrollTop$.next(this.scrollTop);
+        }
+        if (hasAnyChanges<ScrollBoxComponent>(changes, ['scrollLeft'])) {
+            this.scrollLeft$.next(this.scrollLeft);
+        }
     }
 
 
     @HostListener('window:resize', ['$event'])
     onResize($event) {
-        this.updateScrolls();
+        this.updateSizes();
     }
 
     onWheel(event: WheelEvent) {
-        if (!this.isHorizontalScrollVisible && !this.isVerticalScrollVisible) {
-            return;
-        }
-
         event.stopPropagation();
         event.preventDefault();
 
         const delta = -event.deltaY || -event.detail || event.wheelDelta;
         const deltaY = delta < 0 ? this.wheelSize : -this.wheelSize;
 
-        this.verticalRelativeScrollPositionBig = new BigNumber(deltaY).div(this.verticalScrollSize).plus(this._verticalRelativeScrollPositionBig);
+        this.wheelY$.next(deltaY);
     }
 
-    emitValues(horizontal: boolean) {
-        if (horizontal) {
-            this.horizontalAbsoluteScrollSizeChange.emit(this.horizontalScrollSize);
-            this.horizontalRelativeScrollPositionChange.emit(this.horizontalRelativeScrollPosition);
-            this.horizontalAbsoluteScrollPositionChange.emit(this.horizontalAbsoluteScrollPosition);
-        } else {
-            this.verticalAbsoluteScrollSizeChange.emit(this.verticalScrollSize);
-            this.verticalRelativeScrollPositionChange.emit(this.verticalRelativeScrollPosition);
-            this.verticalAbsoluteScrollPositionChange.emit(this.verticalAbsoluteScrollPosition);
-        }
+    updateSizes() {
+        const containerEl = this.scrollContainerRef.nativeElement;
+        this.containerHeight$.next(containerEl.offsetHeight);
+        this.containerWidth$.next(containerEl.offsetWidth);
+
+        const contentEl = this.scrollContentRef.nativeElement;
+        this.contentHeight$.next(contentEl.offsetHeight);
+        this.contentWidth$.next(contentEl.offsetWidth);
     }
 
     ngOnDestroy(): void {
         this.destroy$.next();
         this.destroy$.complete();
+    }
+
+    relativeVerticalScrollPositionChange(scrollTopRelative: number) {
+        this.overflowHeight$
+            .pipe(
+                take(1)
+            )
+            .subscribe(overflowHeight => {
+                this.scrollTop$.next(overflowHeight * scrollTopRelative);
+            });
+    }
+
+    relativeHorizontalScrollPositionChange(scrollLeftRelative: number) {
+        this.overflowWidth$
+            .pipe(
+                take(1)
+            )
+            .subscribe(overflowWidth => {
+                this.scrollLeft$.next(overflowWidth * scrollLeftRelative);
+            });
     }
 }

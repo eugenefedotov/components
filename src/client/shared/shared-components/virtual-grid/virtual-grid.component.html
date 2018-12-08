@@ -1,18 +1,19 @@
 <app-scroll-box
         [horizontal]="true"
-        [verticalAbsoluteScrollPosition]="scrollTop$ | async"
-        (verticalAbsoluteScrollPositionChange)="scrollTop$.next($event)"
-        [horizontalAbsoluteScrollPosition]="scrollLeft$ | async"
-        (horizontalAbsoluteScrollPositionChange)="scrollLeft$.next($event)"
+        [scrollTop]="scrollTop$ | async"
+        (scrollTopChange)="scrollTop$.next($event)"
+        [scrollLeft]="scrollLeft$ | async"
+        (scrollLeftChange)="scrollLeft$.next($event)"
+        [update$]="scrollBoxUpdate$"
 >
     <div class="virtual-grid"
-         [style.padding-left.px]="atomState.hiddenLeftPx"
-         [style.padding-right.px]="atomState.hiddenRightPx"
-         [style.padding-top.px]="atomState.hiddenTopPx"
-         [style.padding-bottom.px]="atomState.hiddenBottomPx"
+         [style.padding-left.px]="atomState?.hiddenLeftPx"
+         [style.padding-right.px]="atomState?.hiddenRightPx"
+         [style.padding-top.px]="atomState?.hiddenTopPx"
+         [style.padding-bottom.px]="atomState?.hiddenBottomPx"
     >
         <app-grid-row
-                *ngFor="let height of atomState.heights; let i = index;"
+                *ngFor="let height of atomState?.heights; let i = index;"
                 [columns]="atomState.columns"
                 [row]="atomState.rows[i]"
                 [widths]="atomState.widths"

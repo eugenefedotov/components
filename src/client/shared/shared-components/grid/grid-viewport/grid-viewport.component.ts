@@ -1,10 +1,20 @@
-import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    Component,
+    EventEmitter,
+    Input,
+    OnChanges,
+    OnDestroy,
+    OnInit,
+    Output,
+    SimpleChanges
+} from '@angular/core';
 import {GridColumnModel} from '../../../../../shared/classes/grid-source/models/grid-column.model';
 import {DataSource} from '../../../../../shared/classes/data-source/data-source';
-import {BehaviorSubject, combineLatest} from 'rxjs';
+import {BehaviorSubject, combineLatest, Subject} from 'rxjs';
 import {hasAnyChanges} from '../../../../../functions/has-any-changes';
 import {DataSourceGridSource} from '../../../../../shared/classes/grid-source/impl/data-source-grid-source';
-import {map} from 'rxjs/operators';
+import {distinctUntilChanged, map, takeUntil} from 'rxjs/operators';
 
 @Component({
     selector: 'app-grid-viewport',
@@ -12,7 +22,7 @@ import {map} from 'rxjs/operators';
     styleUrls: ['./grid-viewport.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class GridViewportComponent<T extends Object = any> implements OnInit, OnChanges {
+export class GridViewportComponent<T extends Object = any> implements OnInit, OnChanges, OnDestroy {
 
     @Input()
     columns: GridColumnModel<T>[];
@@ -38,6 +48,9 @@ export class GridViewportComponent<T extends Object = any> implements OnInit, On
     @Output()
     scrollTopChange = new EventEmitter<number>();
 
+    scrollTop$ = new BehaviorSubject(0);
+    scrollLeft$ = new BehaviorSubject(0);
+
     source$ = new BehaviorSubject<DataSource<T>>(null);
     columns$ = new BehaviorSubject<GridColumnModel<T>[]>([]);
     gridSource$ = combineLatest(this.source$, this.columns$)
@@ -45,10 +58,30 @@ export class GridViewportComponent<T extends Object = any> implements OnInit, On
             map(([source, columns]) => source ? new DataSourceGridSource(columns, source) : null)
         );
 
+    destroy$ = new Subject();
+
     constructor() {
     }
 
     ngOnInit() {
+        this.scrollLeft$
+            .pipe(
+                distinctUntilChanged(),
+                takeUntil(this.destroy$)
+            )
+            .subscribe(scrollLeft => {
+                this.scrollLeft = scrollLeft;
+                this.scrollLeftChange.emit(this.scrollLeft);
+            });
+        this.scrollTop$
+            .pipe(
+                distinctUntilChanged(),
+                takeUntil(this.destroy$)
+            )
+            .subscribe(scrollTop => {
+                this.scrollTop = scrollTop;
+                this.scrollTopChange.emit(this.scrollTop);
+            });
     }
 
     ngOnChanges(changes: SimpleChanges): void {
@@ -58,6 +91,16 @@ export class GridViewportComponent<T extends Object = any> implements OnInit, On
         if (hasAnyChanges<GridViewportComponent>(changes, ['columns'])) {
             this.columns$.next(this.columns);
         }
+        if (hasAnyChanges<GridViewportComponent>(changes, ['scrollTop'])) {
+            this.scrollTop$.next(this.scrollTop);
+        }
+        if (hasAnyChanges<GridViewportComponent>(changes, ['scrollLeft'])) {
+            this.scrollLeft$.next(this.scrollLeft);
+        }
     }
 
+    ngOnDestroy(): void {
+        this.destroy$.next();
+        this.destroy$.complete();
+    }
 }

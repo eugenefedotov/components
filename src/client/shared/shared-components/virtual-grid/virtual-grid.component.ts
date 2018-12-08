@@ -4,22 +4,22 @@ import {
     ChangeDetectorRef,
     Component,
     ElementRef,
+    EventEmitter,
     Input,
     OnChanges,
     OnDestroy,
     OnInit,
-    SimpleChanges,
-    ViewChild
+    Output,
+    SimpleChanges
 } from '@angular/core';
 import {GridSource} from '../../../../shared/classes/grid-source/grid-source';
 import {BehaviorSubject, combineLatest, Subject} from 'rxjs';
-import {distinctUntilChanged, map, switchMap, takeUntil} from 'rxjs/operators';
+import {debounceTime, distinctUntilChanged, map, switchMap, takeUntil} from 'rxjs/operators';
 import {hasAnyChanges} from '../../../../functions/has-any-changes';
 import {arraySumIndex} from '../../../../functions/array-sum-index';
 import {arraySum} from '../../../../functions/array-sum';
 import {arrayEquals} from '../../../../functions/array-equals';
 import {GridColumnModel} from '../../../../shared/classes/grid-source/models/grid-column.model';
-import {ScrollBoxComponent} from '../scroll-box/scroll-box.component';
 
 @Component({
     selector: 'app-virtual-grid',
@@ -38,8 +38,14 @@ export class VirtualGridComponent<T extends Object = any> implements OnInit, OnC
     @Input()
     heights: number[];
 
-    @ViewChild(ScrollBoxComponent)
-    scrollBox: ScrollBoxComponent;
+    @Input()
+    scrollTop: number;
+    @Input()
+    scrollLeft: number;
+    @Output()
+    scrollTopChange = new EventEmitter<number>();
+    @Output()
+    scrollLeftChange = new EventEmitter<number>();
 
     source$ = new BehaviorSubject<GridSource<T>>(null);
 
@@ -66,7 +72,7 @@ export class VirtualGridComponent<T extends Object = any> implements OnInit, OnC
         );
     visibleRowEnd$ = combineLatest(this.heights$, this.scrollTop$, this.height$)
         .pipe(
-            map(([heights, scrollTop, height]) => arraySumIndex(heights, scrollTop + height)),
+            map(([heights, scrollTop, height]) => arraySumIndex(heights, scrollTop + height, true)),
             distinctUntilChanged()
         );
     visibleColStart$ = combineLatest(this.widths$, this.scrollLeft$)
@@ -76,7 +82,7 @@ export class VirtualGridComponent<T extends Object = any> implements OnInit, OnC
         );
     visibleColEnd$ = combineLatest(this.widths$, this.scrollLeft$, this.width$)
         .pipe(
-            map(([widths, scrollLeft, width]) => arraySumIndex(widths, scrollLeft + width)),
+            map(([widths, scrollLeft, width]) => arraySumIndex(widths, scrollLeft + width, true)),
             distinctUntilChanged()
         );
 
@@ -88,13 +94,15 @@ export class VirtualGridComponent<T extends Object = any> implements OnInit, OnC
         );
     hiddenTopPx$ = combineLatest(this.heights$, this.visibleRowStart$)
         .pipe(
+            // tap(([heights, offset]) => console.log({heights, offset})),
             map(([heights, offset]) => heights.slice(0, offset)),
             map(arraySum),
+            // tap((sum) => console.log({sum})),
             distinctUntilChanged()
         );
-    hiddenRightPx$ = combineLatest(this.widths$, this.visibleColEnd$, this.columns$)
+    hiddenRightPx$ = combineLatest(this.widths$, this.visibleColEnd$)
         .pipe(
-            map(([widths, viewEnd, columns]) => widths.slice(viewEnd, columns.length)),
+            map(([widths, offset]) => widths.slice(offset)),
             map(arraySum),
             distinctUntilChanged()
         );
@@ -112,7 +120,8 @@ export class VirtualGridComponent<T extends Object = any> implements OnInit, OnC
         );
     visibleRows$ = combineLatest(this.source$, this.visibleColumns$, this.visibleRowStart$, this.visibleRowEnd$)
         .pipe(
-            // tap(val => console.log('visibleRows$ input', val)),
+            debounceTime(1),
+            // tap(([source, columns, start, end]) => console.log({source, columns, start, end})),
             switchMap(([source, columns, start, end]) => source ? source.getData({
                 offset: start,
                 limit: end - start,
@@ -134,6 +143,8 @@ export class VirtualGridComponent<T extends Object = any> implements OnInit, OnC
             // tap(val => console.log('visibleHeights$', val))
         );
 
+    scrollBoxUpdate$ = new Subject();
+
     atomState: {
         rows: T[];
         columns: GridColumnModel<T>[];
@@ -151,6 +162,25 @@ export class VirtualGridComponent<T extends Object = any> implements OnInit, OnC
     }
 
     ngOnInit() {
+        this.scrollLeft$
+            .pipe(
+                distinctUntilChanged(),
+                takeUntil(this.destroy$)
+            )
+            .subscribe(scrollLeft => {
+                this.scrollLeft = scrollLeft;
+                this.scrollLeftChange.emit(this.scrollLeft);
+            });
+        this.scrollTop$
+            .pipe(
+                distinctUntilChanged(),
+                takeUntil(this.destroy$)
+            )
+            .subscribe(scrollTop => {
+                this.scrollTop = scrollTop;
+                this.scrollTopChange.emit(this.scrollTop);
+            });
+
         combineLatest(
             this.visibleRows$,
             this.visibleColumns$,
@@ -162,6 +192,7 @@ export class VirtualGridComponent<T extends Object = any> implements OnInit, OnC
             this.hiddenBottomPx$
         )
             .pipe(
+                // debounceTime(1),
                 takeUntil(this.destroy$)
             )
             .subscribe(([rows, columns, widths, heights, hiddenLeftPx, hiddenTopPx, hiddenRightPx, hiddenBottomPx]) => {
@@ -175,8 +206,9 @@ export class VirtualGridComponent<T extends Object = any> implements OnInit, OnC
                     hiddenRightPx,
                     hiddenBottomPx
                 };
+                // console.log(this.atomState);
                 this.cdr.detectChanges();
-                this.scrollBox.needUpdate$.next();
+                this.scrollBoxUpdate$.next();
             });
     }
 
@@ -189,6 +221,12 @@ export class VirtualGridComponent<T extends Object = any> implements OnInit, OnC
         }
         if (hasAnyChanges<VirtualGridComponent>(changes, ['heights'])) {
             this.heights$.next(this.heights);
+        }
+        if (hasAnyChanges<VirtualGridComponent>(changes, ['scrollTop'])) {
+            this.scrollTop$.next(this.scrollTop);
+        }
+        if (hasAnyChanges<VirtualGridComponent>(changes, ['scrollLeft'])) {
+            this.scrollLeft$.next(this.scrollLeft);
         }
     }
 

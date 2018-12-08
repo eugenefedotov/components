@@ -1,7 +1,7 @@
 /**
  * Получение индекса элемента, на котором накопленная сумма элементов >= требуемой сумме
  */
-export function arraySumIndex(array: number[], sum: number): number {
+export function arraySumIndex(array: number[], sum: number, nextIfExists = false): number {
     let i;
     let sumInner = 0;
 
@@ -13,5 +13,7 @@ export function arraySumIndex(array: number[], sum: number): number {
         }
     }
 
-    return i;
+    const nextOffset = (nextIfExists && i < array.length ? 1 : 0);
+
+    return i + nextOffset;
 }
