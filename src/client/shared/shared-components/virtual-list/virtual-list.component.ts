@@ -14,7 +14,7 @@ import {
     TemplateRef,
     ViewChildren
 } from '@angular/core';
-import {debounceTime, distinctUntilChanged, map, switchMap, takeUntil} from 'rxjs/operators';
+import {debounceTime, distinctUntilChanged, map, switchMap, takeUntil, throttleTime} from 'rxjs/operators';
 import {BehaviorSubject, combineLatest, Observable, Subject} from 'rxjs';
 import {ListSource} from '../../../../shared/classes/list-source/list-source';
 import {CachedListSource} from '../../../../shared/classes/list-source/impl/cached-list-source/cached-list-source';
@@ -90,11 +90,13 @@ export class VirtualListComponent<T = any> implements OnInit, OnChanges, OnInit,
 
     hiddenTopPx$ = this.heightsTop$
         .pipe(
-            map(arraySum)
+            map(arraySum),
+            distinctUntilChanged()
         );
     hiddenBottomPx$ = this.heightsBottom$
         .pipe(
-            map(arraySum)
+            map(arraySum),
+            distinctUntilChanged()
         );
 
     viewItems$ = combineLatest(this.source$, this.visibleOffset$, this.visibleEnd$)
@@ -136,7 +138,6 @@ export class VirtualListComponent<T = any> implements OnInit, OnChanges, OnInit,
         combineLatest(this.hiddenTopPx$, this.hiddenBottomPx$, this.heightsVisible$, this.viewItems$, this.visibleOffset$)
             .pipe(
                 distinctUntilChanged(arrayEquals),
-                debounceTime(1),
                 takeUntil(this.destroy$)
             )
             .subscribe(([hiddenTopPx, hiddenBottomPx, heightsVisible, items, offset]) => {

@@ -117,9 +117,9 @@ export class VirtualGridComponent<T extends Object = any> implements OnInit, OnC
             map(arraySum),
             distinctUntilChanged()
         );
-    visibleColumns$ = combineLatest(this.columns$, this.visibleColStart$)
+    visibleColumns$ = combineLatest(this.columns$, this.visibleColStart$, this.visibleColEnd$)
         .pipe(
-            map(([columns, start]) => columns.slice(start)),
+            map(([columns, start, end]) => columns.slice(start, end)),
             distinctUntilChanged(arrayEquals),
             // tap(val => console.log('visibleColumns$', val))
         );
@@ -197,7 +197,7 @@ export class VirtualGridComponent<T extends Object = any> implements OnInit, OnC
             this.hiddenBottomPx$
         )
             .pipe(
-                // debounceTime(1),
+                debounceTime(1),
                 takeUntil(this.destroy$)
             )
             .subscribe(([rows, columns, widths, heights, hiddenLeftPx, hiddenTopPx, hiddenRightPx, hiddenBottomPx]) => {
@@ -211,7 +211,6 @@ export class VirtualGridComponent<T extends Object = any> implements OnInit, OnC
                     hiddenRightPx,
                     hiddenBottomPx
                 };
-                // console.log(this.atomState);
                 this.cdr.detectChanges();
                 this.scrollBoxUpdate$.next();
             });

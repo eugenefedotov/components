@@ -3,13 +3,6 @@ import {GridColumnModel} from '../../../../shared/classes/grid-source/models/gri
 import {LocalGridSource} from '../../../../shared/classes/grid-source/impl/local-grid-source';
 import {GridSource} from '../../../../shared/classes/grid-source/grid-source';
 
-interface DemoGridRow {
-    col1: string;
-    col2: string;
-    col3: string;
-    col4: string;
-}
-
 @Component({
     selector: 'app-demo-grid',
     templateUrl: './demo-grid.component.html',
@@ -18,39 +11,36 @@ interface DemoGridRow {
 })
 export class DemoGridComponent implements OnInit {
 
-    gridSource: GridSource<DemoGridRow>;
+    gridSource: GridSource;
 
     constructor() {
     }
 
     ngOnInit() {
-        const gridColumns: GridColumnModel<DemoGridRow>[] = [
-            {
-                field: 'col1'
-            },
-            {
-                field: 'col2'
-            },
-            {
-                field: 'col3'
-            },
-            {
-                field: 'col4'
-            },
-        ];
+        const columns = 100;
+        const rows = 100;
 
-        const grid: DemoGridRow[] = [];
+        const gridColumns: GridColumnModel[] = [];
 
-        for (let i = 0; i < 100; i++) {
-            grid.push({
-                col1: `r${i}col1`,
-                col2: `r${i}col2`,
-                col3: `r${i}col3`,
-                col4: `r${i}col4`
+        for (let i = 0; i < columns; i++) {
+            gridColumns.push({
+                field: 'col' + i
             });
         }
 
-        this.gridSource = new LocalGridSource<DemoGridRow>(gridColumns, grid);
+        const grid = [];
+
+        for (let i = 0; i < rows; i++) {
+            const row = {};
+
+            gridColumns.forEach(col => {
+                row[col.field] = `row${i}/${String(col.field)}`;
+            });
+
+            grid.push(row);
+        }
+
+        this.gridSource = new LocalGridSource(gridColumns, grid);
     }
 
 }

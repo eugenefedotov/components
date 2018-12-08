@@ -7,6 +7,7 @@ import {arrayFillSpaces} from '../../../../functions/array-fill-spaces';
 import {GridSource} from '../../../../shared/classes/grid-source/grid-source';
 import {SlicedDataSource} from '../../../../shared/classes/data-source/impl/sliced-data-source';
 import {arrayEquals} from '../../../../functions/array-equals';
+import {sourceSizeSwitchMap} from '../../../../functions/source-size-switch-map';
 
 @Component({
     selector: 'app-grid',
@@ -60,11 +61,7 @@ export class GridComponent<T extends Object = any> implements OnInit, OnChanges 
 
     rowsCount$ = this.source$
         .pipe(
-            switchMap(src => src.getData({
-                offset: 0,
-                limit: 0
-            })),
-            map(result => result.count),
+            switchMap(sourceSizeSwitchMap),
             distinctUntilChanged()
         );
 
@@ -98,7 +95,7 @@ export class GridComponent<T extends Object = any> implements OnInit, OnChanges 
     sourceBottom$ = combineLatest(this.source$, this.holdBottomRow$, this.rowsCount$)
         .pipe(
             map(([source, holdBottomRow, rowsCount]) =>
-                new SlicedDataSource(source, holdBottomRow, rowsCount))
+                new SlicedDataSource(source, rowsCount - holdBottomRow, rowsCount))
         );
 
     heightsTop$ = combineLatest(this.holdTopRow$, this.filledHeights$)
