@@ -1,4 +1,5 @@
 import {
+    AfterContentChecked,
     ChangeDetectionStrategy,
     ChangeDetectorRef,
     Component,
@@ -49,7 +50,7 @@ import {isBoolean} from '../../../../functions/is-boolean';
     ],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ScrollBoxComponent implements OnInit, OnInit, OnChanges, OnDestroy {
+export class ScrollBoxComponent implements OnInit, OnInit, OnChanges, AfterContentChecked, OnDestroy {
     @Input()
     wheelSize = 50;
 
@@ -248,6 +249,9 @@ export class ScrollBoxComponent implements OnInit, OnInit, OnChanges, OnDestroy 
         }
     }
 
+    ngAfterContentChecked(): void {
+        this.updateSizes();
+    }
 
     @HostListener('window:resize', ['$event'])
     onResize($event) {

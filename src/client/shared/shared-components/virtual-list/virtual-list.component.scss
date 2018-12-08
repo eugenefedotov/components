@@ -14,17 +14,11 @@
   background-color: $color-light;
   color: $color-dark;
 
-  &__top {
-  }
-
   &__view {
 
     &-item {
       overflow: hidden;
     }
-  }
-
-  &__bottom {
   }
 
   &_spinner {
