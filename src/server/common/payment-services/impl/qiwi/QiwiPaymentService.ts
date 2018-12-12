@@ -14,14 +14,12 @@ import {PaymentServiceAccountModel} from '../../models/payment-service-account.m
 import {PaymentServiceBalanceModel} from '../../models/payment-service-balance.model';
 import {QiwiTransactionTypeEnum} from './enums/QiwiTransactionTypeEnum';
 import {QiwiTransactionSourceEnum} from './enums/QiwiTransactionSourceEnum';
-import {Service} from '@tsed/common';
-import {CurrencyService} from '../../../currency.service';
+import {CurrencyService} from '../../../../services/currency.service';
 import {CurrencyRepository} from '../../../../../dao/currency/currency.repository';
 import {delay} from '../../../../../functions/delay';
 
 const API_URL = 'https://edge.qiwi.com';
 
-@Service()
 export class QiwiPaymentService implements PaymentService {
 
     constructor(private currencyService: CurrencyService) {

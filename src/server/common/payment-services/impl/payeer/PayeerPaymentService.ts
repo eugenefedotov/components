@@ -11,14 +11,12 @@ import * as moment from 'moment';
 import {PayeerTransferRequestParamsModel} from './models/PayeerTransferRequestParamsModel';
 import {PayeerOutputParamsResponseModel} from './models/PayeerOutputParamsResponseModel';
 import {PayeerHistoryInfoModel} from './models/PayeerHistoryInfoModel';
-import {Service} from '@tsed/common';
 
 const PAYEER_API_URL = 'https://payeer.com/ajax/api/api.php';
 
 /**
  * https://payeerru.docs.apiary.io/#reference/0
  */
-@Service()
 export class PayeerPaymentService implements PaymentService {
     async doTransfer(request: PaymentServiceTransferRequestModel): Promise<PaymentServiceTransferResultModel> {
 

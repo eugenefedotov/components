@@ -1,7 +1,6 @@
 import {BitcoinCorePaymentService} from '../bitcoin-core/BitcoinCorePaymentService';
 import {Service} from '@tsed/common';
 
-@Service()
 export class LitecoinCorePaymentService extends BitcoinCorePaymentService {
     constructor() {
         super();

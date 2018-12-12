@@ -8,11 +8,9 @@ import {PaymentServiceTransferRequestModel} from '../../models/payment-service-t
 import {AdvCashBalanceItemModel} from './models/AdvCashBalanceItemModel';
 import {AdvCashHistoryModel, AdvCashHistoryOneModel} from './models/AdvCashHistoryModel';
 import {AdvCashTransactionModel} from './models/AdvCashTransactionModel';
-import {Service} from '@tsed/common';
-import {CurrencyService} from '../../../currency.service';
+import {CurrencyService} from '../../../../services/currency.service';
 import {createHash} from '../../../../../functions/create-hash';
 
-@Service()
 export class AdvCashPaymentService implements PaymentService {
     API_URL = 'https://wallet.advcash.com/wsm/merchantWebService?wsdl';
     soapClient: soap.Client;

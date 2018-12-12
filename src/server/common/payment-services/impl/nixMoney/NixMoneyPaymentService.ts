@@ -4,23 +4,20 @@ import {PaymentServiceAccountModel} from '../../models/payment-service-account.m
 import {PaymentServiceBalanceModel} from '../../models/payment-service-balance.model';
 import {PaymentServiceTransferResultModel} from '../../models/payment-service-transfer-result.model';
 import {PaymentServiceTransferRequestModel} from '../../models/payment-service-transfer-request.model';
-import {Service} from '@tsed/common';
-import {CurrencyService} from '../../../currency.service';
+import {CurrencyService} from '../../../../services/currency.service';
 
-
-export interface PerfectMoneyResponseModel {
+export interface NixMoneyResponseModel {
 }
 
-@Service()
-export class PerfectMoneyPaymentService implements PaymentService {
-    API_URL = 'https://perfectmoney.is/acct';
+export class NixMoneyPaymentService implements PaymentService {
+    API_URL = 'http://dev.nixmoney.com/'; // https://www.nixmoney.com/
 
     constructor(private currencyService: CurrencyService) {
     }
 
     async getBalances(account: PaymentServiceAccountModel): Promise<PaymentServiceBalanceModel[]> {
         const response = await this.request(account, 'balance');
-        const balance = this.parsePerfectMoneyResponse(response);
+        const balance = this.parseNixMoneyResponse(response);
 
         return Object.keys(balance).map(accountName => <PaymentServiceBalanceModel>{
             currencyCode: this.currencyService.getCurrencyCode(accountName),
@@ -29,8 +26,11 @@ export class PerfectMoneyPaymentService implements PaymentService {
     }
 
     async getSourceRequisite(account: PaymentServiceAccountModel, currencyCode: string): Promise<string> {
+        // почему то апи возвращает другой номер кошелька. Но на dev работает. Не понятно будет ли работать на реальных кашельках
+        // return await this.request(account, 'resolve', {TYPE: currencyCode, resolve: account.login});
+
         const response = await this.request(account, 'balance');
-        const balance = this.parsePerfectMoneyResponse(response);
+        const balance = this.parseNixMoneyResponse(response);
         const receiveRequisite = Object.keys(balance).filter(accountName => {
             if (accountName.substring(0, 1) === currencyCode.substring(0, 1)) {
                 return balance[accountName];
@@ -40,8 +40,11 @@ export class PerfectMoneyPaymentService implements PaymentService {
     }
 
     async getReceiveRequisite(account: PaymentServiceAccountModel, currencyCode: string): Promise<string> {
+        // почему то апи возвращает другой номер кошелька. Но на dev работает. Не понятно будет ли работать на реальных кашельках
+        // return await this.request(account, 'resolve', {TYPE: currencyCode, resolve: account.login});
+
         const response = await this.request(account, 'balance');
-        const balance = this.parsePerfectMoneyResponse(response);
+        const balance = this.parseNixMoneyResponse(response);
         const receiveRequisite = Object.keys(balance).filter(accountName => {
             if (accountName.substring(0, 1) === currencyCode.substring(0, 1)) {
                 return balance[accountName];
@@ -53,13 +56,16 @@ export class PerfectMoneyPaymentService implements PaymentService {
     async getReceiveTransfers(account: PaymentServiceAccountModel, targetRequisite: string, currencyCode: string, fromDate: Date, toDate: Date): Promise<PaymentServiceTransferResultModel[]> {
         const result: PaymentServiceTransferResultModel[] = [];
 
-        const response = await this.request(account, 'historycsv', {
+        const response = await this.request(account, 'history', {
             startday: fromDate.getDate(),
             startmonth: fromDate.getMonth() + 1,
             startyear: fromDate.getFullYear(),
             endday: toDate.getDate(),
             endmonth: toDate.getMonth() + 1,
             endyear: toDate.getFullYear(),
+            paymentsreceived: 1,
+            metalfilter: currencyCode,
+            desc: 1
         });
         const lines = response.split(/\n/);
         if (lines.length < 2) {
@@ -67,8 +73,6 @@ export class PerfectMoneyPaymentService implements PaymentService {
         }
 
         const fields = lines[0].split(/,/);
-        const typeColumnIndex = fields.indexOf('Type');
-        const currencyColumnIndex = fields.indexOf('Currency');
         const amountColumnIndex = fields.indexOf('Amount');
 
         for (let i = 1; i < lines.length; i++) {
@@ -77,14 +81,13 @@ export class PerfectMoneyPaymentService implements PaymentService {
                 continue;
             }
 
-            if (values[typeColumnIndex] === 'Income' && values[currencyColumnIndex] === currencyCode) {
-                const val: PaymentServiceTransferResultModel = {
-                    currencyCode: values[currencyColumnIndex],
-                    sourceSum: 0,
-                    targetSum: parseFloat(values[amountColumnIndex])
-                };
-                result.push(val);
-            }
+            const val: PaymentServiceTransferResultModel = {
+                currencyCode: currencyCode,
+                sourceSum: 0,
+                targetSum: parseFloat(values[amountColumnIndex])
+            };
+
+            result.push(val);
         }
 
         return result;
@@ -93,27 +96,27 @@ export class PerfectMoneyPaymentService implements PaymentService {
     async doTransfer(request: PaymentServiceTransferRequestModel): Promise<PaymentServiceTransferResultModel> {
         const sender = await this.getReceiveRequisite(request.sourceAccount, request.currencyCode);
 
-        const response = await this.request(request.sourceAccount, 'confirm', {
+        const response = await this.request(request.sourceAccount, 'send', {
             Payer_Account: sender,
             Payee_Account: request.targetRequisite,
             Amount: request.sourceSum,
             Memo: request.comment,
         });
 
-        const transferResult = this.parsePerfectMoneyResponse(response);
+        const transferResult = this.parseNixMoneyResponse(response);
         if (transferResult['ERROR']) {
             throw new Error(`При переводе средств возникла ошибка:  ${transferResult['ERROR']}`);
         }
 
         return {
-            currencyCode: this.currencyService.getCurrencyCode(transferResult['Payer_Account']),
+            currencyCode: this.currencyService.getCurrencyCode(transferResult['PAYER_ACCOUNT']),
             sourceSum: 0,
             targetSum: transferResult['PAYMENT_AMOUNT']
         };
     }
 
-    parsePerfectMoneyResponse(response: string): PerfectMoneyResponseModel {
-        const resposeResult: PerfectMoneyResponseModel = {};
+    parseNixMoneyResponse(response: string): NixMoneyResponseModel {
+        const resposeResult: NixMoneyResponseModel = {};
         const regexp = /<input name='(.*)' type='hidden' value='(.*)'>/ig;
         let result = regexp.exec(response);
 
@@ -129,12 +132,12 @@ export class PerfectMoneyPaymentService implements PaymentService {
         params = {
             ...params,
             ...{
-                AccountID: account.login,
-                PassPhrase: account.password
+                accountid: account.login,
+                passphrase: account.password
             }
         };
 
-        const response = await requestPromise.post(`${this.API_URL}/${action}.asp`, {
+        const response = await requestPromise.post(`${this.API_URL}/${action}`, {
             form: params,
             json: true
         });
