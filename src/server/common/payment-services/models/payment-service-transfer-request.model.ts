@@ -1,9 +1,9 @@
-import {PaymentServiceAccountModel} from "./payment-service-account.model";
+import {PaymentServiceAccountModel} from './payment-service-account.model';
 
 /**
  * Запрос перевода средств из платежного сервиса
  */
-export interface PaymentServiceTransferRequestModel {
+export interface PaymentServiceTransferRequestModel<AccountT = PaymentServiceAccountModel> {
   /**
    * Код валюты.
    * предполагается, что валюта списания и зачисления всегда совпадают
@@ -13,7 +13,7 @@ export interface PaymentServiceTransferRequestModel {
   /**
    * Аккаунт - источник
    */
-  sourceAccount: PaymentServiceAccountModel;
+  sourceAccount: AccountT;
 
   /**
    * сумма списания
