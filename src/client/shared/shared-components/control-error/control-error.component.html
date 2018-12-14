@@ -1,0 +1,7 @@
+<div class="control-error" #dropRel></div>
+
+<div class="control-error-pop-up"
+     *appPopUp="dropRel; contentAlign: PopUpAlign.Start; contentPosition: PopUpPosition.Bottom;"
+>
+    <div class="control-error-pop-up__item" *ngFor="let err of errors">{{err | json}}</div>
+</div>

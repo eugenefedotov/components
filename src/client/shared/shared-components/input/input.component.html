@@ -1,3 +1,6 @@
+<app-control-error
+        *ngIf="ngControl?.invalid && ngControl?.touched"
+></app-control-error>
 <div class="input" [class.focus]="focus">
     <div class="input__prefix">{{prefix}}</div>
     <div class="input__field">

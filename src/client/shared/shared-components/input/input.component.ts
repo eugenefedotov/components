@@ -1,5 +1,5 @@
-import {Component, forwardRef, HostBinding, Input, OnDestroy, OnInit} from '@angular/core';
-import {ControlValueAccessor, NG_VALUE_ACCESSOR} from '@angular/forms';
+import {Component, forwardRef, HostBinding, Injector, Input, OnDestroy, OnInit} from '@angular/core';
+import {ControlValueAccessor, NG_VALUE_ACCESSOR, NgControl} from '@angular/forms';
 import {Subject} from 'rxjs';
 import {MaskEntity} from '../../../../dao/mask/mask.entity';
 
@@ -48,11 +48,14 @@ export class InputComponent implements OnInit, ControlValueAccessor, OnDestroy {
     onTouched: () => void;
     disabled: boolean;
 
-    constructor() {
+    ngControl: NgControl;
+
+    constructor(private inj: Injector) {
 
     }
 
     ngOnInit(): void {
+        this.ngControl = this.inj.get(NgControl);
     }
 
     registerOnChange(fn: any): void {

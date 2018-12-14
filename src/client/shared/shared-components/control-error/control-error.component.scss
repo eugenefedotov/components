@@ -1,0 +1,27 @@
+@import "scss/variables";
+
+:host {
+  flex: none;
+
+  width: 2rem;
+  height: 2rem;
+
+  padding: .25rem;
+
+  display: flex;
+  flex-direction: column;
+
+  .control-error {
+    flex: 1;
+    display: block;
+
+    background-color: $control-color-border-error;
+    border-radius: $radius-infinity;
+  }
+
+  .control-error-pop-up {
+    &__item {
+
+    }
+  }
+}

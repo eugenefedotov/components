@@ -32,6 +32,7 @@ import { GridViewportComponent } from './grid/grid-viewport/grid-viewport.compon
 import { GridRowComponent } from './grid/grid-row/grid-row.component';
 import { GridCellComponent } from './grid/grid-cell/grid-cell.component';
 import { VirtualGridComponent } from './virtual-grid/virtual-grid.component';
+import { ControlErrorComponent } from './control-error/control-error.component';
 
 @NgModule({
     imports: [
@@ -71,6 +72,7 @@ import { VirtualGridComponent } from './virtual-grid/virtual-grid.component';
         GridRowComponent,
         GridCellComponent,
         VirtualGridComponent,
+        ControlErrorComponent,
     ],
     exports: [
         ScrollBoxComponent,

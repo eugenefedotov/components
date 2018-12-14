@@ -235,8 +235,8 @@ export class ExchangeRouteComponent implements OnInit, OnChanges, OnDestroy {
             return;
         }
 
-        const fromControlWithValidation = this.exchangeRoute.fromPaymentServiceCurrency.hasFee() ? fromControl : fromClientControl;
-        const toControlWithValidation = this.exchangeRoute.toPaymentServiceCurrency.hasFee() ? toControl : toClientControl;
+        const fromControlWithValidation = !this.exchangeRoute.fromPaymentServiceCurrency.hasFee() ? fromControl : fromClientControl;
+        const toControlWithValidation = !this.exchangeRoute.toPaymentServiceCurrency.hasFee() ? toControl : toClientControl;
 
         const nonZero: ValidatorFn = c => c.value === 0 ? {nonZero: true} : null;
 
