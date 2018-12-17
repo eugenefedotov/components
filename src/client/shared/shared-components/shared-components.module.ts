@@ -14,17 +14,14 @@ import {SpinnerComponent} from './spinner/spinner.component';
 import {TabSwitcherComponent} from './tab-switcher/tab-switcher.component';
 import {TabSetComponent} from './tab-set/tab-set.component';
 import {TabComponent} from './tab/tab.component';
-import {RadioComponent} from './radio/radio.component';
 import {PopUpContainerComponent} from './pop-up-container/pop-up-container.component';
 import {TooltipComponent} from './tooltip/tooltip.component';
 import {SharedDirectivesModule} from '../shared-directives/shared-directives.module';
-import {HeaderMenuComponent} from './header-menu/header-menu.component';
 import {SelectItemComponent} from './select-item/select-item.component';
 import {ValueWrapperComponent} from './value-wrapper/value-wrapper.component';
 import {BlockWrapperComponent} from './block-wrapper/block-wrapper.component';
 import {InputComponent} from './input/input.component';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {UpdaterComponent} from './updater/updater.component';
 import {SharedPipesModule} from '../shared-pipes/shared-pipes.module';
 import {GridComponent} from './grid/grid.component';
 import { GridViewportComponent } from './grid/grid-viewport/grid-viewport.component';
@@ -56,15 +53,12 @@ import { ControlErrorComponent } from './control-error/control-error.component';
         TabSwitcherComponent,
         TabSetComponent,
         TabComponent,
-        RadioComponent,
         PopUpContainerComponent,
         TooltipComponent,
-        HeaderMenuComponent,
         SelectItemComponent,
         ValueWrapperComponent,
         BlockWrapperComponent,
         InputComponent,
-        UpdaterComponent,
         GridComponent,
         GridViewportComponent,
         GridRowComponent,
@@ -78,13 +72,11 @@ import { ControlErrorComponent } from './control-error/control-error.component';
         WindowComponent,
         DialogComponent,
         ButtonComponent,
-        HeaderMenuComponent,
         VirtualListComponent,
         SelectComponent,
         ValueWrapperComponent,
         BlockWrapperComponent,
         InputComponent,
-        UpdaterComponent,
         GridComponent,
     ],
     entryComponents: [
