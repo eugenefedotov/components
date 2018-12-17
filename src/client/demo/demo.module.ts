@@ -7,6 +7,7 @@ import {SharedComponentsModule} from '../shared/shared-components/shared-compone
 import { DemoSelectComponent } from './components/demo-select/demo-select.component';
 import { DemoInputComponent } from './components/demo-input/demo-input.component';
 import { DemoVirtualListComponent } from './components/demo-virtual-list/demo-virtual-list.component';
+import { DemoOverviewComponent } from './components/demo-overview/demo-overview.component';
 
 @NgModule({
     imports: [
@@ -14,7 +15,7 @@ import { DemoVirtualListComponent } from './components/demo-virtual-list/demo-vi
         SharedComponentsModule,
         DEMO_ROUTER_MODULE
     ],
-    declarations: [DemoComponent, DemoGridComponent, DemoSelectComponent, DemoInputComponent, DemoVirtualListComponent]
+    declarations: [DemoComponent, DemoGridComponent, DemoSelectComponent, DemoInputComponent, DemoVirtualListComponent, DemoOverviewComponent]
 })
 export class DemoModule {
 }
