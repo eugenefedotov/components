@@ -11,9 +11,6 @@ import {WaiterComponent} from './waiter/waiter.component';
 import {SelectComponent} from './select/select.component';
 import {VirtualListComponent} from './virtual-list/virtual-list.component';
 import {SpinnerComponent} from './spinner/spinner.component';
-import {TabSwitcherComponent} from './tab-switcher/tab-switcher.component';
-import {TabSetComponent} from './tab-set/tab-set.component';
-import {TabComponent} from './tab/tab.component';
 import {PopUpContainerComponent} from './pop-up-container/pop-up-container.component';
 import {TooltipComponent} from './tooltip/tooltip.component';
 import {SharedDirectivesModule} from '../shared-directives/shared-directives.module';
@@ -50,9 +47,6 @@ import { ControlErrorComponent } from './control-error/control-error.component';
         SelectComponent,
         VirtualListComponent,
         SpinnerComponent,
-        TabSwitcherComponent,
-        TabSetComponent,
-        TabComponent,
         PopUpContainerComponent,
         TooltipComponent,
         SelectItemComponent,
