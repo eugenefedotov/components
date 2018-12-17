@@ -1,4 +1,5 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewContainerRef} from '@angular/core';
+import {PopUpService} from './shared/shared-services/pop-up/pop-up.service';
 
 @Component({
     selector: 'app-root',
@@ -7,9 +8,12 @@ import {Component, OnInit} from '@angular/core';
 })
 export class ClientComponent implements OnInit {
 
-    constructor() {
+    constructor(public viewContainerRef: ViewContainerRef,
+                public popUpService: PopUpService) {
     }
 
     ngOnInit(): void {
+        this.popUpService.setViewContainerRef(this.viewContainerRef);
     }
+
 }

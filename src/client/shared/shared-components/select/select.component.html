@@ -12,6 +12,7 @@
          *appPopUp="selectElement; contentAlign: PopUpAlign.FitByRelative; contentPosition: PopUpPosition.Bottom;">
 
         <app-input
+                *ngIf="withFilter"
                 class="select__drop-filter"
                 [formControl]="filterControl"></app-input>
 

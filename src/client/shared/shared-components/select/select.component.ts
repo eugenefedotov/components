@@ -1,5 +1,5 @@
 import {
-    ChangeDetectionStrategy,
+    ChangeDetectionStrategy, ChangeDetectorRef,
     Component,
     ElementRef,
     EventEmitter,
@@ -14,14 +14,14 @@ import {
     ViewChild
 } from '@angular/core';
 import {ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR} from '@angular/forms';
-import {SelectSource} from '../../../../shared/classes/select-source/select-source';
-import {SelectItemModel} from '../../../../shared/classes/select-source/models/select-item.model';
+import {SelectSource} from '../../classes/select-source/select-source';
+import {SelectItemModel} from '../../classes/select-source/models/select-item.model';
 import {BehaviorSubject, combineLatest, merge, of, Subject} from 'rxjs';
 import {hasAnyChanges} from '../../../../functions/has-any-changes';
 import {PopUpAlign, PopUpPosition} from '../../shared-directives/pop-up/pop-up.directive';
-import {KeyComparator} from '../../../../shared/classes/comparator/impl/key-comparator';
+import {KeyComparator} from '../../classes/comparator/impl/key-comparator';
 import {debounceTime, map, takeUntil} from 'rxjs/operators';
-import {PersistentFilterSelectSource} from '../../../../shared/classes/select-source/impl/persistent-filter-select-source';
+import {PersistentFilterSelectSource} from '../../classes/select-source/impl/persistent-filter-select-source';
 
 const SELECT_VALUE_ACCESSOR = {
     provide: NG_VALUE_ACCESSOR,
@@ -44,6 +44,7 @@ export class SelectComponent implements OnInit, OnChanges, OnDestroy, ControlVal
 
     @Input() source: SelectSource;
     @Input() canClear = true;
+    @Input() withFilter = false;
 
     @Input() selectedItem: SelectItemModel;
     @Output() selectedItemChange = new EventEmitter<SelectItemModel>();
@@ -66,7 +67,7 @@ export class SelectComponent implements OnInit, OnChanges, OnDestroy, ControlVal
 
     comparator = new KeyComparator<any>('value');
 
-    constructor() {
+    constructor(private cdr: ChangeDetectorRef) {
     }
 
     ngOnChanges(changes: SimpleChanges): void {
@@ -167,10 +168,13 @@ export class SelectComponent implements OnInit, OnChanges, OnDestroy, ControlVal
         if (this.onTouched) {
             this.onTouched();
         }
+        this.cdr.markForCheck();
     }
 
     closeDrop() {
         this.drop = false;
+
+        this.cdr.markForCheck();
     }
 
     onClearClick($event) {

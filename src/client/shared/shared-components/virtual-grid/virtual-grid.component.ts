@@ -12,14 +12,14 @@ import {
     Output,
     SimpleChanges
 } from '@angular/core';
-import {GridSource} from '../../../../shared/classes/grid-source/grid-source';
+import {GridSource} from '../../classes/grid-source/grid-source';
 import {BehaviorSubject, combineLatest, Subject} from 'rxjs';
 import {debounceTime, distinctUntilChanged, map, switchMap, takeUntil} from 'rxjs/operators';
 import {hasAnyChanges} from '../../../../functions/has-any-changes';
 import {arraySumIndex} from '../../../../functions/array-sum-index';
 import {arraySum} from '../../../../functions/array-sum';
 import {arrayEquals} from '../../../../functions/array-equals';
-import {GridColumnModel} from '../../../../shared/classes/grid-source/models/grid-column.model';
+import {GridColumnModel} from '../../classes/grid-source/models/grid-column.model';
 
 @Component({
     selector: 'app-virtual-grid',

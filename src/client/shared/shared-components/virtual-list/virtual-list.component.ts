@@ -1,5 +1,5 @@
 import {
-    AfterContentChecked,
+    AfterContentChecked, AfterViewInit,
     ChangeDetectionStrategy,
     ChangeDetectorRef,
     Component,
@@ -14,10 +14,10 @@ import {
     TemplateRef,
     ViewChildren
 } from '@angular/core';
-import {debounceTime, distinctUntilChanged, map, switchMap, takeUntil, throttleTime} from 'rxjs/operators';
+import {debounceTime, distinctUntilChanged, map, switchMap, takeUntil, tap, throttleTime} from 'rxjs/operators';
 import {BehaviorSubject, combineLatest, Observable, Subject} from 'rxjs';
-import {ListSource} from '../../../../shared/classes/list-source/list-source';
-import {CachedListSource} from '../../../../shared/classes/list-source/impl/cached-list-source/cached-list-source';
+import {ListSource} from '../../classes/list-source/list-source';
+import {CachedListSource} from '../../classes/list-source/impl/cached-list-source/cached-list-source';
 import {arraySum} from '../../../../functions/array-sum';
 import {sourceSizeSwitchMap} from '../../../../functions/source-size-switch-map';
 import {hasAnyChanges} from '../../../../functions/has-any-changes';
@@ -31,7 +31,7 @@ import {arrayEquals} from '../../../../functions/array-equals';
     styleUrls: ['./virtual-list.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class VirtualListComponent<T = any> implements OnInit, OnChanges, OnInit, AfterContentChecked, OnDestroy {
+export class VirtualListComponent<T = any> implements OnInit, OnChanges, OnInit, AfterViewInit, AfterContentChecked, OnDestroy {
 
     @Input() source: ListSource<T>;
     @Input() itemPlaceholderTemplate: TemplateRef<any>;
@@ -51,7 +51,10 @@ export class VirtualListComponent<T = any> implements OnInit, OnChanges, OnInit,
             switchMap(source => source ? sourceSizeSwitchMap(source) : [0])
         );
     heights$: Observable<number[]> = combineLatest(
-        this.realItemHeights$.pipe(distinctUntilChanged(arrayEquals)),
+        this.realItemHeights$.pipe(
+            debounceTime(1),
+            distinctUntilChanged(arrayEquals)
+        ),
         this.minItemHeight$,
         this.sourceSize$
     )
@@ -149,9 +152,16 @@ export class VirtualListComponent<T = any> implements OnInit, OnChanges, OnInit,
                     offset
                 };
                 this.cdr.detectChanges();
-                this.saveRealItemsHeight();
                 this.scrollBoxUpdate$.next();
             });
+    }
+
+    ngAfterViewInit(): void {
+        this.viewItemElements.changes
+            .pipe(
+                takeUntil(this.destroy$)
+            )
+            .subscribe(() => this.saveRealItemsHeight());
     }
 
     ngAfterContentChecked(): void {
@@ -180,7 +190,7 @@ export class VirtualListComponent<T = any> implements OnInit, OnChanges, OnInit,
         if (this.viewItemElements) {
             const realHeights = [...this.realItemHeights$.value];
             this.viewItemElements.forEach((item, index) => {
-                realHeights[this.atomState.offset + index] = item.nativeElement.offsetHeight;
+                realHeights[this.atomState.offset + index] = item.nativeElement.scrollHeight;
             });
             this.realItemHeights$.next(realHeights);
         }

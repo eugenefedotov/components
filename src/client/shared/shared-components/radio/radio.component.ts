@@ -1,7 +1,7 @@
 import {Component, forwardRef, Input, OnChanges, OnDestroy, OnInit, SimpleChanges} from '@angular/core';
 import {ControlValueAccessor, NG_VALUE_ACCESSOR} from '@angular/forms';
-import {SelectSource} from '../../../../shared/classes/select-source/select-source';
-import {SelectItemModel} from '../../../../shared/classes/select-source/models/select-item.model';
+import {SelectSource} from '../../classes/select-source/select-source';
+import {SelectItemModel} from '../../classes/select-source/models/select-item.model';
 import {hasAnyChanges} from '../../../../functions/has-any-changes';
 import {Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';

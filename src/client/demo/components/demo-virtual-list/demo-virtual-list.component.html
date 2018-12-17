@@ -1,0 +1,7 @@
+<app-virtual-list [source]="source" [itemTemplate]="listItemTemplate"></app-virtual-list>
+
+<ng-template #listItemTemplate let-item="item">
+  <div
+          [style.height.px]="item.height"
+  >{{item.name}} with height: {{item.height}}px</div>
+</ng-template>

@@ -4,8 +4,8 @@ import {hasAnyChanges} from '../../../../functions/has-any-changes';
 import {arraySum} from '../../../../functions/array-sum';
 import {distinctUntilChanged, map, switchMap} from 'rxjs/operators';
 import {arrayFillSpaces} from '../../../../functions/array-fill-spaces';
-import {GridSource} from '../../../../shared/classes/grid-source/grid-source';
-import {SlicedDataSource} from '../../../../shared/classes/data-source/impl/sliced-data-source';
+import {GridSource} from '../../classes/grid-source/grid-source';
+import {SlicedDataSource} from '../../classes/data-source/impl/sliced-data-source';
 import {arrayEquals} from '../../../../functions/array-equals';
 import {sourceSizeSwitchMap} from '../../../../functions/source-size-switch-map';
 

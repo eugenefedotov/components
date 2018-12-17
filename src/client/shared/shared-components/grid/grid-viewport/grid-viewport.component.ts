@@ -9,11 +9,11 @@ import {
     Output,
     SimpleChanges
 } from '@angular/core';
-import {GridColumnModel} from '../../../../../shared/classes/grid-source/models/grid-column.model';
-import {DataSource} from '../../../../../shared/classes/data-source/data-source';
+import {GridColumnModel} from '../../../classes/grid-source/models/grid-column.model';
+import {DataSource} from '../../../classes/data-source/data-source';
 import {BehaviorSubject, combineLatest, Subject} from 'rxjs';
 import {hasAnyChanges} from '../../../../../functions/has-any-changes';
-import {DataSourceGridSource} from '../../../../../shared/classes/grid-source/impl/data-source-grid-source';
+import {DataSourceGridSource} from '../../../classes/grid-source/impl/data-source-grid-source';
 import {distinctUntilChanged, map, takeUntil} from 'rxjs/operators';
 
 @Component({

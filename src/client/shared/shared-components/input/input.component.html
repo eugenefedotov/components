@@ -1,6 +1,3 @@
-<app-control-error
-        *ngIf="ngControl?.invalid && ngControl?.touched"
-></app-control-error>
 <div class="input" [class.focus]="focus">
     <div class="input__prefix">{{prefix}}</div>
     <div class="input__field">
@@ -13,7 +10,6 @@
                (ngModelChange)="onValueChange()"
                (focus)="setFocus(true)"
                (blur)="setFocus(false)"
-               [appInputMask]="mask"
         >
     </div>
     <div class="input__suffix"> {{suffix}}</div>

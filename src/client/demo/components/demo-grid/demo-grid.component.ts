@@ -1,7 +1,7 @@
 import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
-import {GridColumnModel} from '../../../../shared/classes/grid-source/models/grid-column.model';
-import {LocalGridSource} from '../../../../shared/classes/grid-source/impl/local-grid-source';
-import {GridSource} from '../../../../shared/classes/grid-source/grid-source';
+import {GridColumnModel} from '../../../shared/classes/grid-source/models/grid-column.model';
+import {LocalGridSource} from '../../../shared/classes/grid-source/impl/local-grid-source';
+import {GridSource} from '../../../shared/classes/grid-source/grid-source';
 
 @Component({
     selector: 'app-demo-grid',

@@ -3,7 +3,7 @@ import {ControlValueAccessor, NgControl} from '@angular/forms';
 import {PopUpAlign, PopUpPosition} from '../../shared-directives/pop-up/pop-up.directive';
 import {Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
-import {ControlErrorFormatterType} from '../../../../shared/models/control-error-formatter.type';
+import {ControlErrorFormatterType} from '../../models/control-error-formatter.type';
 import {DEFAULT_CONTROL_ERROR_FORMATTERS} from '../../constants/default-control-error-formatters.const';
 
 @Component({

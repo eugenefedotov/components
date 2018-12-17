@@ -3,7 +3,6 @@ import {CommonModule} from '@angular/common';
 import {PopUpDirective} from './pop-up/pop-up.directive';
 import {TooltipDirective} from './tooltip/tooltip.directive';
 import {InjectComponentDirective} from './inject-component/inject-component.directive';
-import { InputMaskDirective } from './input-mask/input-mask.directive';
 
 @NgModule({
     imports: [
@@ -12,14 +11,12 @@ import { InputMaskDirective } from './input-mask/input-mask.directive';
     declarations: [
         PopUpDirective,
         TooltipDirective,
-        InjectComponentDirective,
-        InputMaskDirective
+        InjectComponentDirective
     ],
     exports: [
         PopUpDirective,
         TooltipDirective,
-        InjectComponentDirective,
-        InputMaskDirective
+        InjectComponentDirective
     ]
 })
 export class SharedDirectivesModule {

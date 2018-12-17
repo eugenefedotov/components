@@ -24,7 +24,6 @@ import {ValueWrapperComponent} from './value-wrapper/value-wrapper.component';
 import {BlockWrapperComponent} from './block-wrapper/block-wrapper.component';
 import {InputComponent} from './input/input.component';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {BreadcrumbsComponent} from './breadcrumbs/breadcrumbs.component';
 import {UpdaterComponent} from './updater/updater.component';
 import {SharedPipesModule} from '../shared-pipes/shared-pipes.module';
 import {GridComponent} from './grid/grid.component';
@@ -65,7 +64,6 @@ import { ControlErrorComponent } from './control-error/control-error.component';
         ValueWrapperComponent,
         BlockWrapperComponent,
         InputComponent,
-        BreadcrumbsComponent,
         UpdaterComponent,
         GridComponent,
         GridViewportComponent,
@@ -86,7 +84,6 @@ import { ControlErrorComponent } from './control-error/control-error.component';
         ValueWrapperComponent,
         BlockWrapperComponent,
         InputComponent,
-        BreadcrumbsComponent,
         UpdaterComponent,
         GridComponent,
     ],

@@ -1,4 +1,4 @@
-import {ListSource} from '../shared/classes/list-source/list-source';
+import {ListSource} from '../client/shared/classes/list-source/list-source';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 
